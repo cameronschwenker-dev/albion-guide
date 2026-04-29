@@ -14,11 +14,12 @@ function showSection(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   closeSidebar();
 
-  // Lazy-render data-driven sections (narrative sections need no render call)
-  if (id === 'weapons-encyclopedia') renderWeapons('all', false, '');
+  // Lazy-render data-driven sections
+  if (id === 'weapons-encyclopedia') renderWeapons('all', false, '', 'weaponContent');
   if (id === 'armor-encyclopedia')   renderArmor('all');
   if (id === 'meta-builds')          renderBuilds('all');
   if (id === 'content-rewards')      renderRewards('all');
+  if (id === 'combat') renderWeapons('all', false, '', 'combatWeaponLines');
 }
 
 navItems.forEach(item => item.addEventListener('click', () => showSection(item.dataset.section)));
@@ -145,9 +146,12 @@ function riskClass(risk) {
 // ============================================================
 // RENDER WEAPONS
 // ============================================================
-function renderWeapons(typeFilter, metaOnly, searchQ) {
-  const container = document.getElementById('weaponContent');
+function renderWeapons(typeFilter, metaOnly, searchQ, containerId = 'weaponContent') {
+  const container = document.getElementById(containerId);
   if (!container) return;
+  // Don't re-render the combat panel unless filters changed
+  if (containerId === 'combatWeaponLines' && container.dataset.rendered) return;
+  if (containerId === 'combatWeaponLines') container.dataset.rendered = 'true';
 
   // Group by line
   const lines = {};
@@ -226,7 +230,7 @@ document.addEventListener('click', e => {
   const typeFilter = btn.dataset.wfilter || 'all';
   const metaOnly   = !!btn.dataset.wmeta;
   const searchQ    = document.getElementById('weaponSearch')?.value || '';
-  renderWeapons(typeFilter, metaOnly, searchQ);
+  renderWeapons(typeFilter, metaOnly, searchQ, 'weaponContent');
 });
 
 document.addEventListener('input', e => {
@@ -234,7 +238,7 @@ document.addEventListener('input', e => {
     const activeBtn = document.querySelector('#weaponFilterBar .filter-btn.active');
     const typeFilter = activeBtn?.dataset.wfilter || 'all';
     const metaOnly   = !!activeBtn?.dataset.wmeta;
-    renderWeapons(typeFilter, metaOnly, e.target.value);
+    renderWeapons(typeFilter, metaOnly, e.target.value, 'weaponContent');
   }
 });
 
