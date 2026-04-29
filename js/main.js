@@ -4,13 +4,63 @@
 const navItems = document.querySelectorAll('.nav-item[data-section]');
 const sections = document.querySelectorAll('.section');
 
+// Map each section ID → which nav group contains it
+const sectionGroupMap = {
+  'getting-started':      'ng-beginner',
+  'beginner-builds':      'ng-beginner',
+  'safe-travel':          'ng-beginner',
+  'food-potions':         'ng-beginner',
+  'destiny-board':        'ng-beginner',
+  'combat':               'ng-combat',
+  'weapons-encyclopedia': 'ng-combat',
+  'armor-encyclopedia':   'ng-combat',
+  'meta-builds':          'ng-combat',
+  'silver-guide':         'ng-economy',
+  'fame-farming':         'ng-economy',
+  'economy':              'ng-economy',
+  'crafting-guide':       'ng-economy',
+  'crafting':             'ng-economy',
+  'passive-income':       'ng-economy',
+  'island-guide':         'ng-economy',
+  'gathering':            'ng-world',
+  'pve':                  'ng-world',
+  'pvp':                  'ng-world',
+  'roads':                'ng-world',
+  'mounts':               'ng-world',
+  'guilds':               'ng-endgame',
+  'housing':              'ng-endgame',
+  'endgame':              'ng-endgame',
+  'content-rewards':      'ng-endgame',
+  'tips':                 'ng-endgame',
+};
+
+function toggleNavGroup(groupId) {
+  const group = document.getElementById(groupId);
+  if (!group) return;
+  const isOpen = group.classList.contains('open');
+  // Close all groups
+  document.querySelectorAll('.nav-group').forEach(g => g.classList.remove('open'));
+  // Open the clicked one if it was closed
+  if (!isOpen) group.classList.add('open');
+}
+
+function openGroupForSection(sectionId) {
+  const groupId = sectionGroupMap[sectionId];
+  if (!groupId) return;
+  document.querySelectorAll('.nav-group').forEach(g => g.classList.remove('open'));
+  const group = document.getElementById(groupId);
+  if (group) group.classList.add('open');
+}
+
 function showSection(id) {
   sections.forEach(s => s.classList.remove('active'));
   navItems.forEach(n => n.classList.remove('active'));
   const target = document.getElementById(id);
   if (target) target.classList.add('active');
-  const navEl = document.querySelector(`.nav-item[data-section="${id}"]`);
-  if (navEl) navEl.classList.add('active');
+  // Mark active in nav (may appear in multiple places — mark all)
+  document.querySelectorAll(`.nav-item[data-section="${id}"]`).forEach(el => el.classList.add('active'));
+  // Auto-open the group that contains this section
+  openGroupForSection(id);
   window.scrollTo({ top: 0, behavior: 'smooth' });
   closeSidebar();
 

@@ -670,6 +670,156 @@
   .filter-input { width: 100%; margin-left: 0; }
 }
 
+/* ===== COLLAPSIBLE NAV GROUPS ===== */
+
+.nav-home-btn {
+  margin: 8px 8px 0;
+  border-radius: var(--radius);
+  font-weight: 600;
+  color: var(--text) !important;
+  border-left: none !important;
+}
+
+.nav-home-btn:hover { background: var(--bg-card) !important; }
+.nav-home-btn.active { background: rgba(201,168,76,0.1) !important; color: var(--gold-light) !important; }
+
+/* Quick Access block */
+.nav-quick {
+  padding: 10px 8px 6px;
+}
+
+.nav-quick-title {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  padding: 0 8px 6px;
+}
+
+.nav-quick-item {
+  border-radius: 8px;
+  margin: 2px 0;
+  padding: 7px 10px !important;
+  border-left: none !important;
+  align-items: center;
+  gap: 10px !important;
+}
+
+.nav-quick-item:hover { background: var(--bg-card) !important; border-radius: 8px; }
+.nav-quick-item.active { background: rgba(201,168,76,0.1) !important; border-radius: 8px; }
+
+.nav-quick-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.nav-quick-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.nav-quick-item.active .nav-quick-label { color: var(--gold-light); }
+
+.nav-quick-sub {
+  font-size: 10px;
+  color: var(--text-dim);
+  line-height: 1;
+}
+
+/* Nav group collapsible */
+.nav-group {
+  margin: 2px 0;
+}
+
+.nav-group-header {
+  width: 100%;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-align: left;
+}
+
+.nav-group-header:hover { background: var(--bg-card); }
+
+.nav-group.open .nav-group-header {
+  background: rgba(201,168,76,0.06);
+}
+
+.ng-icon {
+  font-size: 16px;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.ng-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+}
+
+.nav-group.open .ng-label { color: var(--gold-light); }
+
+.ng-badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: rgba(74,156,110,0.15);
+  color: var(--accent-green);
+  border: 1px solid rgba(74,156,110,0.3);
+  border-radius: 10px;
+  padding: 2px 6px;
+}
+
+.ng-chevron {
+  font-size: 10px;
+  color: var(--text-dim);
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+
+.nav-group.open .ng-chevron { transform: rotate(90deg); color: var(--gold-dim); }
+
+/* Group items — collapse/expand */
+.nav-group-items {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  border-left: 2px solid var(--border);
+  margin-left: 24px;
+}
+
+.nav-group.open .nav-group-items {
+  max-height: 400px;
+}
+
+.nav-sub {
+  padding: 7px 14px 7px 12px !important;
+  font-size: 13px;
+  border-left: none !important;
+}
+
+.nav-sub:hover { background: var(--bg-card); }
+
+.nav-sub.active {
+  background: rgba(201,168,76,0.08) !important;
+  color: var(--gold-light) !important;
+  border-left: none !important;
+}
+
+.nav-sub .nav-icon { font-size: 13px; }
+
 /* ===== CRAFTING CALCULATORS ===== */
 .calc-box {
   background: var(--bg-card);

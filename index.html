@@ -110,134 +110,116 @@
 <!-- ===== SIDEBAR ===== -->
 <nav class="sidebar" id="sidebar">
 
-  <div class="nav-section">
-    <div class="nav-section-title">Overview</div>
-    <a class="nav-item active" data-section="home">
-      <span class="nav-icon">🏠</span> Home
+  <!-- Home always pinned at top -->
+  <a class="nav-item active nav-home-btn" data-section="home">
+    <span class="nav-icon">🏠</span> Home
+  </a>
+
+  <div class="nav-divider" style="margin:6px 0"></div>
+
+  <!-- Quick Access — always visible -->
+  <div class="nav-quick">
+    <div class="nav-quick-title">Quick Access</div>
+    <a class="nav-item nav-quick-item" data-section="progression-roadmap">
+      <span class="nav-icon">🗺️</span>
+      <span class="nav-quick-text"><span class="nav-quick-label">New Player Path</span><span class="nav-quick-sub">Where to start</span></span>
     </a>
-    <a class="nav-item" data-section="getting-started">
-      <span class="nav-icon">🌱</span> Getting Started
+    <a class="nav-item nav-quick-item" data-section="silver-guide">
+      <span class="nav-icon">🪙</span>
+      <span class="nav-quick-text"><span class="nav-quick-label">Make Silver</span><span class="nav-quick-sub">Every stage covered</span></span>
+    </a>
+    <a class="nav-item nav-quick-item" data-section="meta-builds">
+      <span class="nav-icon">🏆</span>
+      <span class="nav-quick-text"><span class="nav-quick-label">Meta Builds</span><span class="nav-quick-sub">Best loadouts 2024</span></span>
+    </a>
+    <a class="nav-item nav-quick-item" data-section="weapons-encyclopedia">
+      <span class="nav-icon">⚔️</span>
+      <span class="nav-quick-text"><span class="nav-quick-label">All Weapons</span><span class="nav-quick-sub">84 weapons detailed</span></span>
     </a>
   </div>
 
   <div class="nav-divider"></div>
 
-  <div class="nav-section">
-    <div class="nav-section-title">Core Systems</div>
-    <a class="nav-item" data-section="destiny-board">
-      <span class="nav-icon">🌟</span> Destiny Board
-    </a>
-    <a class="nav-item" data-section="gathering">
-      <span class="nav-icon">⛏️</span> Gathering
-    </a>
-    <a class="nav-item" data-section="crafting">
-      <span class="nav-icon">🔨</span> Crafting
-    </a>
-    <a class="nav-item" data-section="combat">
-      <span class="nav-icon">⚔️</span> Combat &amp; Skills
-    </a>
+  <!-- GROUP 1: Beginner -->
+  <div class="nav-group" id="ng-beginner">
+    <button class="nav-group-header" onclick="toggleNavGroup('ng-beginner')">
+      <span class="ng-icon">🌱</span>
+      <span class="ng-label">Beginner</span>
+      <span class="ng-badge">Start Here</span>
+      <span class="ng-chevron">▶</span>
+    </button>
+    <div class="nav-group-items">
+      <a class="nav-item nav-sub" data-section="getting-started"><span class="nav-icon">📋</span> Getting Started</a>
+      <a class="nav-item nav-sub" data-section="beginner-builds"><span class="nav-icon">🛡️</span> Beginner Builds</a>
+      <a class="nav-item nav-sub" data-section="safe-travel"><span class="nav-icon">🧭</span> Safe Travel</a>
+      <a class="nav-item nav-sub" data-section="food-potions"><span class="nav-icon">🍖</span> Food &amp; Potions</a>
+      <a class="nav-item nav-sub" data-section="destiny-board"><span class="nav-icon">🌟</span> Destiny Board</a>
+    </div>
   </div>
 
-  <div class="nav-divider"></div>
-
-  <div class="nav-section">
-    <div class="nav-section-title">Content</div>
-    <a class="nav-item" data-section="pve">
-      <span class="nav-icon">👹</span> Open World PvE
-    </a>
-    <a class="nav-item" data-section="pvp">
-      <span class="nav-icon">🗡️</span> PvP &amp; Open World
-    </a>
-    <a class="nav-item" data-section="roads">
-      <span class="nav-icon">🌀</span> Roads of Avalon
-    </a>
+  <!-- GROUP 2: Combat & Gear -->
+  <div class="nav-group" id="ng-combat">
+    <button class="nav-group-header" onclick="toggleNavGroup('ng-combat')">
+      <span class="ng-icon">⚔️</span>
+      <span class="ng-label">Combat &amp; Gear</span>
+      <span class="ng-chevron">▶</span>
+    </button>
+    <div class="nav-group-items">
+      <a class="nav-item nav-sub" data-section="combat"><span class="nav-icon">⚔️</span> Combat &amp; Skills</a>
+      <a class="nav-item nav-sub" data-section="weapons-encyclopedia"><span class="nav-icon">🗡️</span> All Weapons</a>
+      <a class="nav-item nav-sub" data-section="armor-encyclopedia"><span class="nav-icon">🛡️</span> All Armor</a>
+      <a class="nav-item nav-sub" data-section="meta-builds"><span class="nav-icon">🏆</span> Meta Builds</a>
+    </div>
   </div>
 
-  <div class="nav-divider"></div>
-
-  <div class="nav-section">
-    <div class="nav-section-title">Economy &amp; Life</div>
-    <a class="nav-item" data-section="economy">
-      <span class="nav-icon">💰</span> Economy &amp; Trading
-    </a>
-    <a class="nav-item" data-section="mounts">
-      <span class="nav-icon">🐴</span> Mounts &amp; Transport
-    </a>
-    <a class="nav-item" data-section="housing">
-      <span class="nav-icon">🏡</span> Islands &amp; Housing
-    </a>
-    <a class="nav-item" data-section="guilds">
-      <span class="nav-icon">🛡️</span> Guilds &amp; Alliances
-    </a>
+  <!-- GROUP 3: Economy -->
+  <div class="nav-group" id="ng-economy">
+    <button class="nav-group-header" onclick="toggleNavGroup('ng-economy')">
+      <span class="ng-icon">💰</span>
+      <span class="ng-label">Economy</span>
+      <span class="ng-chevron">▶</span>
+    </button>
+    <div class="nav-group-items">
+      <a class="nav-item nav-sub" data-section="silver-guide"><span class="nav-icon">🪙</span> Silver Making</a>
+      <a class="nav-item nav-sub" data-section="fame-farming"><span class="nav-icon">⭐</span> Fame Farming</a>
+      <a class="nav-item nav-sub" data-section="economy"><span class="nav-icon">📈</span> Market &amp; Trading</a>
+      <a class="nav-item nav-sub" data-section="crafting-guide"><span class="nav-icon">⚒️</span> Crafting for Profit</a>
+      <a class="nav-item nav-sub" data-section="crafting"><span class="nav-icon">🔨</span> Crafting Basics</a>
+      <a class="nav-item nav-sub" data-section="passive-income"><span class="nav-icon">💤</span> Passive Income</a>
+      <a class="nav-item nav-sub" data-section="island-guide"><span class="nav-icon">🏝️</span> Island &amp; Mounts</a>
+    </div>
   </div>
 
-  <div class="nav-divider"></div>
-
-  <div class="nav-section">
-    <div class="nav-section-title">Encyclopedia</div>
-    <a class="nav-item" data-section="weapons-encyclopedia">
-      <span class="nav-icon">⚔️</span> All Weapons
-    </a>
-    <a class="nav-item" data-section="armor-encyclopedia">
-      <span class="nav-icon">🛡️</span> All Armor
-    </a>
-    <a class="nav-item" data-section="meta-builds">
-      <span class="nav-icon">🏆</span> Meta Builds
-    </a>
-    <a class="nav-item" data-section="content-rewards">
-      <span class="nav-icon">💎</span> Content Rewards
-    </a>
+  <!-- GROUP 4: Open World -->
+  <div class="nav-group" id="ng-world">
+    <button class="nav-group-header" onclick="toggleNavGroup('ng-world')">
+      <span class="ng-icon">🌍</span>
+      <span class="ng-label">Open World</span>
+      <span class="ng-chevron">▶</span>
+    </button>
+    <div class="nav-group-items">
+      <a class="nav-item nav-sub" data-section="gathering"><span class="nav-icon">⛏️</span> Gathering</a>
+      <a class="nav-item nav-sub" data-section="pve"><span class="nav-icon">👹</span> PvE &amp; Dungeons</a>
+      <a class="nav-item nav-sub" data-section="pvp"><span class="nav-icon">🗡️</span> PvP Guide</a>
+      <a class="nav-item nav-sub" data-section="roads"><span class="nav-icon">🌀</span> Roads of Avalon</a>
+      <a class="nav-item nav-sub" data-section="mounts"><span class="nav-icon">🐴</span> Mounts</a>
+    </div>
   </div>
 
-  <div class="nav-divider"></div>
-
-  <div class="nav-section">
-    <div class="nav-section-title">Progression Guides</div>
-    <a class="nav-item" data-section="progression-roadmap">
-      <span class="nav-icon">🗺️</span> Progression Roadmap
-    </a>
-    <a class="nav-item" data-section="fame-farming">
-      <span class="nav-icon">⭐</span> Fame Farming
-    </a>
-    <a class="nav-item" data-section="silver-guide">
-      <span class="nav-icon">🪙</span> Silver Making
-    </a>
-    <a class="nav-item" data-section="island-guide">
-      <span class="nav-icon">🏝️</span> Island &amp; Mount Farming
-    </a>
-  </div>
-
-  <div class="nav-divider"></div>
-
-  <div class="nav-section">
-    <div class="nav-section-title">Deep Dives</div>
-    <a class="nav-item" data-section="crafting-guide">
-      <span class="nav-icon">⚒️</span> Crafting for Profit
-    </a>
-    <a class="nav-item" data-section="food-potions">
-      <span class="nav-icon">🍖</span> Food &amp; Potions
-    </a>
-    <a class="nav-item" data-section="beginner-builds">
-      <span class="nav-icon">🛡️</span> Beginner Builds
-    </a>
-    <a class="nav-item" data-section="safe-travel">
-      <span class="nav-icon">🧭</span> Safe Travel
-    </a>
-    <a class="nav-item" data-section="passive-income">
-      <span class="nav-icon">💤</span> Passive Income
-    </a>
-  </div>
-
-  <div class="nav-divider"></div>
-
-  <div class="nav-section">
-    <div class="nav-section-title">Advanced</div>
-    <a class="nav-item" data-section="endgame">
-      <span class="nav-icon">👑</span> Endgame
-    </a>
-    <a class="nav-item" data-section="tips">
-      <span class="nav-icon">💡</span> Tips &amp; Tricks
-    </a>
+  <!-- GROUP 5: Guilds & Endgame -->
+  <div class="nav-group" id="ng-endgame">
+    <button class="nav-group-header" onclick="toggleNavGroup('ng-endgame')">
+      <span class="ng-icon">🏰</span>
+      <span class="ng-label">Guilds &amp; Endgame</span>
+      <span class="ng-chevron">▶</span>
+    </button>
+    <div class="nav-group-items">
+      <a class="nav-item nav-sub" data-section="guilds"><span class="nav-icon">🛡️</span> Guilds &amp; Alliances</a>
+      <a class="nav-item nav-sub" data-section="housing"><span class="nav-icon">🏡</span> Islands &amp; Housing</a>
+      <a class="nav-item nav-sub" data-section="endgame"><span class="nav-icon">👑</span> Endgame Content</a>
+      <a class="nav-item nav-sub" data-section="content-rewards"><span class="nav-icon">💎</span> Content Rewards</a>
+      <a class="nav-item nav-sub" data-section="tips"><span class="nav-icon">💡</span> Tips &amp; Tricks</a>
+    </div>
   </div>
 
 </nav>
