@@ -265,10 +265,73 @@ img.item-render.broken { display: none; }
   text-align: center;
 }
 
+/* ===== BUILD CARD ACCENT COLORS ===== */
+/* Each build card gets a colored left glow based on role */
+.build-card { position: relative; overflow: hidden; }
+.build-card::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--build-accent, var(--gold-dim));
+}
+
+/* ===== LOADOUT IMAGE CELL ===== */
+.loadout-img-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loadout-img {
+  border-radius: 4px;
+  background: rgba(0,0,0,0.3);
+  padding: 2px;
+  transition: transform 0.2s;
+}
+
+tr:hover .loadout-img { transform: scale(1.15); }
+
+/* ===== RESOURCE ICON IN TABLE ===== */
+.res-icon-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ===== WEAPON LINE HEADER — image accent ===== */
+.line-header-btn .line-icon-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.5));
+  flex-shrink: 0;
+}
+
+/* ===== PAGE SECTION HEADER ITEM IMAGE ===== */
+.header-item-render {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(201,168,76,0.3));
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+/* ===== GLOWING BORDER ON META CARDS ===== */
+@keyframes metaBorderPulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(201,168,76,0.2), 0 4px 20px rgba(0,0,0,0.3); }
+  50%       { box-shadow: 0 0 0 1px rgba(201,168,76,0.45), 0 4px 24px rgba(201,168,76,0.1); }
+}
+
+.meta-weapon { animation: metaBorderPulse 3s ease-in-out infinite; }
+
 /* ===== RESPONSIVE ===== */
 
 @media (max-width: 700px) {
   .hero-float { display: none; }
   .weapon-card-inner, .armor-card-inner { flex-direction: column; }
   .item-render { width: 64px; height: 64px; }
+  .item-showcase { gap: 8px; }
+  .showcase-item img { width: 48px; height: 48px; }
 }

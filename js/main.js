@@ -71,6 +71,35 @@ function showSection(id) {
   if (id === 'content-rewards')      renderRewards('all');
   if (id === 'combat')               renderWeapons('all', false, '', 'combatWeaponLines');
   if (id === 'crafting-guide')       renderCraftingGuide();
+  // Inject images into static HTML sections after they become visible
+  if (id === 'beginner-builds') injectStaticBuildImages('beginner-builds');
+}
+
+// Inject item images into static HTML loadout tables (beginner builds)
+function injectStaticBuildImages(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (!section || section.dataset.imgsInjected) return;
+  section.dataset.imgsInjected = 'true';
+  _buildImgMap();
+  section.querySelectorAll('.tier-table tbody tr').forEach(row => {
+    const cells = row.querySelectorAll('td');
+    if (cells.length < 2) return;
+    const itemCell = cells[1];
+    const text = itemCell.textContent.trim();
+    const rid = _buildImgCache[text.toLowerCase()];
+    if (!rid) return;
+    const img = document.createElement('img');
+    img.src = itemImg(rid, 48);
+    img.className = 'loadout-img';
+    img.alt = text;
+    img.onerror = () => img.style.display = 'none';
+    itemCell.innerHTML = '';
+    const wrap = document.createElement('div');
+    wrap.className = 'loadout-img-cell';
+    wrap.appendChild(img);
+    wrap.appendChild(document.createTextNode(text));
+    itemCell.appendChild(wrap);
+  });
 }
 
 navItems.forEach(item => item.addEventListener('click', () => showSection(item.dataset.section)));
@@ -253,10 +282,16 @@ function renderWeapons(typeFilter, metaOnly, searchQ, containerId = 'weaponConte
       </div>`;
     }).join('');
 
+    // Use first weapon's render as the line header icon
+    const firstRid = weaponRenderIds[lineData.weapons[0]?.id];
+    const lineHeaderIcon = firstRid
+      ? `<img class="line-icon-img" src="${itemImg(firstRid, 48)}" alt="${lineName}" onerror="this.style.display='none'" />`
+      : `<span class="line-icon">${lineData.icon}</span>`;
+
     return `
       <div class="line-section">
         <button class="line-header-btn" onclick="toggleLine(this)">
-          <span class="line-icon">${lineData.icon}</span>
+          ${lineHeaderIcon}
           <div class="line-info">
             <h3>${lineName}</h3>
             <p>${lineData.type} · ${lineData.weapons.length} weapons${lineData.weapons.filter(x=>x.meta).length ? ' · ' + lineData.weapons.filter(x=>x.meta).length + ' meta' : ''}</p>
@@ -366,6 +401,35 @@ document.addEventListener('click', e => {
 });
 
 // ============================================================
+// BUILD ITEM IMAGE LOOKUP
+// ============================================================
+// Flat name → renderId map built from weaponRenderIds + armorRenderIds
+const _buildImgCache = {};
+function _buildImgMap() {
+  if (Object.keys(_buildImgCache).length) return;
+  weaponsData.forEach(w => {
+    const rid = weaponRenderIds[w.id];
+    if (rid) _buildImgCache[w.name.toLowerCase()] = rid;
+  });
+  [...(armorData.helmets||[]), ...(armorData.chests||[]), ...(armorData.boots||[])].forEach(a => {
+    const rid = armorRenderIds[a.id];
+    if (rid) _buildImgCache[a.name.toLowerCase()] = rid;
+  });
+}
+
+function loadoutImg(itemName) {
+  _buildImgMap();
+  // Strip tier suffix like "(T6+)" or "(T8)" and look up
+  const clean = itemName.toLowerCase()
+    .replace(/\s*\(t[0-9][^)]*\)/gi, '')
+    .replace(/\s+(all types?|any)?$/i, '')
+    .trim();
+  const rid = _buildImgCache[clean];
+  if (!rid) return '';
+  return `<img class="loadout-img" src="${itemImg(rid, 48)}" alt="${itemName}" onerror="this.style.display='none'" />`;
+}
+
+// ============================================================
 // RENDER BUILDS
 // ============================================================
 function renderBuilds(tagFilter) {
@@ -382,24 +446,33 @@ function renderBuilds(tagFilter) {
   }
 
   container.innerHTML = '<div class="build-grid">' + filtered.map(b => {
-    const loadoutRows = Object.entries(b.loadout).map(([slot, item]) => `
+    const loadoutRows = Object.entries(b.loadout).map(([slot, item]) => {
+      const img = loadoutImg(item.name);
+      return `
       <tr>
         <td class="loadout-slot">${slot.charAt(0).toUpperCase() + slot.slice(1)}</td>
-        <td class="loadout-item">${item.name}</td>
+        <td class="loadout-item"><div class="loadout-img-cell">${img}<span>${item.name}</span></div></td>
         <td class="loadout-note">${item.note}</td>
-      </tr>`).join('');
+      </tr>`;
+    }).join('');
 
     const psSteps = b.playstyle.map((step, i) => `
       <li><div class="ps-num">${i+1}</div><span>${step}</span></li>`).join('');
 
     const costColor = b.cost === 'Low' ? '#70c090' : b.cost === 'Medium' ? 'var(--gold)' : b.cost.includes('Very') ? '#f05050' : '#e07070';
 
+    // Get the weapon render for the build header
+    const weaponItem = b.loadout.weapon;
+    const weaponImg  = weaponItem ? loadoutImg(weaponItem.name) : '';
+
     return `
-    <div class="build-card" id="build-${b.id}">
+    <div class="build-card" id="build-${b.id}" style="--build-accent:${b.color}">
       <div class="build-header">
         <div class="build-accent" style="background:linear-gradient(90deg,${b.color},transparent)"></div>
         <div class="build-icon-name">
-          <div class="build-icon-wrap">${b.icon}</div>
+          <div class="build-icon-wrap" style="background:rgba(0,0,0,0.3);border-color:${b.color}40">
+            ${weaponImg || b.icon}
+          </div>
           <div>
             <div class="build-name">${b.name}</div>
             <div class="build-role">${b.role}</div>
@@ -565,15 +638,30 @@ function renderCraftingGuide() {
   tableContainer.innerHTML = cats.map(cat => {
     const items = craftingRecipes.filter(r => r.category === cat);
     const rows = items.map(item => {
+      // Try to find a render image for this item from our lookups
+      const itemRid = (() => {
+        const n = item.name.toLowerCase();
+        const found = Object.entries(weaponRenderIds).find(([id]) => {
+          const w = weaponsData.find(w => w.id === id);
+          return w && n.includes(w.name.toLowerCase().split('/')[0].trim());
+        });
+        return found ? found[1] : null;
+      })();
+      const itemImgTag = itemRid
+        ? `<img src="${itemImg(itemRid, 36)}" alt="${item.name}" style="width:32px;height:32px;object-fit:contain;vertical-align:middle;margin-right:6px;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.5))" onerror="this.style.display='none'" />`
+        : `<span style="margin-right:6px">${item.icon}</span>`;
+
       const mats = item.materials.map(m => {
         if (m.raw) return `<span style="color:var(--text)">${m.qty}× ${m.resource.replace('_',' ')}</span>`;
         const res = resourceNames[m.resource];
+        const resName = res ? res.refined[4].split(' ').slice(0,2).join(' ') + '…' : m.resource;
         return res
-          ? `<span style="color:var(--gold-light)">${m.qty}× <em>[T?] ${res.refined[4].replace(/\(.*\)/,'').trim().split(' ')[0]}…</em></span>`
+          ? `<span style="color:var(--gold-light)">${res.icon} ${m.qty}× ${resName}</span>`
           : `${m.qty}× ${m.resource}`;
       }).join('<br>');
+
       return `<tr>
-        <td>${item.icon} <strong>${item.name}</strong></td>
+        <td><div style="display:flex;align-items:center">${itemImgTag}<strong>${item.name}</strong></div></td>
         <td style="color:var(--text-dim);font-size:12px">${item.station}</td>
         <td style="color:var(--text-dim);font-size:12px">${item.city}</td>
         <td style="font-size:12px">${mats}</td>
