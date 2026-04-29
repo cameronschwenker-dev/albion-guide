@@ -669,3 +669,65 @@
   .build-meta-row { grid-template-columns: 1fr 1fr; }
   .filter-input { width: 100%; margin-left: 0; }
 }
+
+/* ===== CRAFTING CALCULATORS ===== */
+.calc-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 8px;
+}
+
+.calc-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.calc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 130px;
+}
+
+.calc-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.calc-select,
+.calc-input {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.calc-select:focus,
+.calc-input:focus { border-color: var(--gold-dim); }
+
+.calc-select option { background: var(--bg-panel); }
+
+.calc-output {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  animation: fadeIn 0.25s ease;
+}
+
+@media (max-width: 700px) {
+  .calc-row { flex-direction: column; }
+  .calc-field { min-width: 100%; }
+}

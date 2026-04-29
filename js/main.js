@@ -19,7 +19,8 @@ function showSection(id) {
   if (id === 'armor-encyclopedia')   renderArmor('all');
   if (id === 'meta-builds')          renderBuilds('all');
   if (id === 'content-rewards')      renderRewards('all');
-  if (id === 'combat') renderWeapons('all', false, '', 'combatWeaponLines');
+  if (id === 'combat')               renderWeapons('all', false, '', 'combatWeaponLines');
+  if (id === 'crafting-guide')       renderCraftingGuide();
 }
 
 navItems.forEach(item => item.addEventListener('click', () => showSection(item.dataset.section)));
@@ -455,6 +456,281 @@ document.addEventListener('click', e => {
   btn.classList.add('active');
   renderRewards(btn.dataset.rfilter || 'all');
 });
+
+// ============================================================
+// CRAFTING GUIDE
+// ============================================================
+
+// Per-tier refining recipe: rawPerUnit of current tier raw + lowerRefined of previous tier refined
+const REFINING_CHAIN = {
+  2: { rawPerUnit: 2, lowerRefined: 0 },
+  3: { rawPerUnit: 2, lowerRefined: 1 },
+  4: { rawPerUnit: 2, lowerRefined: 1 },
+  5: { rawPerUnit: 2, lowerRefined: 1 },
+  6: { rawPerUnit: 2, lowerRefined: 1 },
+  7: { rawPerUnit: 2, lowerRefined: 1 },
+  8: { rawPerUnit: 2, lowerRefined: 1 },
+};
+
+// Calculate raw materials needed for `qty` refined units at `tier`
+// Returns array of { tier, rawName, refinedName, rawNeeded, refinedQty }
+function calcRefiningChain(resourceKey, tier, qty) {
+  const res = resourceNames[resourceKey];
+  if (!res) return [];
+  const breakdown = [];
+  let needed = qty;
+  for (let t = tier; t >= 2; t--) {
+    const step = REFINING_CHAIN[t];
+    const rawNeeded = needed * step.rawPerUnit;
+    breakdown.push({ tier: t, rawName: res.raw[t], refinedName: res.refined[t], rawNeeded, refinedQty: needed });
+    needed = needed * step.lowerRefined;
+    if (needed === 0) break;
+  }
+  return breakdown;
+}
+
+// Total raw across the full chain
+function totalRawForRefined(resourceKey, tier, qty) {
+  return calcRefiningChain(resourceKey, tier, qty)
+    .reduce((sum, row) => sum + row.rawNeeded, 0);
+}
+
+function renderCraftingGuide() {
+  if (document.getElementById('craftRecipeTable').dataset.rendered) return;
+  document.getElementById('craftRecipeTable').dataset.rendered = 'true';
+
+  // ── Recipe tables by category ──
+  const cats = [...new Set(craftingRecipes.map(r => r.category))];
+  const tableContainer = document.getElementById('craftRecipeTable');
+  tableContainer.innerHTML = cats.map(cat => {
+    const items = craftingRecipes.filter(r => r.category === cat);
+    const rows = items.map(item => {
+      const mats = item.materials.map(m => {
+        if (m.raw) return `<span style="color:var(--text)">${m.qty}× ${m.resource.replace('_',' ')}</span>`;
+        const res = resourceNames[m.resource];
+        return res
+          ? `<span style="color:var(--gold-light)">${m.qty}× <em>[T?] ${res.refined[4].replace(/\(.*\)/,'').trim().split(' ')[0]}…</em></span>`
+          : `${m.qty}× ${m.resource}`;
+      }).join('<br>');
+      return `<tr>
+        <td>${item.icon} <strong>${item.name}</strong></td>
+        <td style="color:var(--text-dim);font-size:12px">${item.station}</td>
+        <td style="color:var(--text-dim);font-size:12px">${item.city}</td>
+        <td style="font-size:12px">${mats}</td>
+        <td style="font-size:11px;color:var(--text-dim)">${item.note}</td>
+      </tr>`;
+    }).join('');
+    return `
+      <div style="margin-bottom:24px">
+        <div class="armor-slot-section" style="margin-top:0">
+          <h3>${cat}</h3>
+        </div>
+        <table class="tier-table">
+          <thead><tr><th>Item</th><th>Station</th><th>Best City</th><th>Materials (per item)</th><th>Notes</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }).join('');
+
+  // ── Resource names table ──
+  const nameTable = document.getElementById('resourceNamesTable');
+  const types = Object.keys(resourceNames);
+  nameTable.innerHTML = `<table class="tier-table">
+    <thead><tr><th>Resource</th>${[2,3,4,5,6,7,8].map(t=>`<th>T${t}</th>`).join('')}</tr></thead>
+    <tbody>
+      ${types.map(k => {
+        const r = resourceNames[k];
+        return `
+          <tr style="background:rgba(201,168,76,0.04)">
+            <td><strong>${r.icon} ${r.label.split('→')[0].trim()} (Raw)</strong></td>
+            ${[2,3,4,5,6,7,8].map(t => `<td style="font-size:12px;color:var(--text-dim)">${r.raw[t]}</td>`).join('')}
+          </tr>
+          <tr>
+            <td style="padding-left:16px;font-size:12px;color:var(--text-dim)">↳ ${r.label.split('→')[1].trim()}</td>
+            ${[2,3,4,5,6,7,8].map(t => `<td style="font-size:12px;color:var(--gold)">${r.refined[t]}</td>`).join('')}
+          </tr>`;
+      }).join('')}
+    </tbody>
+  </table>`;
+
+  // Populate selectors
+  const resSelects = document.querySelectorAll('.crafting-resource-select');
+  resSelects.forEach(sel => {
+    sel.innerHTML = Object.entries(resourceNames)
+      .map(([k,v]) => `<option value="${k}">${v.icon} ${v.label}</option>`).join('');
+  });
+
+  const itemSelects = document.querySelectorAll('.crafting-item-select');
+  itemSelects.forEach(sel => {
+    const grouped = {};
+    craftingRecipes.forEach(r => {
+      if (!grouped[r.category]) grouped[r.category] = [];
+      grouped[r.category].push(r);
+    });
+    sel.innerHTML = Object.entries(grouped)
+      .map(([cat, items]) =>
+        `<optgroup label="${cat}">${items.map(i => `<option value="${i.id}">${i.icon} ${i.name}</option>`).join('')}</optgroup>`
+      ).join('');
+  });
+}
+
+// ── Refining chain calculator ──
+function runRefiningCalc() {
+  const res  = document.getElementById('refCalcResource')?.value;
+  const tier = parseInt(document.getElementById('refCalcTier')?.value || '6');
+  const qty  = parseInt(document.getElementById('refCalcQty')?.value  || '16');
+  const out  = document.getElementById('refCalcOutput');
+  if (!out || !res) return;
+
+  const chain = calcRefiningChain(res, tier, qty);
+  const totalRaw = chain.reduce((s,r) => s + r.rawNeeded, 0);
+
+  out.style.display = 'block';
+  out.innerHTML = `
+    <div style="font-size:12px;color:var(--gold-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">
+      Chain to produce <strong style="color:var(--gold)">${qty}× T${tier} ${resourceNames[res]?.refined[tier] || 'refined'}</strong>
+    </div>
+    <table class="tier-table" style="margin:0">
+      <thead><tr><th>Step</th><th>You Need to Refine</th><th>Raw Material</th><th>Qty Raw</th><th>Lower-Tier Refined</th></tr></thead>
+      <tbody>
+        ${chain.map((row,i) => `
+          <tr>
+            <td><span class="tier-dot t${row.tier}" style="display:inline-block"></span> T${row.tier}</td>
+            <td style="color:var(--gold)">${row.refinedQty}× ${row.refinedName}</td>
+            <td style="color:var(--text-dim)">${row.rawName}</td>
+            <td><strong style="color:var(--text-bright)">${row.rawNeeded}</strong></td>
+            <td style="color:var(--text-dim)">${i < chain.length-1 ? row.refinedQty + '× T'+(row.tier-1)+' refined needed' : '— none required'}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+    <div class="highlight" style="margin-top:10px">
+      <strong>Total raw materials across all tiers: ${totalRaw.toLocaleString()} units</strong>
+      &nbsp;— or buy T${tier-1} refined on the market and only gather <strong>${chain[0].rawNeeded}</strong> T${tier} raw.
+    </div>`;
+}
+
+// ── Craft cost calculator ──
+function runCraftCalc() {
+  const itemId = document.getElementById('craftCalcItem')?.value;
+  const tier   = parseInt(document.getElementById('craftCalcTier')?.value || '6');
+  const qty    = parseInt(document.getElementById('craftCalcQty')?.value  || '1');
+  const returnRate = parseFloat(document.getElementById('craftCalcReturn')?.value || '40') / 100;
+  const out    = document.getElementById('craftCalcOutput');
+  if (!out) return;
+
+  const recipe = craftingRecipes.find(r => r.id === itemId);
+  if (!recipe) return;
+
+  const rawMats = recipe.materials.filter(m => m.raw);
+  const refinedMats = recipe.materials.filter(m => !m.raw);
+
+  let html = `<div style="font-size:12px;color:var(--gold-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">
+    Materials to craft <strong style="color:var(--gold)">${qty}× T${tier} ${recipe.name}</strong>
+  </div>`;
+
+  if (refinedMats.length) {
+    html += `<table class="tier-table" style="margin-bottom:12px">
+      <thead><tr><th>Refined Material</th><th>Per Item</th><th>Total (${qty}×)</th><th>Full Chain (raw)</th></tr></thead>
+      <tbody>`;
+    refinedMats.forEach(m => {
+      const res = resourceNames[m.resource];
+      if (!res) return;
+      const totalRefined = m.qty * qty;
+      const totalRaw = totalRawForRefined(m.resource, tier, totalRefined);
+      html += `<tr>
+        <td>${res.icon} <strong>${res.refined[tier] || 'T'+tier+' '+m.resource}</strong></td>
+        <td>${m.qty}×</td>
+        <td style="color:var(--gold)">${totalRefined.toLocaleString()}×</td>
+        <td style="color:var(--text-dim);font-size:12px">≈ ${totalRaw.toLocaleString()} raw T2–T${tier}</td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+  }
+
+  if (rawMats.length) {
+    html += `<div style="font-size:12px;color:var(--text-dim);margin-bottom:6px"><strong style="color:var(--text)">Raw consumable ingredients (food/potions):</strong></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">`;
+    rawMats.forEach(m => {
+      html += `<div class="loot-row" style="flex:0 0 auto;min-width:160px">
+        <div class="loot-name">${m.qty * qty}× ${m.resource.replace('_',' ')}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  if (refinedMats.length) {
+    const totalItems = qty;
+    const returnedItems = Math.floor(totalItems * returnRate);
+    html += `<div class="info-block tip" style="margin-top:4px">
+      <div class="info-title">📊 Return Rate at ${(returnRate*100).toFixed(0)}%</div>
+      <p>Crafting ${totalItems} items returns approximately <strong>${returnedItems}</strong> items' worth of materials back to you (~${Math.floor(totalItems*refinedMats[0].qty*returnRate)} ${resourceNames[refinedMats[0].resource]?.refined[tier] || 'refined units'}). Adjust the return rate slider to match your current specialisation level.</p>
+    </div>`;
+  }
+
+  out.style.display = 'block';
+  out.innerHTML = html;
+}
+
+// ── Profit calculator ──
+function runProfitCalc() {
+  const itemId   = document.getElementById('profitCalcItem')?.value;
+  const tier     = parseInt(document.getElementById('profitCalcTier')?.value || '6');
+  const qty      = parseInt(document.getElementById('profitCalcQty')?.value || '10');
+  const sellPrice = parseInt(document.getElementById('profitCalcSell')?.value || '0');
+  const returnRate = parseFloat(document.getElementById('profitCalcReturn')?.value || '40') / 100;
+  const out = document.getElementById('profitCalcOutput');
+  if (!out) return;
+
+  const recipe = craftingRecipes.find(r => r.id === itemId);
+  if (!recipe) { out.innerHTML = '<p style="color:var(--text-dim)">Select an item above.</p>'; return; }
+
+  let totalMatCost = 0;
+  let matRows = '';
+
+  recipe.materials.forEach(m => {
+    if (m.raw) return;
+    const res   = resourceNames[m.resource];
+    const priceKey = m.resource + 'R';
+    const unitPrice = parseInt(document.getElementById('price-' + m.resource)?.value || defaultPrices[priceKey]?.[tier] || 0);
+    const total = m.qty * qty * unitPrice;
+    totalMatCost += total;
+    matRows += `<tr>
+      <td>${res?.icon || ''} ${res?.refined[tier] || m.resource}</td>
+      <td>${m.qty * qty}×</td>
+      <td>${unitPrice.toLocaleString()} sv</td>
+      <td>${total.toLocaleString()} sv</td>
+    </tr>`;
+  });
+
+  const effectiveCost = Math.round(totalMatCost * (1 - returnRate));
+  const grossRevenue  = sellPrice * qty;
+  const marketTax     = Math.round(grossRevenue * 0.075);
+  const netRevenue    = grossRevenue - marketTax;
+  const profit        = netRevenue - effectiveCost;
+  const margin        = grossRevenue > 0 ? ((profit / netRevenue) * 100).toFixed(1) : 0;
+  const profitColor   = profit > 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+  const marginColor   = parseFloat(margin) >= 20 ? 'var(--accent-green)' : parseFloat(margin) >= 10 ? 'var(--gold)' : 'var(--accent-red)';
+
+  out.style.display = 'block';
+  out.innerHTML = `
+    <table class="tier-table" style="margin-bottom:12px">
+      <thead><tr><th>Material</th><th>Qty</th><th>Price Each</th><th>Total Cost</th></tr></thead>
+      <tbody>${matRows}</tbody>
+    </table>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:10px">
+      <div class="build-meta-cell"><div class="bmc-label">Raw Mat Cost</div><div class="bmc-value">${totalMatCost.toLocaleString()} sv</div></div>
+      <div class="build-meta-cell"><div class="bmc-label">After ${(returnRate*100).toFixed(0)}% Return</div><div class="bmc-value" style="color:var(--accent-green)">${effectiveCost.toLocaleString()} sv</div></div>
+      <div class="build-meta-cell"><div class="bmc-label">Gross Revenue</div><div class="bmc-value">${grossRevenue.toLocaleString()} sv</div></div>
+      <div class="build-meta-cell"><div class="bmc-label">Market Tax (7.5%)</div><div class="bmc-value" style="color:var(--accent-red)">−${marketTax.toLocaleString()} sv</div></div>
+      <div class="build-meta-cell"><div class="bmc-label">Net Profit</div><div class="bmc-value" style="color:${profitColor}">${profit.toLocaleString()} sv</div></div>
+      <div class="build-meta-cell"><div class="bmc-label">Margin</div><div class="bmc-value" style="color:${marginColor}">${margin}%</div></div>
+    </div>
+    <div class="highlight" style="background:${profit>0?'rgba(74,156,110,0.08)':'rgba(193,80,80,0.08)'};border-color:${profitColor}">
+      ${profit > 0
+        ? `<strong style="color:var(--accent-green)">✅ Profitable:</strong> ${profit.toLocaleString()} silver profit on ${qty} items (${margin}% margin)`
+        : `<strong style="color:var(--accent-red)">❌ Not profitable</strong> at these prices — raise sell price or lower material cost`}
+    </div>`;
+}
 
 // ============================================================
 // PROGRESS BAR ANIMATION
