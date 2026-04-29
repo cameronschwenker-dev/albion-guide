@@ -1,0 +1,2471 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Albion Online — Complete Guide</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <style>
+    /* Search dropdown */
+    .topbar-search { position: relative; }
+    #searchResults {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      width: 260px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      z-index: 2000;
+      overflow: hidden;
+    }
+    .search-result-item {
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.1s;
+      border-bottom: 1px solid var(--border);
+    }
+    .search-result-item:last-child { border-bottom: none; }
+    .search-result-item:hover { background: var(--bg-card); color: var(--gold-light); }
+
+    /* Visual map elements */
+    .world-map-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+    .wm-cell {
+      aspect-ratio: 1;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      text-align: center;
+      cursor: default;
+      transition: transform 0.15s;
+      padding: 4px;
+      line-height: 1.2;
+    }
+    .wm-cell:hover { transform: scale(1.1); z-index: 1; }
+    .wm-royal { background: rgba(74,127,193,0.25); border: 1px solid rgba(74,127,193,0.4); color: #80b8f0; }
+    .wm-yellow { background: rgba(220,180,50,0.2); border: 1px solid rgba(220,180,50,0.35); color: #d4b84a; }
+    .wm-red { background: rgba(193,70,70,0.2); border: 1px solid rgba(193,70,70,0.35); color: #e07070; }
+    .wm-black { background: rgba(80,60,110,0.3); border: 1px solid rgba(100,80,160,0.4); color: #b090e8; }
+    .wm-roads { background: rgba(50,80,40,0.3); border: 1px solid rgba(80,130,60,0.35); color: #80c060; }
+    .wm-empty { background: transparent; border: 1px solid transparent; }
+
+    .fame-visual {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      height: 40px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+    }
+    .fame-seg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(0,0,0,0.7);
+      flex: 1;
+      transition: flex 0.3s;
+    }
+    .fame-seg:hover { flex: 2; }
+  </style>
+</head>
+<body>
+
+<!-- OVERLAY (mobile) -->
+<div class="overlay" id="overlay"></div>
+
+<!-- ===== TOPBAR ===== -->
+<header class="topbar">
+  <button class="menu-toggle" id="menuToggle">&#9776;</button>
+  <a class="topbar-logo" href="#" onclick="showSection('home'); return false;">
+    <div class="logo-icon">⚔️</div>
+    <div>
+      <div class="logo-text">Albion Guide</div>
+      <div class="logo-sub">Complete Reference</div>
+    </div>
+  </a>
+  <div class="topbar-search">
+    <input type="text" id="searchInput" placeholder="Search guides…" autocomplete="off" />
+    <span class="search-icon">🔍</span>
+    <div id="searchResults"></div>
+  </div>
+</header>
+
+<!-- ===== SIDEBAR ===== -->
+<nav class="sidebar" id="sidebar">
+
+  <div class="nav-section">
+    <div class="nav-section-title">Overview</div>
+    <a class="nav-item active" data-section="home">
+      <span class="nav-icon">🏠</span> Home
+    </a>
+    <a class="nav-item" data-section="getting-started">
+      <span class="nav-icon">🌱</span> Getting Started
+    </a>
+  </div>
+
+  <div class="nav-divider"></div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Core Systems</div>
+    <a class="nav-item" data-section="destiny-board">
+      <span class="nav-icon">🌟</span> Destiny Board
+    </a>
+    <a class="nav-item" data-section="gathering">
+      <span class="nav-icon">⛏️</span> Gathering
+    </a>
+    <a class="nav-item" data-section="crafting">
+      <span class="nav-icon">🔨</span> Crafting
+    </a>
+    <a class="nav-item" data-section="combat">
+      <span class="nav-icon">⚔️</span> Combat &amp; Skills
+    </a>
+  </div>
+
+  <div class="nav-divider"></div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Content</div>
+    <a class="nav-item" data-section="pve">
+      <span class="nav-icon">👹</span> Open World PvE
+    </a>
+    <a class="nav-item" data-section="pvp">
+      <span class="nav-icon">🗡️</span> PvP &amp; Open World
+    </a>
+    <a class="nav-item" data-section="roads">
+      <span class="nav-icon">🌀</span> Roads of Avalon
+    </a>
+  </div>
+
+  <div class="nav-divider"></div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Economy &amp; Life</div>
+    <a class="nav-item" data-section="economy">
+      <span class="nav-icon">💰</span> Economy &amp; Trading
+    </a>
+    <a class="nav-item" data-section="mounts">
+      <span class="nav-icon">🐴</span> Mounts &amp; Transport
+    </a>
+    <a class="nav-item" data-section="housing">
+      <span class="nav-icon">🏡</span> Islands &amp; Housing
+    </a>
+    <a class="nav-item" data-section="guilds">
+      <span class="nav-icon">🛡️</span> Guilds &amp; Alliances
+    </a>
+  </div>
+
+  <div class="nav-divider"></div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Encyclopedia</div>
+    <a class="nav-item" data-section="weapons-encyclopedia">
+      <span class="nav-icon">⚔️</span> All Weapons
+    </a>
+    <a class="nav-item" data-section="armor-encyclopedia">
+      <span class="nav-icon">🛡️</span> All Armor
+    </a>
+    <a class="nav-item" data-section="meta-builds">
+      <span class="nav-icon">🏆</span> Meta Builds
+    </a>
+    <a class="nav-item" data-section="content-rewards">
+      <span class="nav-icon">💎</span> Content Rewards
+    </a>
+  </div>
+
+  <div class="nav-divider"></div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Progression Guides</div>
+    <a class="nav-item" data-section="progression-roadmap">
+      <span class="nav-icon">🗺️</span> Progression Roadmap
+    </a>
+    <a class="nav-item" data-section="fame-farming">
+      <span class="nav-icon">⭐</span> Fame Farming
+    </a>
+    <a class="nav-item" data-section="silver-guide">
+      <span class="nav-icon">🪙</span> Silver Making
+    </a>
+    <a class="nav-item" data-section="island-guide">
+      <span class="nav-icon">🏝️</span> Island &amp; Mount Farming
+    </a>
+  </div>
+
+  <div class="nav-divider"></div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Advanced</div>
+    <a class="nav-item" data-section="endgame">
+      <span class="nav-icon">👑</span> Endgame
+    </a>
+    <a class="nav-item" data-section="tips">
+      <span class="nav-icon">💡</span> Tips &amp; Tricks
+    </a>
+  </div>
+
+</nav>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main">
+
+  <!-- ============================================================ HOME -->
+  <section class="section active" id="home">
+    <div class="hero">
+      <div class="hero-badge">⚔️ Complete Guide 2024</div>
+      <h1>Master <span>Albion Online</span></h1>
+      <p>A comprehensive guide covering every stage of the game — from your first steps in the tutorial to endgame content and Guild Season competition.</p>
+      <div class="hero-btn-group">
+        <button class="btn btn-primary" data-goto="progression-roadmap">🗺️ New Player Path</button>
+        <button class="btn btn-outline" data-goto="fame-farming">⭐ Get Famous Fast</button>
+        <button class="btn btn-outline" data-goto="silver-guide">🪙 Make Silver</button>
+        <button class="btn btn-outline" data-goto="island-guide">🏝️ Island Guide</button>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>📖 What is Albion Online?</h3>
+      <p>Albion Online is a <strong>sandbox MMORPG</strong> developed by Sandbox Interactive. Unlike traditional MMOs, there are <strong>no classes</strong> — you are what you wear. Your equipped gear determines your abilities, and you can freely switch between playstyles by changing your loadout.</p>
+      <p>The game features a fully <strong>player-driven economy</strong>, open-world PvP, territory control, deep crafting, and a rich destiny board progression system. It is available on PC, Mac, iOS, and Android and offers cross-platform play.</p>
+    </div>
+
+    <!-- Quick guide cards -->
+    <div class="cards-grid">
+      <div class="card" data-goto="getting-started">
+        <div class="card-icon">🌱</div>
+        <h3>Getting Started</h3>
+        <p>Account creation, the tutorial island, your first city, and early goals to focus on.</p>
+        <span class="card-tag tag-beginner">Beginner</span>
+      </div>
+      <div class="card" data-goto="destiny-board">
+        <div class="card-icon">🌟</div>
+        <h3>Destiny Board</h3>
+        <p>The heart of Albion's progression. Learn how to unlock nodes and plan your path efficiently.</p>
+        <span class="card-tag tag-beginner">Beginner</span>
+      </div>
+      <div class="card" data-goto="gathering">
+        <div class="card-icon">⛏️</div>
+        <h3>Gathering</h3>
+        <p>All five resource types, tier breakdowns, fame bonuses, and where to gather safely.</p>
+        <span class="card-tag tag-beginner">Beginner</span>
+      </div>
+      <div class="card" data-goto="crafting">
+        <div class="card-icon">🔨</div>
+        <h3>Crafting</h3>
+        <p>Refining, crafting stations, quality tiers, and how to profit from the crafting economy.</p>
+        <span class="card-tag tag-intermediate">Intermediate</span>
+      </div>
+      <div class="card" data-goto="combat">
+        <div class="card-icon">⚔️</div>
+        <h3>Combat &amp; Builds</h3>
+        <p>Weapons, armor, spells, and how to build effective solo, small group, and zerg builds.</p>
+        <span class="card-tag tag-intermediate">Intermediate</span>
+      </div>
+      <div class="card" data-goto="pvp">
+        <div class="card-icon">🗡️</div>
+        <h3>PvP &amp; Open World</h3>
+        <p>Zone danger levels, flagging, ganking, HCE, and how to survive or thrive in red/black zones.</p>
+        <span class="card-tag tag-advanced">Advanced</span>
+      </div>
+      <div class="card" data-goto="economy">
+        <div class="card-icon">💰</div>
+        <h3>Economy &amp; Trading</h3>
+        <p>The player market, flipping, transport profits, and how to make consistent silver.</p>
+        <span class="card-tag tag-intermediate">Intermediate</span>
+      </div>
+      <div class="card" data-goto="guilds">
+        <div class="card-icon">🛡️</div>
+        <h3>Guilds &amp; Alliances</h3>
+        <p>Guild mechanics, territory control, GvG, and how Season Points and rankings work.</p>
+        <span class="card-tag tag-advanced">Advanced</span>
+      </div>
+      <div class="card" data-goto="endgame">
+        <div class="card-icon">👑</div>
+        <h3>Endgame Content</h3>
+        <p>Hardcore Expeditions, Crystal League arenas, the Season meta, and advanced silver farms.</p>
+        <span class="card-tag tag-advanced">Advanced</span>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>🗺️ Progression Guides — Start Here</h3>
+      <div class="cards-grid">
+        <div class="card" data-goto="progression-roadmap">
+          <div class="card-icon">🗺️</div>
+          <h3>Progression Roadmap</h3>
+          <p>Week-by-week from Day 1 to endgame. Exact milestones, what to prioritise each stage, and how to avoid the common stuck points.</p>
+          <span class="card-tag tag-beginner">Start Here</span>
+        </div>
+        <div class="card" data-goto="fame-farming">
+          <div class="card-icon">⭐</div>
+          <h3>Fame Farming Guide</h3>
+          <p>The fastest route from T3 to T8. Best methods at every tier, fame/hour estimates, and how to stack every bonus.</p>
+          <span class="card-tag tag-beginner">All Tiers</span>
+        </div>
+        <div class="card" data-goto="silver-guide">
+          <div class="card-icon">🪙</div>
+          <h3>Silver Making Guide</h3>
+          <p>From broke to rich — best money methods organised by your current silver amount so you always know your next move.</p>
+          <span class="card-tag tag-intermediate">All Stages</span>
+        </div>
+        <div class="card" data-goto="island-guide">
+          <div class="card-icon">🏝️</div>
+          <h3>Island &amp; Mount Farming</h3>
+          <p>Build a profitable private island, breed horses and oxen, and sell mounts for consistent passive income.</p>
+          <span class="card-tag tag-intermediate">Passive Income</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>📚 Encyclopedia &amp; Meta Reference</h3>
+      <div class="cards-grid">
+        <div class="card" data-goto="weapons-encyclopedia">
+          <div class="card-icon">⚔️</div>
+          <h3>All Weapons</h3>
+          <p>All 14 weapon lines with every named weapon — key abilities, ratings, meta picks, and pro tips for each.</p>
+          <span class="card-tag tag-all">84 Weapons</span>
+        </div>
+        <div class="card" data-goto="armor-encyclopedia">
+          <div class="card-icon">🛡️</div>
+          <h3>All Armor</h3>
+          <p>Every helmet, chest, and boot piece across cloth, leather, and plate — active abilities and passives explained.</p>
+          <span class="card-tag tag-all">27 Pieces</span>
+        </div>
+        <div class="card" data-goto="meta-builds">
+          <div class="card-icon">🏆</div>
+          <h3>Meta Builds</h3>
+          <p>11 fully detailed meta builds with exact loadouts, step-by-step rotations, counters, and reward estimates.</p>
+          <span class="card-tag tag-advanced">All Roles</span>
+        </div>
+        <div class="card" data-goto="content-rewards">
+          <div class="card-icon">💎</div>
+          <h3>Content Rewards</h3>
+          <p>Silver/hour, fame/hour, risk ratings, and full loot tables for every activity in the game.</p>
+          <span class="card-tag tag-all">15 Activities</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-block tip">
+      <div class="info-title">💡 Tip for New Players</div>
+      <p>Don't rush. Albion Online rewards patience and learning the economy. In your first week, focus on the tutorial, unlock T4 tools on the Destiny Board, and explore Starter City markets before venturing into dangerous zones.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>🗺️ Key Features at a Glance</h3>
+      <div class="two-col">
+        <div>
+          <div class="highlight"><strong>⚔️ Classless System</strong> — Your gear IS your class. Swap playstyle instantly.</div>
+          <div class="highlight"><strong>📦 Player Economy</strong> — 100% player-crafted gear. No vendor gear at endgame.</div>
+          <div class="highlight"><strong>🌍 Cross-Platform</strong> — PC, Mac, Android, iOS all share the same servers.</div>
+          <div class="highlight"><strong>🏰 Territory Wars</strong> — Guilds fight over land, buildings, and resources.</div>
+        </div>
+        <div>
+          <div class="highlight"><strong>🌱 Free to Play</strong> — F2P with optional Premium subscription for bonuses.</div>
+          <div class="highlight"><strong>💀 Full Loot PvP</strong> — Die in red/black zones and lose your gear.</div>
+          <div class="highlight"><strong>🗡️ Open World</strong> — Explore biomes, dungeons, roads, and Avalonian content.</div>
+          <div class="highlight"><strong>🤝 Social Focus</strong> — Designed around guilds, groups, and community trade.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ GETTING STARTED -->
+  <section class="section" id="getting-started">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Getting Started</div>
+      <h2><span class="icon" style="background:rgba(74,156,110,0.2)">🌱</span> Getting Started</h2>
+      <p>Everything you need to know to go from zero to your first real gear in Albion Online.</p>
+    </div>
+
+    <div class="quick-nav">
+      <a href="#gs-account">Account</a>
+      <a href="#gs-tutorial">Tutorial Island</a>
+      <a href="#gs-city">Starter City</a>
+      <a href="#gs-premium">Premium</a>
+      <a href="#gs-goals">Early Goals</a>
+    </div>
+
+    <div class="content-section" id="gs-account">
+      <h3>📋 Creating Your Account</h3>
+      <ul>
+        <li>Download the launcher from <strong>albiononline.com</strong> — available on PC, Mac, Android, and iOS.</li>
+        <li>Create a free account. No credit card required to start.</li>
+        <li>Choose a <strong>unique character name</strong> — this cannot be changed without a paid name change token.</li>
+        <li>Select a starting appearance. Cosmetics are purely visual and don't affect gameplay.</li>
+      </ul>
+      <div class="info-block tip">
+        <div class="info-title">💡 Premium Note</div>
+        <p>The game is free, but <strong>Premium status</strong> (bought with real money or in-game Gold) provides 50% more fame, faster crafting, and increased resource yields. It's worth getting once you understand the game, but not required to start.</p>
+      </div>
+    </div>
+
+    <div class="content-section" id="gs-tutorial">
+      <h3>🏝️ Tutorial Island — Beginner's Isle</h3>
+      <p>Your first destination is Beginner's Isle, a safe zone that teaches you the fundamentals.</p>
+
+      <ul class="step-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Complete all Tutorial Quests</h4>
+            <p>The tutorial covers gathering stone/wood, killing mobs, crafting your first gear, and using a crafting station. Don't skip these — they reward silver and gear.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Learn Basic Controls</h4>
+            <p>Left-click to move, right-click to interact, hotkeys 1-4 for skills. Auto-attack is activated by clicking an enemy. Get comfortable with kiting.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Open the Destiny Board</h4>
+            <p>Press <strong>K</strong> to open your Destiny Board. This is your progression map. Understand how Specialization Levels and Learning Points work.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Collect Your Starter Pack Reward</h4>
+            <p>After completing the tutorial, you receive a starter gear set and some silver to help you in the first Starter City.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h4>Exit to a Starter City</h4>
+            <p>You'll be transported to one of the five Starter Cities: Thetford, Fort Sterling, Lymhurst, Bridgewatch, or Martlock. Each has its own biome and resource focus.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="content-section" id="gs-city">
+      <h3>🏙️ Starter Cities</h3>
+      <p>Each Starter City is a Royal City — safe from PvP. They have markets, crafting stations, banks, and access to surrounding zones.</p>
+
+      <table class="tier-table">
+        <thead>
+          <tr><th>City</th><th>Biome</th><th>Primary Resources</th><th>Specialty</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>🌲 <strong>Lymhurst</strong></td><td>Forest</td><td>Logs, Fiber</td><td>Cloth &amp; Leather armor</td></tr>
+          <tr><td>🗻 <strong>Fort Sterling</strong></td><td>Highlands</td><td>Stone, Ore</td><td>Plate armor, Heavy weapons</td></tr>
+          <tr><td>🏜️ <strong>Bridgewatch</strong></td><td>Steppe</td><td>Hide, Ore</td><td>Crossbows, Mail armor</td></tr>
+          <tr><td>🌊 <strong>Thetford</strong></td><td>Swamp</td><td>Fiber, Hide</td><td>Staves, Robes</td></tr>
+          <tr><td>❄️ <strong>Martlock</strong></td><td>Mountain</td><td>Stone, Logs</td><td>Axes, Off-hands</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-block">
+        <div class="info-title">📌 Which City to Pick?</div>
+        <p>For beginners, <strong>Lymhurst</strong> and <strong>Bridgewatch</strong> are popular due to proximity to good early zones. However, all cities offer the same content — pick based on the playstyle you want to try first.</p>
+      </div>
+    </div>
+
+    <div class="content-section" id="gs-premium">
+      <h3>⭐ Free vs Premium</h3>
+      <div class="two-col">
+        <div>
+          <h4>Free Account</h4>
+          <ul>
+            <li>Full access to all game content</li>
+            <li>Can gather, craft, fight, and trade</li>
+            <li>Normal fame and yield rates</li>
+            <li>Cannot use Personal Island (need Premium for island)</li>
+            <li>Slower progression on Destiny Board</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Premium Account</h4>
+          <ul>
+            <li>+50% combat and gathering fame</li>
+            <li>+50% crafting fame and Focus points daily</li>
+            <li>Access to Personal Island</li>
+            <li>Better crafting quality chances</li>
+            <li>Can be bought with in-game Gold (from the market)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="info-block tip">
+        <div class="info-title">💡 Getting Premium Without Paying</div>
+        <p>You can buy <strong>Gold</strong> from the in-game market using Silver. Once you're earning consistent silver (typically 500k+/day), you can sustain Premium entirely for free by converting Silver to Gold.</p>
+      </div>
+    </div>
+
+    <div class="content-section" id="gs-goals">
+      <h3>🎯 Early Game Goals (First Week)</h3>
+      <ul>
+        <li>Complete the tutorial and Adventurer's Challenge daily tasks</li>
+        <li>Unlock <strong>T3 tools and weapons</strong> on the Destiny Board</li>
+        <li>Gather resources in blue/yellow zones around your Starter City</li>
+        <li>Craft and sell items on the local market</li>
+        <li>Aim for <strong>T4 gear</strong> — this is when the real game begins</li>
+        <li>Learn which zones are safe (blue/yellow) vs dangerous (red/black)</li>
+        <li>Join a <strong>beginner-friendly guild</strong> — guilds massively accelerate learning</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================ DESTINY BOARD -->
+  <section class="section" id="destiny-board">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Destiny Board</div>
+      <h2><span class="icon" style="background:rgba(201,168,76,0.15)">🌟</span> The Destiny Board</h2>
+      <p>Albion's classless progression system — unlock everything by using it, not by leveling a fixed class.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>📖 How It Works</h3>
+      <p>The Destiny Board (press <strong>K</strong>) is a massive web of interconnected nodes representing every skill, activity, and equipment type in the game. You unlock nodes by earning <strong>Fame</strong> — XP earned by performing the activity associated with that node.</p>
+      <p>There are no arbitrary level gates. Want to use a Tier 8 weapon? Unlock the T8 node by using T4, T5, T6, and T7 versions of that weapon category. Every step of progression is earned through actual gameplay.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>🔑 Key Concepts</h3>
+      <div class="two-col">
+        <div>
+          <h4>Specialization Levels (Mastery)</h4>
+          <p>Beyond unlocking a node, you can <strong>Specialize</strong> deeper into it. Higher specialization = bonus damage, gather yield, craft quality, etc. Max specialization is level 100.</p>
+          <h4>Learning Points</h4>
+          <p>A daily resource (more with Premium) that lets you instantly purchase progress on any Destiny Board node. Use them wisely on your primary focus.</p>
+        </div>
+        <div>
+          <h4>Fame Multipliers</h4>
+          <p>Fame earned scales with content tier. Killing T5 mobs gives more fame than T3 mobs. Use gear one tier above your current unlock for best efficiency.</p>
+          <h4>Respec Costs</h4>
+          <p>Unlike most MMOs, you are never locked in. You can learn everything. There's no penalty for switching — just time. All nodes persist, so breadth is always possible.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>🗺️ Destiny Board Categories</h3>
+      <div class="destiny-grid">
+        <div class="destiny-node available"><div class="dn-icon">⚔️</div><div class="dn-name">Melee Combat</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🏹</div><div class="dn-name">Ranged Combat</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🪄</div><div class="dn-name">Magic Combat</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🛡️</div><div class="dn-name">Tanking</div></div>
+        <div class="destiny-node available"><div class="dn-icon">💚</div><div class="dn-name">Healing</div></div>
+        <div class="destiny-node available"><div class="dn-icon">⛏️</div><div class="dn-name">Mining</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🌲</div><div class="dn-name">Logging</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🌿</div><div class="dn-name">Harvesting</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🐄</div><div class="dn-name">Skinning</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🪨</div><div class="dn-name">Quarrying</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🔨</div><div class="dn-name">Blacksmithing</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🧵</div><div class="dn-name">Tailoring</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🦌</div><div class="dn-name">Leatherworking</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🍳</div><div class="dn-name">Cooking</div></div>
+        <div class="destiny-node available"><div class="dn-icon">⚗️</div><div class="dn-name">Alchemy</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🐴</div><div class="dn-name">Riding</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🏡</div><div class="dn-name">Housing</div></div>
+        <div class="destiny-node available"><div class="dn-icon">🌾</div><div class="dn-name">Farming</div></div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>📊 Tier Unlock Requirements (Weapon Example)</h3>
+      <table class="tier-table">
+        <thead>
+          <tr><th>Tier</th><th>Fame Required</th><th>Approx. Time</th><th>Tip</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="tier-dot t2"></span>T2</td><td>500</td><td>~10 min</td><td>Kill basic mobs, auto-unlocked from tutorial</td></tr>
+          <tr><td><span class="tier-dot t3"></span>T3</td><td>1,500</td><td>~30 min</td><td>Blue zone mobs around Starter Cities</td></tr>
+          <tr><td><span class="tier-dot t4"></span>T4</td><td>9,000</td><td>~2 hours</td><td>Yellow/Red zone dungeons accelerate this greatly</td></tr>
+          <tr><td><span class="tier-dot t5"></span>T5</td><td>22,500</td><td>~1–2 days</td><td>Join group dungeons or expeditions</td></tr>
+          <tr><td><span class="tier-dot t6"></span>T6</td><td>90,000</td><td>~3–5 days</td><td>Randomized solo/group dungeons in yellow/red zones</td></tr>
+          <tr><td><span class="tier-dot t7"></span>T7</td><td>270,000</td><td>~1–2 weeks</td><td>Consistent black zone farming + Premium recommended</td></tr>
+          <tr><td><span class="tier-dot t8"></span>T8</td><td>4,500,000</td><td>~1–3 months</td><td>Endgame grind — most players use T6/T7 for regular content</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h3>💡 Destiny Board Strategy Tips</h3>
+      <div class="info-block tip">
+        <div class="info-title">Focus Early</div>
+        <p>Pick <strong>one weapon type</strong> and <strong>one armor type</strong> and unlock them to T4 before branching out. Spreading fame across too many nodes early slows all of them down.</p>
+      </div>
+      <div class="info-block">
+        <div class="info-title">Best Use of Learning Points</div>
+        <p>Save Learning Points for nodes that are slow to unlock through gameplay — typically <strong>crafting</strong> and <strong>refining</strong> nodes, which require consuming materials. Don't waste them on combat nodes you can farm quickly.</p>
+      </div>
+      <div class="info-block warn">
+        <div class="info-title">⚠️ Avoid Spreading Thin</div>
+        <p>A common new-player mistake is trying to unlock everything at once. A character specialized in one path at T6 is far more powerful and profitable than a character with T4 in everything.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ GATHERING -->
+  <section class="section" id="gathering">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Gathering</div>
+      <h2><span class="icon" style="background:rgba(74,120,74,0.2)">⛏️</span> Gathering</h2>
+      <p>The foundation of Albion's economy. Everything crafted in the game starts as a gathered resource.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>🌍 The Five Resource Types</h3>
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon">🪨</div>
+          <h3>Ore (Mining)</h3>
+          <p>Found near mountains and rocky terrain. Used to craft metals and plate armor. High demand from blacksmiths.</p>
+          <span class="card-tag tag-all">All Biomes</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌲</div>
+          <h3>Logs (Logging)</h3>
+          <p>Found in forests. Used to craft staffs, bows, crossbows, and furniture. Essential for mage builds.</p>
+          <span class="card-tag tag-all">Forest / Highland</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌿</div>
+          <h3>Fiber (Harvesting)</h3>
+          <p>Plants and cotton found in fields. Used to craft cloth armor and bags. Useful for mage and healer builds.</p>
+          <span class="card-tag tag-all">Swamp / Steppe</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🐄</div>
+          <h3>Hide (Skinning)</h3>
+          <p>Dropped by killing animals (deer, boars, wolves). Used for leather armor. Most mobile gathering type.</p>
+          <span class="card-tag tag-all">All Biomes</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🪨</div>
+          <h3>Stone (Quarrying)</h3>
+          <p>Found near cliffs and rocky ground. Used for building, refinement, and territory structures.</p>
+          <span class="card-tag tag-all">Highland / Mountain</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>🔢 Resource Tiers</h3>
+      <p>All resources exist in <strong>Tiers 1–8</strong>. Higher-tier resources require higher-tier tools and gathering skill on the Destiny Board. Each tier also has <strong>Enchantment Levels (0.1 to 0.4)</strong> denoting increased quality and value.</p>
+      <table class="tier-table">
+        <thead>
+          <tr><th>Tier</th><th>Resource Names (Ore Example)</th><th>Enchantments</th><th>Zone Minimum</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="tier-dot t1"></span>T1</td><td>Rough Stone Ore</td><td>None</td><td>Blue (Starter)</td></tr>
+          <tr><td><span class="tier-dot t2"></span>T2</td><td>Limestone</td><td>None</td><td>Blue</td></tr>
+          <tr><td><span class="tier-dot t3"></span>T3</td><td>Iron Ore</td><td>None</td><td>Blue / Yellow</td></tr>
+          <tr><td><span class="tier-dot t4"></span>T4</td><td>Titanium Ore</td><td>.1 (green), .2 (blue)</td><td>Yellow</td></tr>
+          <tr><td><span class="tier-dot t5"></span>T5</td><td>Runite Ore</td><td>.1, .2, .3 (purple)</td><td>Yellow / Red</td></tr>
+          <tr><td><span class="tier-dot t6"></span>T6</td><td>Meteorite</td><td>.1, .2, .3, .4 (gold)</td><td>Red / Black</td></tr>
+          <tr><td><span class="tier-dot t7"></span>T7</td><td>Adamantium</td><td>.1–.4</td><td>Black / Roads</td></tr>
+          <tr><td><span class="tier-dot t8"></span>T8</td><td>Nightstone</td><td>.1–.4</td><td>Black / Roads</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h3>🗺️ Where to Gather</h3>
+      <div class="info-block tip">
+        <div class="info-title">💡 Zone Safety vs Reward</div>
+        <p>Blue zones are safe but resource-depleted. Yellow zones have PvP flags but better resources. Red and Black zones have full-loot PvP and the best resources. Match your gear value to your zone risk.</p>
+      </div>
+      <ul>
+        <li><strong>Blue Zones</strong> — Safe, T1–T4 resources, no PvP. Good for early gathering.</li>
+        <li><strong>Yellow Zones</strong> — Flagged PvP (opt-in), T3–T6 resources. Best starting solo gathering area.</li>
+        <li><strong>Red Zones</strong> — Open PvP, T5–T7 resources. High risk, high reward. Use cheap gathering gear.</li>
+        <li><strong>Black Zones</strong> — Full-loot PvP, T6–T8 resources. Maximum density and value. Guild required for safety.</li>
+        <li><strong>Roads of Avalon</strong> — Instance zones, T6–T8, moderate player danger. Great for solo gatherers.</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h3>🎽 Gathering Builds</h3>
+      <p>Use <strong>Gatherer's armor</strong> — the set bonus gives you extra carrying capacity, reduced weight, and a gathering speed bonus. Never gather in expensive fighting gear in dangerous zones.</p>
+      <div class="two-col">
+        <div>
+          <h4>Budget Gatherer (T4–T5)</h4>
+          <ul>
+            <li>T4 Gatherer's Helmet</li>
+            <li>T4 Gatherer's Jacket</li>
+            <li>T4 Gatherer's Workboots</li>
+            <li>T4 Ox or Horse for carrying</li>
+            <li>T4/T5 Tool for the resource type</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Advanced Gatherer (T5–T7)</h4>
+          <ul>
+            <li>T6 Gatherer's Armor (full set)</li>
+            <li>T6 Ox (high carry weight)</li>
+            <li>T6–T7 Tool</li>
+            <li>Pork Omelette or other gathering food</li>
+            <li>Mount with "Flee" ability for escape</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-block warn">
+      <div class="info-title">⚠️ Don't Over-Stack</div>
+      <p>In red/black zones, don't fill your inventory completely. Always keep enough movement speed to escape gankers. A half-full inventory is better than dying and losing everything.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ CRAFTING -->
+  <section class="section" id="crafting">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Crafting</div>
+      <h2><span class="icon" style="background:rgba(130,80,50,0.2)">🔨</span> Crafting</h2>
+      <p>Everything in Albion is player-crafted. Master the crafting system to supply the economy and profit.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>⚙️ The Crafting Process</h3>
+      <ul class="step-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Gather or Buy Raw Resources</h4>
+            <p>Farm resources in the open world, or buy them on the player market. Higher tiers require more materials.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Refine Raw Resources into Refined Materials</h4>
+            <p>Use the Refinery building in a city. Ore → Metal Bars, Logs → Planks, Fiber → Cloth, etc. Refining also gives Destiny Board fame.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Craft at the Appropriate Station</h4>
+            <p>Forge for metal items, Alchemist's Lab for potions, Butcher for food, Tailor for cloth, etc. Each station is found in cities and player islands.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Use Focus Points for Better Quality</h4>
+            <p>Spending Focus (a daily-regenerating resource, more with Premium) on crafts increases the chance of crafting higher-quality items (Normal → Outstanding → Masterpiece).</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h3>🏭 Crafting Stations</h3>
+      <table class="tier-table">
+        <thead>
+          <tr><th>Station</th><th>Products</th><th>Location</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>⚒️ <strong>Forge</strong></td><td>Swords, Axes, Hammers, Crossbows, Plate Armor, Helmets, Boots</td><td>All Cities</td></tr>
+          <tr><td>🪄 <strong>Mage's Tower</strong></td><td>Staffs, Wands, Tomes, Robes, Cowls</td><td>All Cities</td></tr>
+          <tr><td>🎯 <strong>Huntsman's Lodge</strong></td><td>Bows, Spears, Leather Armor, Sandals</td><td>All Cities</td></tr>
+          <tr><td>🔪 <strong>Toolmaker</strong></td><td>Gathering Tools, Bags, Capes</td><td>All Cities</td></tr>
+          <tr><td>🍳 <strong>Cook</strong></td><td>Food, Potions (basic)</td><td>All Cities</td></tr>
+          <tr><td>⚗️ <strong>Alchemist's Lab</strong></td><td>Potions, Flasks</td><td>All Cities</td></tr>
+          <tr><td>🌾 <strong>Mill</strong></td><td>Bread, Grain products</td><td>All Cities</td></tr>
+          <tr><td>🐄 <strong>Butcher</strong></td><td>Meat-based food (high stats)</td><td>All Cities</td></tr>
+          <tr><td>♻️ <strong>Refinery</strong></td><td>Metal Bars, Planks, Cloth, Leather, Blocks</td><td>All Cities</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h3>🏗️ City Specializations &amp; Return Rate</h3>
+      <p>Each Royal City has <strong>bonus crafting return rates</strong> for specific item types — up to <strong>+47% resource return</strong> if you're the city's crafter. This means you get back a percentage of materials used when crafting there.</p>
+      <div class="info-block">
+        <div class="info-title">📊 City Crafting Bonuses</div>
+        <p>For example: Lymhurst has bonuses for cloth crafting (robes, cowls), while Fort Sterling bonuses plate armor. Craft in the correct city for your specialization to maximize returns and profits.</p>
+      </div>
+
+      <table class="tier-table">
+        <thead>
+          <tr><th>City</th><th>Best Crafting Bonus</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>🌲 Lymhurst</td><td>Cloth armor, Nature/Holy staffs</td></tr>
+          <tr><td>🗻 Fort Sterling</td><td>Plate armor, Hammers, Crossbows</td></tr>
+          <tr><td>🏜️ Bridgewatch</td><td>Leather armor, Spears, Daggers</td></tr>
+          <tr><td>🌊 Thetford</td><td>Cloth armor (mage), Cursed/Fire staffs</td></tr>
+          <tr><td>❄️ Martlock</td><td>Plate armor, Axes, Off-hands</td></tr>
+          <tr><td>⚡ Caerleon</td><td>All categories (Black Zone city, highest return)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h3>💎 Item Quality</h3>
+      <p>Every crafted item has a quality tier that affects its stats. Higher quality = more valuable on the market.</p>
+      <div class="loot-row"><div class="loot-icon">⚪</div><div class="loot-name">Normal</div><div class="loot-drop">100% base stats</div><span class="loot-rarity rarity-common">Normal</span></div>
+      <div class="loot-row"><div class="loot-icon">🟢</div><div class="loot-name">Good</div><div class="loot-drop">~103% stats</div><span class="loot-rarity rarity-uncommon">Good</span></div>
+      <div class="loot-row"><div class="loot-icon">🔵</div><div class="loot-name">Outstanding</div><div class="loot-drop">~106% stats</div><span class="loot-rarity rarity-rare">Outstanding</span></div>
+      <div class="loot-row"><div class="loot-icon">🟣</div><div class="loot-name">Excellent</div><div class="loot-drop">~109% stats</div><span class="loot-rarity rarity-epic">Excellent</span></div>
+      <div class="loot-row"><div class="loot-icon">🟡</div><div class="loot-name">Masterpiece</div><div class="loot-drop">~113% stats, premium market value</div><span class="loot-rarity rarity-legendary">Masterpiece</span></div>
+    </div>
+
+    <div class="info-block tip">
+      <div class="info-title">💡 Crafting Profit Tip</div>
+      <p>The most consistent profit comes from being <strong>specialized</strong> at T6+ crafting in a city with a bonus for your item type, using Focus Points, and selling just below the market average. Don't try to flip — craft at volume.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ COMBAT & SKILLS -->
+  <section class="section" id="combat">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Combat &amp; Skills</div>
+      <h2><span class="icon" style="background:rgba(193,80,80,0.2)">⚔️</span> Combat &amp; Skills</h2>
+      <p>Albion's "you are what you wear" system — every gear slot grants abilities, and builds define your role.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>🧩 The Loadout System</h3>
+      <p>Your character has <strong>6 gear slots</strong>, each granting active or passive abilities. This creates enormous build diversity.</p>
+      <table class="tier-table">
+        <thead>
+          <tr><th>Slot</th><th>Type</th><th>Skills Provided</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>🗡️ <strong>Main Hand</strong></td><td>Weapon</td><td>Skill 1 (auto), Skill 2, Skill 3 (active abilities)</td></tr>
+          <tr><td>🛡️ <strong>Off Hand</strong></td><td>Shield / Focus</td><td>Skill 4 (extra ability)</td></tr>
+          <tr><td>⛑️ <strong>Helmet</strong></td><td>Head Armor</td><td>Skill 5 (utility/passive)</td></tr>
+          <tr><td>👕 <strong>Chest</strong></td><td>Body Armor</td><td>Skill 6 (passive or active)</td></tr>
+          <tr><td>👟 <strong>Boots</strong></td><td>Foot Armor</td><td>Skill 7 (movement/utility)</td></tr>
+          <tr><td>🍗 <strong>Food</strong></td><td>Consumable</td><td>Stat buff (HP, damage, gather)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h3>⚔️ Weapon Categories</h3>
+      <div class="class-compare">
+        <div class="class-card">
+          <div class="cc-icon">🗡️</div>
+          <div class="cc-name">Swords</div>
+          <div class="cc-role">Melee DPS</div>
+          <div class="cc-bar-label">Damage</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="75%" style="width:0"></div></div>
+          <div class="cc-bar-label">Mobility</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="60%" style="width:0"></div></div>
+        </div>
+        <div class="class-card">
+          <div class="cc-icon">🪓</div>
+          <div class="cc-name">Axes</div>
+          <div class="cc-role">Melee DPS / CC</div>
+          <div class="cc-bar-label">Damage</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="80%" style="width:0"></div></div>
+          <div class="cc-bar-label">CC</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="65%" style="width:0"></div></div>
+        </div>
+        <div class="class-card">
+          <div class="cc-icon">🔨</div>
+          <div class="cc-name">Hammers</div>
+          <div class="cc-role">Tank / CC</div>
+          <div class="cc-bar-label">CC</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="90%" style="width:0"></div></div>
+          <div class="cc-bar-label">Tankiness</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="75%" style="width:0"></div></div>
+        </div>
+        <div class="class-card">
+          <div class="cc-icon">🏹</div>
+          <div class="cc-name">Bows</div>
+          <div class="cc-role">Ranged DPS</div>
+          <div class="cc-bar-label">Range</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="85%" style="width:0"></div></div>
+          <div class="cc-bar-label">Damage</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="70%" style="width:0"></div></div>
+        </div>
+        <div class="class-card">
+          <div class="cc-icon">🔫</div>
+          <div class="cc-name">Crossbows</div>
+          <div class="cc-role">Ranged AoE</div>
+          <div class="cc-bar-label">AoE</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="88%" style="width:0"></div></div>
+          <div class="cc-bar-label">Damage</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="72%" style="width:0"></div></div>
+        </div>
+        <div class="class-card">
+          <div class="cc-icon">🔥</div>
+          <div class="cc-name">Fire Staffs</div>
+          <div class="cc-role">Magic DPS</div>
+          <div class="cc-bar-label">Burst DMG</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="90%" style="width:0"></div></div>
+          <div class="cc-bar-label">Range</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="70%" style="width:0"></div></div>
+        </div>
+        <div class="class-card">
+          <div class="cc-icon">💚</div>
+          <div class="cc-name">Holy Staffs</div>
+          <div class="cc-role">Healer</div>
+          <div class="cc-bar-label">Healing</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="95%" style="width:0"></div></div>
+          <div class="cc-bar-label">Support</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="80%" style="width:0"></div></div>
+        </div>
+        <div class="class-card">
+          <div class="cc-icon">🌿</div>
+          <div class="cc-name">Nature Staffs</div>
+          <div class="cc-role">Healer / DoT</div>
+          <div class="cc-bar-label">HoT</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="88%" style="width:0"></div></div>
+          <div class="cc-bar-label">Dmg</div>
+          <div class="progress-bar"><div class="progress-fill" data-width="55%" style="width:0"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>👕 Armor Types</h3>
+      <div class="two-col">
+        <div>
+          <h4>🧣 Cloth / Robe Armor</h4>
+          <p>Highest damage output, lowest defense. Best for pure casters and mages. The chest piece often provides powerful DPS or healing bonuses. Popular: <strong>Mage's Robe, Cleric Robe, Scholar Robe</strong>.</p>
+          <h4>🥋 Leather / Jacket Armor</h4>
+          <p>Balanced damage and survival. Popular for rogues, rangers, and hybrid builds. Good energy regeneration bonuses. Popular: <strong>Hunter Jacket, Assassin's Jacket</strong>.</p>
+        </div>
+        <div>
+          <h4>🛡️ Plate / Armor</h4>
+          <p>Highest defense, reduced damage. Best for tanks and frontline fighters. Offers strong CC and resistance bonuses. Popular: <strong>Soldier Armor, Knight Armor, Guardian Helmet</strong>.</p>
+          <h4>🎭 Mixing Armor</h4>
+          <p>You can freely mix armor types! Many competitive builds use <strong>two different armor types</strong> to get specific skill combinations — e.g., a Plate chest for survivability with Leather boots for mobility.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>🎯 Popular Meta Builds (2024)</h3>
+      <div class="info-block tip">
+        <div class="info-title">💡 Solo PvE Build</div>
+        <p><strong>Weapon:</strong> Great Arcane Staff or Crossbow | <strong>Helmet:</strong> Scholar Cowl | <strong>Chest:</strong> Scholar Robe | <strong>Boots:</strong> Scholar Sandals. This is the classic "Hellgate" and solo dungeon setup — high damage with self-sustain via the robe's regeneration.</p>
+      </div>
+      <div class="info-block">
+        <div class="info-title">⚔️ Small Group PvP Build</div>
+        <p><strong>Weapon:</strong> Cursed Staff or Spear | <strong>Helmet:</strong> Mage Cowl | <strong>Chest:</strong> Assassin's Jacket | <strong>Boots:</strong> Assassin's Shoes. Burst damage, high mobility, and good escape tools for small-scale fights.</p>
+      </div>
+      <div class="info-block warn">
+        <div class="info-title">🛡️ Zerg / Large-Scale PvP</div>
+        <p><strong>Weapon:</strong> Hammer / Shield | <strong>Helmet:</strong> Guardian Helmet | <strong>Chest:</strong> Knight Armor | <strong>Boots:</strong> Knight Boots. Frontline tank/CC. Your job is to lock down enemies for your DPS teammates.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ PvE -->
+  <section class="section" id="pve">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> PvE Content</div>
+      <h2><span class="icon" style="background:rgba(80,120,80,0.2)">👹</span> Open World PvE</h2>
+      <p>From beginner expeditions to elite Hardcore Expeditions — every PvE path in Albion Online.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>🗺️ PvE Content Overview</h3>
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon">🚢</div>
+          <h3>Expeditions</h3>
+          <p>Solo or group instanced dungeons. Completely safe — no PvP. Great for new players to earn fame and silver without risk.</p>
+          <span class="card-tag tag-beginner">Beginner</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏚️</div>
+          <h3>Random Dungeons</h3>
+          <p>Open-world portals in yellow, red, and black zones. Solo or group. Risk of PvP inside but great fame and loot.</p>
+          <span class="card-tag tag-intermediate">Intermediate</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔥</div>
+          <h3>Hellgates</h3>
+          <p>2v2 or 5v5 mixed PvE/PvP portals. Fight mobs AND other players. High skill ceiling, great reward.</p>
+          <span class="card-tag tag-advanced">Advanced</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏰</div>
+          <h3>Static Dungeons</h3>
+          <p>Fixed dungeon locations in the world. Harder than random dungeons, better loot. Require coordinated groups.</p>
+          <span class="card-tag tag-intermediate">Intermediate</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🦁</div>
+          <h3>World Bosses</h3>
+          <p>Powerful elite mobs in open-world zones. Require groups to kill, but drop valuable resources and boss loot.</p>
+          <span class="card-tag tag-intermediate">Intermediate</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">💀</div>
+          <h3>Hardcore Expeditions (HCE)</h3>
+          <p>The hardest PvE content. 5-player group content with extreme difficulty and top-tier rewards. Endgame.</p>
+          <span class="card-tag tag-advanced">Advanced</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>🚢 Expeditions Guide</h3>
+      <p>Find the <strong>Expedition Master NPC</strong> in any city. Purchase entrance scrolls or use your daily free run. Great for learning your build safely.</p>
+      <table class="tier-table">
+        <thead><tr><th>Type</th><th>Players</th><th>Fame/Run (approx)</th><th>Silver/Run</th></tr></thead>
+        <tbody>
+          <tr><td>Solo Expedition T4</td><td>1</td><td>~8,000</td><td>~20,000</td></tr>
+          <tr><td>Solo Expedition T5</td><td>1</td><td>~20,000</td><td>~40,000</td></tr>
+          <tr><td>Group Expedition T5</td><td>5</td><td>~40,000</td><td>~80,000</td></tr>
+          <tr><td>Group Expedition T6</td><td>5</td><td>~90,000</td><td>~150,000</td></tr>
+          <tr><td>HCE Floor 1-10</td><td>5</td><td>~500,000+</td><td>~1M+</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h3>🏚️ Random Dungeons Tips</h3>
+      <ul>
+        <li>Look for <strong>glowing portals</strong> in open-world zones. They appear on your minimap.</li>
+        <li><strong>Solo dungeons</strong> (1 entrance) are generally safer — groups can't follow you in.</li>
+        <li><strong>Group dungeons</strong> (3 entrances) are more dangerous but yield much better loot.</li>
+        <li>In red/black zones, always watch the map for incoming players while dungeon farming.</li>
+        <li>The <strong>last boss</strong> chest has the best loot. Don't quit early unless threatened.</li>
+        <li>Use the <strong>Scholar Robe</strong> passive for sustained energy in long dungeon runs.</li>
+      </ul>
+    </div>
+
+    <div class="info-block danger">
+      <div class="info-title">💀 Hellgate Warning</div>
+      <p>Hellgates are <strong>mixed PvE/PvP</strong>. You enter a dungeon where another group enters from the other side. You must fight both monsters AND the opposing team. Don't enter without knowing your build and being comfortable with PvP.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ PvP -->
+  <section class="section" id="pvp">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> PvP &amp; Open World</div>
+      <h2><span class="icon" style="background:rgba(193,80,80,0.2)">🗡️</span> PvP &amp; Open World</h2>
+      <p>Full-loot PvP is what Albion Online is known for. Understanding zones is critical to survival.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>🌍 Zone Danger Levels</h3>
+      <div class="zone-map">
+        <div class="zone-cell wm-royal">Royal City</div>
+        <div class="zone-cell wm-blue">Blue Zone</div>
+        <div class="zone-cell wm-blue">Blue Zone</div>
+        <div class="zone-cell wm-yellow">Yellow Zone</div>
+        <div class="zone-cell wm-yellow">Yellow Zone</div>
+        <div class="zone-cell wm-red">Red Zone</div>
+        <div class="zone-cell wm-black">Black Zone</div>
+        <div class="zone-cell wm-blue">Blue Zone</div>
+        <div class="zone-cell wm-blue">Blue Zone</div>
+        <div class="zone-cell wm-yellow">Yellow Zone</div>
+        <div class="zone-cell wm-red">Red Zone</div>
+        <div class="zone-cell wm-red">Red Zone</div>
+        <div class="zone-cell wm-black">Black Zone</div>
+        <div class="zone-cell wm-black">Black Zone</div>
+        <div class="zone-cell wm-empty"></div>
+        <div class="zone-cell wm-yellow">Yellow Zone</div>
+        <div class="zone-cell wm-yellow">Yellow Zone</div>
+        <div class="zone-cell wm-red">Red Zone</div>
+        <div class="zone-cell wm-black">Black Zone</div>
+        <div class="zone-cell wm-roads">Roads</div>
+        <div class="zone-cell wm-roads">Roads</div>
+      </div>
+      <table class="tier-table">
+        <thead><tr><th>Zone Color</th><th>PvP Rules</th><th>Loot on Death</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td style="color:#5a8fd0">🔵 Blue</td><td>No PvP (fully safe)</td><td>Nothing lost</td><td>Beginners, T1–T4 gathering</td></tr>
+          <tr><td style="color:#d4b84a">🟡 Yellow</td><td>Flagging required (opt-in PvP)</td><td>Some items dropped</td><td>Intermediate players, safer farming</td></tr>
+          <tr><td style="color:#e07070">🔴 Red</td><td>Open PvP (anyone can attack)</td><td>Most equipped items dropped</td><td>Risk-reward gathering, group content</td></tr>
+          <tr><td style="color:#9070d0">⚫ Black</td><td>Full-loot PvP</td><td>Everything dropped</td><td>Guilds, advanced players, best rewards</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h3>⚔️ Flagging System (Yellow Zones)</h3>
+      <p>In yellow zones, you are safe by default. To attack others, you must <strong>flag as hostile</strong> (click the skull icon). Flagged players are visible to everyone. Killing an innocent player gives you <strong>Infamy</strong> which can be reduced over time or by dying.</p>
+      <div class="info-block warn">
+        <div class="info-title">⚠️ Infamy &amp; Karma</div>
+        <p>In yellow zones, attacking or killing unflagged players builds negative Karma. At high negative Karma, guards will attack you in safe zones. This is reset by dying or waiting over time.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>🛡️ Surviving in Red/Black Zones</h3>
+      <ul>
+        <li><strong>Never bring more than you can afford to lose.</strong> The golden rule of Albion.</li>
+        <li>Use a <strong>cheap escape build</strong> for gathering — Invisibility potions and mounts with "Flee" ability.</li>
+        <li>Watch the minimap constantly for name tags.</li>
+        <li>Travel with a group when possible in black zones.</li>
+        <li>Know your escape route before entering — check the map for zone exits.</li>
+        <li>Use <strong>Rations food</strong> to boost your mount's movement speed temporarily.</li>
+        <li>If you see a gank group, <strong>stop and log off</strong> or use a portal to escape.</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h3>🗡️ PvP Roles</h3>
+      <div class="two-col">
+        <div>
+          <h4>Ganker / Assassin</h4>
+          <p>Solo or small group predator. Uses high burst damage and speed to catch unaware gatherers or travelers. Typical build: Claws + Light Armor + Stalker Hood.</p>
+          <h4>Ganker Counter (Anti-Gank)</h4>
+          <p>Protect gatherers or travel in a group. Watch portals and flag if gankers approach.</p>
+        </div>
+        <div>
+          <h4>Zerg Fighter</h4>
+          <p>Large-group combat. Focus on AoE CC (hammers, crossbows). Follow your raid leader's calls.</p>
+          <h4>Small Group Roamer</h4>
+          <p>5–10 player group looking for fights in red/black zones. Requires good team coordination and comm tools.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ ECONOMY -->
+  <section class="section" id="economy">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Economy</div>
+      <h2><span class="icon" style="background:rgba(201,168,50,0.2)">💰</span> Economy &amp; Trading</h2>
+      <p>Albion's player-driven economy is one of the deepest in any MMO. Master it and you'll never struggle for silver.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>💱 Silver vs Gold</h3>
+      <div class="two-col">
+        <div>
+          <h4>Silver</h4>
+          <p>The main in-game currency. Earned by selling items, completing content, and trading. Used for everything — gear, market fees, buildings, horses.</p>
+        </div>
+        <div>
+          <h4>Gold</h4>
+          <p>The premium currency, bought with real money. Can also be bought from other players with Silver on the Gold Market. Used for Premium, cosmetics, name changes.</p>
+        </div>
+      </div>
+      <div class="info-block tip">
+        <div class="info-title">💡 Gold ↔ Silver Exchange</div>
+        <p>The Gold/Silver exchange rate fluctuates based on supply and demand. When Gold is cheap, buy it to get Premium cheaply. You can sustain Premium entirely through Silver once you're earning ~500k/day.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>📊 Ways to Make Silver</h3>
+      <div class="econ-chart">
+        <div class="econ-row">
+          <span class="econ-label">Gathering (T6-T8)</span>
+          <div class="econ-fill" style="width:85%;background:linear-gradient(90deg,#4a7fc1,#6a9fd8)">Very High</div>
+        </div>
+        <div class="econ-row">
+          <span class="econ-label">Crafting + Focus</span>
+          <div class="econ-fill" style="width:75%;background:linear-gradient(90deg,#4a9c6e,#6ad090)">High</div>
+        </div>
+        <div class="econ-row">
+          <span class="econ-label">Dungeon Farming</span>
+          <div class="econ-fill" style="width:70%;background:linear-gradient(90deg,#c9a84c,#e8c96a)">High</div>
+        </div>
+        <div class="econ-row">
+          <span class="econ-label">Transport Trade</span>
+          <div class="econ-fill" style="width:65%;background:linear-gradient(90deg,#c06040,#e08060)">Good</div>
+        </div>
+        <div class="econ-row">
+          <span class="econ-label">Market Flipping</span>
+          <div class="econ-fill" style="width:60%;background:linear-gradient(90deg,#7a5cbf,#a080e0)">Good</div>
+        </div>
+        <div class="econ-row">
+          <span class="econ-label">Expeditions (T6)</span>
+          <div class="econ-fill" style="width:40%;background:linear-gradient(90deg,#4a9c6e,#6ad090)">Medium</div>
+        </div>
+        <div class="econ-row">
+          <span class="econ-label">Farming / Cooking</span>
+          <div class="econ-fill" style="width:35%;background:linear-gradient(90deg,#7a8050,#a0a870)">Passive</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>🔄 Transport Trade (Arbitrage)</h3>
+      <p>Different cities have different supply and demand. You can buy cheap in one city and sell high in another. This is called <strong>transport trading</strong> and can yield 30–100% profit margins, but requires traveling through dangerous zones.</p>
+      <ul>
+        <li>Use <strong>albiononline2r.com</strong> or community tools to check price differences between cities</li>
+        <li>Use a <strong>Mule/Ox</strong> mount for maximum carry capacity</li>
+        <li>Hire escorts or travel in groups through dangerous zones</li>
+        <li>Focus on items with high value/weight ratio (refined materials, potions)</li>
+      </ul>
+      <div class="info-block warn">
+        <div class="info-title">⚠️ Transport Risk</div>
+        <p>Transport traders are prime gank targets. Carrying millions of silver worth of goods through red/black zones is extremely risky. Always weigh the risk vs the profit margin before committing to a trade run.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>📈 Market Flipping</h3>
+      <p>Buy low, sell high on the player market. This works because:</p>
+      <ul>
+        <li>Players sell resources quickly (often below market rate) to get liquid silver fast</li>
+        <li>Items have different prices in different cities</li>
+        <li>Patch cycles create temporary price spikes when new content releases</li>
+      </ul>
+      <div class="info-block tip">
+        <div class="info-title">💡 Flipping Tip</div>
+        <p>Focus on <strong>refined materials</strong> at T5–T6 level. These have consistent demand and the price gaps between buy and sell orders are predictable. Start with 500k silver capital and flip in the same city before attempting cross-city arbitrage.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ MOUNTS -->
+  <section class="section" id="mounts">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Mounts &amp; Transport</div>
+      <h2><span class="icon" style="background:rgba(130,100,60,0.2)">🐴</span> Mounts &amp; Transport</h2>
+      <p>Mounts are essential for travel, gathering, and combat across Albion's vast world.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>🐴 Mount Types</h3>
+      <table class="tier-table">
+        <thead><tr><th>Mount</th><th>Speed Bonus</th><th>Carry Weight</th><th>Best Use</th><th>How to Get</th></tr></thead>
+        <tbody>
+          <tr><td>🐴 <strong>Horse (T3)</strong></td><td>+60%</td><td>Normal</td><td>Early travel</td><td>Crafted / Market</td></tr>
+          <tr><td>🐴 <strong>Horse (T5)</strong></td><td>+75%</td><td>Normal</td><td>General travel</td><td>Crafted / Market</td></tr>
+          <tr><td>🐮 <strong>Mule/Ox</strong></td><td>+30%</td><td>+650 weight</td><td>Gathering/Trading</td><td>Crafted / Market</td></tr>
+          <tr><td>🦏 <strong>Armored Horse</strong></td><td>+65%</td><td>+100</td><td>Safer travel in PvP zones</td><td>Market</td></tr>
+          <tr><td>🦅 <strong>Swiftclaw</strong></td><td>+85%</td><td>Normal</td><td>Speed escape, combat</td><td>Market (expensive)</td></tr>
+          <tr><td>🐻 <strong>Bear</strong></td><td>+75%</td><td>+200</td><td>Balanced transport</td><td>Crafted (Farming)</td></tr>
+          <tr><td>🐺 <strong>Direwolf</strong></td><td>+80%</td><td>Normal</td><td>PvP roaming</td><td>Market / Season</td></tr>
+          <tr><td>🐲 <strong>Elite Mounts</strong></td><td>+100%+</td><td>Varies</td><td>Endgame prestige</td><td>Season / Events</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h3>💡 Mount Strategy</h3>
+      <div class="info-block tip">
+        <div class="info-title">Gathering Setup</div>
+        <p>Always use an <strong>Ox</strong> when gathering in safe zones — the extra carry weight dramatically increases efficiency. In dangerous zones, switch to a fast horse with a "Flee" or mobility ability to escape gankers.</p>
+      </div>
+      <div class="info-block">
+        <div class="info-title">Transport Trading Setup</div>
+        <p>Use an Ox with full carry capacity. Consider hiring a guard escort from your guild if carrying 5M+ silver worth of goods through red/black zones.</p>
+      </div>
+      <div class="info-block warn">
+        <div class="info-title">⚠️ Mount Crafting</div>
+        <p>Breeding mounts on your island is much cheaper than buying from the market — but requires time and Premium. Start with horses and oxen. Exotic mounts (bears, wolves) require specific rare materials.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>🚀 Riding Skill</h3>
+      <p>Mount speed is affected by your <strong>Riding Skill</strong> on the Destiny Board. Unlock and specialize in Riding to unlock higher-tier mounts and receive bonus speed/carry weight at each tier.</p>
+      <ul>
+        <li>T3 Riding: Basic horses</li>
+        <li>T4 Riding: Armored horses, mules</li>
+        <li>T5 Riding: Direwolves, Swiftclaws</li>
+        <li>T6+ Riding: Exotic and battle mounts</li>
+        <li>Specialization up to level 100: +% speed bonus</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================ HOUSING -->
+  <section class="section" id="housing">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Islands &amp; Housing</div>
+      <h2><span class="icon" style="background:rgba(60,130,60,0.2)">🏡</span> Islands &amp; Housing</h2>
+      <p>Build your personal base — farm resources passively, breed mounts, and craft from your own island.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>🏝️ Personal Islands</h3>
+      <p>Every account with <strong>Premium</strong> can rent a <strong>Personal Island</strong> from the Island Merchant in any Starter City. Your island is your private safe zone — no PvP.</p>
+      <ul>
+        <li>Islands start at Level 1 and can be upgraded to Level 6 using Island Tokens</li>
+        <li>Each upgrade level unlocks more building plots</li>
+        <li>Higher island levels allow more/larger buildings</li>
+        <li>You can invite friends to visit or work on your island</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h3>🏗️ Island Buildings</h3>
+      <table class="tier-table">
+        <thead><tr><th>Building</th><th>Purpose</th><th>Priority</th></tr></thead>
+        <tbody>
+          <tr><td>🌾 <strong>Farming Plots</strong></td><td>Grow crops, herbs, and animal feed</td><td>⭐⭐⭐ High</td></tr>
+          <tr><td>🐴 <strong>Animal Pasture</strong></td><td>Breed horses, oxen, and other mounts</td><td>⭐⭐⭐ High</td></tr>
+          <tr><td>⚒️ <strong>Crafting Station</strong></td><td>Craft items without paying city fees</td><td>⭐⭐ Medium</td></tr>
+          <tr><td>🏠 <strong>House / Decoration</strong></td><td>Bonuses to stats, storage, and look</td><td>⭐ Optional</td></tr>
+          <tr><td>🌳 <strong>Herb Garden</strong></td><td>Grow alchemy ingredients passively</td><td>⭐⭐ Medium</td></tr>
+          <tr><td>🐝 <strong>Bee Yard</strong></td><td>Honey for cooking recipes</td><td>⭐ Optional</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h3>🌾 Farming Guide</h3>
+      <p>Farming is one of the best <strong>passive income</strong> methods in Albion. Crops and animals grow over real time — log in, harvest, replant, log out.</p>
+      <div class="two-col">
+        <div>
+          <h4>Crop Farming</h4>
+          <ul>
+            <li>Plant crops on <strong>Crop Plots</strong></li>
+            <li>Water with <strong>Focus</strong> for better yield</li>
+            <li>Wheat → Used in cooking (huge demand)</li>
+            <li>Herbs → Alchemy ingredients</li>
+            <li>Vegetables → Food crafting bonuses</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Animal Farming</h4>
+          <ul>
+            <li>Place baby animals on <strong>Animal Pastures</strong></li>
+            <li>Feed them with crops from your farm</li>
+            <li>Harvest grown animals for meat, hides, or mounts</li>
+            <li>Horses and Oxen are most profitable</li>
+            <li>Chickens for eggs (cooking), cows for milk</li>
+          </ul>
+        </div>
+      </div>
+      <div class="info-block tip">
+        <div class="info-title">💡 Passive Income Tip</div>
+        <p>A fully optimized Level 5+ island with animal farming can generate <strong>500k–2M silver/week</strong> passively with just 10–15 minutes of daily upkeep. This is one of the best ways to sustain Premium.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>🏠 Guild Islands</h3>
+      <p>Guilds can also own a <strong>Guild Island</strong> — a shared space with more plots, shared storage, and guild-only crafting facilities. These are even larger than personal islands and can host entire guild operations.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ GUILDS -->
+  <section class="section" id="guilds">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Guilds &amp; Alliances</div>
+      <h2><span class="icon" style="background:rgba(74,100,193,0.2)">🛡️</span> Guilds &amp; Alliances</h2>
+      <p>Guilds are the backbone of endgame Albion — territory control, season competition, and large-scale PvP.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>🛡️ Creating or Joining a Guild</h3>
+      <p>You can create a guild with 100,000 silver or join an existing one for free. Guilds give you access to:</p>
+      <ul>
+        <li>Guild island with shared storage and crafting stations</li>
+        <li>Territory and castle ownership in black zones</li>
+        <li>Guild Season score and ranking rewards</li>
+        <li>Alliance membership (up to 300-player alliance)</li>
+        <li>Guild fame bonuses and tax configuration</li>
+      </ul>
+      <div class="info-block tip">
+        <div class="info-title">💡 Finding a Guild</div>
+        <p>For new players, look for guilds that mention "teaching" or "newbie-friendly" in the recruitment channels. Many large guilds have dedicated beginner branches. Discord and the official Albion forums are good places to look.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>🏰 Territory Control</h3>
+      <p>Guilds can own <strong>Territories</strong> in the black zone — areas with resource bonuses, crafting stations, and season points. Territories are contested through <strong>Territory Battles</strong> which happen on a schedule.</p>
+      <div class="two-col">
+        <div>
+          <h4>Territory Benefits</h4>
+          <ul>
+            <li>Bonus resources respawn within the territory</li>
+            <li>Guild crafting stations with resource return bonuses</li>
+            <li>Season Points for guild ranking</li>
+            <li>Prestige and tactical black zone positioning</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Keeping Territory</h4>
+          <ul>
+            <li>Defend territory during scheduled windows</li>
+            <li>Maintain sufficient guild activity</li>
+            <li>Pay maintenance resources</li>
+            <li>Build fortifications and defenses</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>🏆 Guild Season</h3>
+      <p>Every few months, a new <strong>Guild Season</strong> begins. Guilds compete for <strong>Season Points</strong> through:</p>
+      <ul>
+        <li>Territory kills and defenses</li>
+        <li>Crystal League victories</li>
+        <li>Castle captures</li>
+        <li>Outpost control</li>
+      </ul>
+      <p>At the end of the Season, top guilds receive <strong>Season Rewards</strong> — exclusive mounts, avatars, and cosmetics. First place gets the legendary <strong>Conquerors' Challenge</strong> mount.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>⚔️ GvG (Guild vs Guild)</h3>
+      <p>Formal 5v5 guild fights for territory control. These are <strong>Crystal League</strong> fights — scheduled, rated combat with season score on the line. Requires your guild's top 5-man team to practice coordinated compositions.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ ROADS OF AVALON -->
+  <section class="section" id="roads">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Roads of Avalon</div>
+      <h2><span class="icon" style="background:rgba(70,100,60,0.2)">🌀</span> Roads of Avalon</h2>
+      <p>A network of inter-dimensional portals connecting zones — rich resources, unique content, and strategic hideouts.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>🌀 What are the Roads?</h3>
+      <p>The Roads of Avalon are a <strong>procedurally connected network</strong> of zones that shift and change over time. They contain:</p>
+      <ul>
+        <li>T6–T8 resources with lower player competition than black zones</li>
+        <li>Unique Avalonian Dungeon content (both solo and group)</li>
+        <li>Player-built <strong>Hideouts</strong> — private bases inside the Roads</li>
+        <li>Portals that connect to various open-world zones (changes periodically)</li>
+        <li>Avalonian Mobs — tougher but more rewarding than standard enemies</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h3>🏠 Hideouts</h3>
+      <p>Guilds can construct <strong>Hideouts</strong> within the Roads of Avalon — essentially a private base with storage, crafting, and a portal anchor. Hideouts can be attacked by enemy guilds.</p>
+      <div class="two-col">
+        <div>
+          <h4>Advantages</h4>
+          <ul>
+            <li>Private storage near top-tier resources</li>
+            <li>Personal anchor point — faster travel to Roads</li>
+            <li>Crafting stations without city fees</li>
+            <li>Refuge in the Roads network</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Risks</h4>
+          <ul>
+            <li>Can be attacked and destroyed by enemies</li>
+            <li>Requires guild resources to maintain</li>
+            <li>Isolated — losing connection to portal is dangerous</li>
+            <li>Not suitable for solo players</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>⚗️ Avalonian Dungeons</h3>
+      <p>Found within the Roads, these are more challenging than standard dungeons but drop <strong>unique Avalonian loot</strong> — special gear with bonus enchantments and high market value.</p>
+      <div class="info-block tip">
+        <div class="info-title">💡 Roads Solo Gathering</div>
+        <p>The Roads are excellent for experienced solo gatherers. Less crowded than black zones, but still dangerous. Use a fast mount, gather efficiently, and exit through portals before player groups can close in.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ ENDGAME -->
+  <section class="section" id="endgame">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Endgame</div>
+      <h2><span class="icon" style="background:rgba(201,168,76,0.2)">👑</span> Endgame &amp; Progression</h2>
+      <p>What to do when you've mastered the basics — the pinnacles of Albion Online content.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>🏆 Endgame Content Tiers</h3>
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon">💀</div>
+          <h3>Hardcore Expeditions (HCE)</h3>
+          <p>5-player PvE instanced content with extreme difficulty. Multiple floors with escalating mobs. Best silver/hour PvE available. Requires T8 gear and mastery.</p>
+          <span class="card-tag tag-advanced">Endgame</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">💎</div>
+          <h3>Crystal League</h3>
+          <p>Ranked 5v5 GvG combat. Earn season points, Guild Season ranking rewards, and exclusive prizes for your guild each season.</p>
+          <span class="card-tag tag-advanced">Endgame</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌑</div>
+          <h3>Black Zone Domination</h3>
+          <p>Control territories, build economy, and dominate the seasonal leaderboard. Requires a large, coordinated guild.</p>
+          <span class="card-tag tag-advanced">Endgame</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏅</div>
+          <h3>Solo PvP Ranking</h3>
+          <p>The Crystal Realm Hellgate lets solo and duo players compete in rated matches. Top players receive season cosmetics.</p>
+          <span class="card-tag tag-advanced">Endgame</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>📊 Endgame Character Goals</h3>
+      <p>An endgame character in Albion Online typically has:</p>
+      <ul>
+        <li><strong>T8 weapon</strong> in at least one specialization (100 mastery)</li>
+        <li><strong>T6–T8 armor</strong> fully specialized</li>
+        <li>Multiple off-spec weapons at T7+ for flexibility</li>
+        <li>Full gathering set at T6–T7 with 60+ specialization</li>
+        <li>T7–T8 crafting specialization for their primary craft</li>
+        <li>Level 6 Personal Island with full farming operation</li>
+        <li>500M–1B+ silver in assets (or comfortable cash flow)</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h3>💰 Endgame Silver Farms</h3>
+      <table class="tier-table">
+        <thead><tr><th>Method</th><th>Silver/Hour</th><th>Requirement</th><th>Risk</th></tr></thead>
+        <tbody>
+          <tr><td>HCE Floor 11+</td><td>5–15M</td><td>T8 gear + experienced group</td><td>Low (PvE)</td></tr>
+          <tr><td>T8 Gathering (Black Zone)</td><td>3–8M</td><td>T7 gatherer set, black zone guild</td><td>High</td></tr>
+          <tr><td>T8 Group Dungeon</td><td>2–5M</td><td>T7-T8 group, black zone access</td><td>Medium-High</td></tr>
+          <tr><td>T8 Crafting w/ Focus</td><td>1–4M</td><td>T8 crafter specialization + capital</td><td>Low</td></tr>
+          <tr><td>Roads Gathering T7-T8</td><td>2–6M</td><td>Hideout access or solo skill</td><td>Medium</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h3>🎯 Progression Milestones</h3>
+      <ul class="step-list">
+        <li class="step-item"><div class="step-num">1</div><div class="step-content"><h4>First T4 Gear</h4><p>This is where the game "starts." You can now participate in all basic content and access most zones.</p></div></li>
+        <li class="step-item"><div class="step-num">2</div><div class="step-content"><h4>T6 Weapon Specialist</h4><p>Consistent red/black zone farming becomes viable. Significant silver income unlocked.</p></div></li>
+        <li class="step-item"><div class="step-num">3</div><div class="step-content"><h4>First HCE Clear</h4><p>You've crossed into endgame PvE. One of the hardest milestones requiring team coordination.</p></div></li>
+        <li class="step-item"><div class="step-num">4</div><div class="step-content"><h4>T8 Weapon Unlock</h4><p>A major milestone. T8 is the pinnacle of Destiny Board progress — most content is conquered.</p></div></li>
+        <li class="step-item"><div class="step-num">5</div><div class="step-content"><h4>Crystal League Participant</h4><p>Competing in ranked GvG. Top-tier seasonal rewards and guild prestige on the line.</p></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================ TIPS -->
+  <section class="section" id="tips">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Tips &amp; Tricks</div>
+      <h2><span class="icon" style="background:rgba(74,127,193,0.2)">💡</span> Tips &amp; Tricks</h2>
+      <p>Hard-earned wisdom from veteran players — mistakes to avoid and shortcuts to success.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>🌱 Beginner Tips</h3>
+      <ul>
+        <li><strong>Complete the Adventurer's Challenge</strong> every day — it's the fastest early source of Tomes of Insight (fame books) and rewards.</li>
+        <li><strong>Don't die unnecessarily.</strong> Every death costs repair fees and potentially your gear. In red/black zones, this adds up quickly.</li>
+        <li><strong>Learn the market.</strong> Check prices before crafting or selling. Some items sell for 10x more in one city than another.</li>
+        <li><strong>Use Tomes of Insight wisely.</strong> Save them for crafting/refining nodes, not combat nodes you can farm quickly.</li>
+        <li><strong>Join a guild early.</strong> Solo Albion is hard. A good guild provides safety, shared resources, and knowledge.</li>
+        <li><strong>Read tooltips.</strong> Every ability has detailed tooltip text. Understanding your skills is the biggest early advantage.</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h3>💰 Economy Tips</h3>
+      <ul>
+        <li><strong>Sell refined materials, not raw resources.</strong> Refining adds significant value and the fame helps your Destiny Board.</li>
+        <li><strong>Use buy orders.</strong> Placing buy orders is almost always cheaper than instant buying. Be patient.</li>
+        <li><strong>Check Caerleon prices.</strong> The central black zone city usually has the highest sell prices for most items.</li>
+        <li><strong>Never craft with Focus points on T4.</strong> Focus is most valuable at T6+ where quality differences command premium prices.</li>
+        <li><strong>Farm during off-peak hours.</strong> Resource nodes are less contested at night in your region's timezone.</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h3>⚔️ Combat Tips</h3>
+      <ul>
+        <li><strong>Never stand still.</strong> Constant movement makes you harder to CC and skill-shot abilities miss more often.</li>
+        <li><strong>Learn ability ranges.</strong> Many spells require specific range to cast. Play your positioning for your weapon's optimal range.</li>
+        <li><strong>Food matters.</strong> Always eat buff food before PvP. It can be the difference between winning and losing close fights.</li>
+        <li><strong>Know your escape tools.</strong> Every build should have at minimum one speed boost or blink ability before going into red/black zones.</li>
+        <li><strong>Counter your counters.</strong> Research what builds beat yours. Hard counters exist. Build accordingly and don't take unfavorable fights.</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h3>🔧 Quality of Life Tips</h3>
+      <ul>
+        <li>Use <strong>Guild/Alliance chat</strong> to call out gankers in your zone — a heads up to guildmates is worth its weight in silver.</li>
+        <li>Set <strong>in-game alarms</strong> for farming plots on your island so you never miss a harvest cycle.</li>
+        <li>Keybind your mount — getting on/off quickly during PvP can save your life.</li>
+        <li>Use the <strong>third-party tool albiononline2r.com</strong> or Albion Online market tools to track item prices.</li>
+        <li>Keep a secondary "travel build" — cheap gear you don't mind losing for daily travel between cities.</li>
+        <li>Store backup gear in multiple cities. Losing gear in a city you're not in doesn't have to stop your day.</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h3>❌ Common Mistakes to Avoid</h3>
+      <div class="info-block danger">
+        <div class="info-title">❌ Mistake: Bringing Expensive Gear to New Zones</div>
+        <p>Never go into a new zone (especially red/black) for the first time with your best gear. Scout it in cheap gear first to understand the danger level and common gank spots.</p>
+      </div>
+      <div class="info-block danger">
+        <div class="info-title">❌ Mistake: Spreading the Destiny Board Thin</div>
+        <p>Trying to unlock T4 in every weapon and armor type before specializing means you spend months at mediocre gear. Pick one path and push it to T6 first.</p>
+      </div>
+      <div class="info-block danger">
+        <div class="info-title">❌ Mistake: Not Using Premium When Affordable</div>
+        <p>The +50% fame bonus from Premium compounds massively over time. Once you can afford it (via Silver/Gold exchange), Premium is almost always worth it.</p>
+      </div>
+      <div class="info-block danger">
+        <div class="info-title">❌ Mistake: Ignoring the Economy</div>
+        <p>Many players who quit Albion do so because they "can't afford gear." The economy is learnable. Understand crafting returns, market prices, and transport routes — gear stops being a problem entirely.</p>
+      </div>
+    </div>
+
+    <div class="info-block tip">
+      <div class="info-title">🌟 Final Tip</div>
+      <p>Albion Online rewards <strong>patience and learning</strong> above all else. The players who succeed long-term are those who understand the economy, build around efficient progression, and find a community they enjoy playing with. Your first month will be the hardest — push through it and the game opens up enormously.</p>
+    </div>
+
+    <div class="footer">
+      <p>Albion Online Complete Guide — Community Reference. Content based on the 2024 game state. Albion Online is developed by Sandbox Interactive. This is a fan guide, not officially affiliated.</p>
+    </div>
+  </section>
+
+
+  <!-- ============================================================ WEAPONS ENCYCLOPEDIA -->
+  <section class="section" id="weapons-encyclopedia">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Weapons Encyclopedia</div>
+      <h2><span class="icon" style="background:rgba(193,80,80,0.2)">⚔️</span> All Weapons</h2>
+      <p>Every weapon line in Albion Online — 14 categories, all named weapons with abilities, roles, and tips.</p>
+    </div>
+    <div class="filter-bar" id="weaponFilterBar">
+      <button class="filter-btn active" data-wfilter="all">All</button>
+      <button class="filter-btn" data-wfilter="Melee">Melee</button>
+      <button class="filter-btn" data-wfilter="Ranged">Ranged</button>
+      <button class="filter-btn" data-wfilter="Magic">Magic</button>
+      <button class="filter-btn" data-wmeta="true">⭐ Meta Only</button>
+      <input class="filter-input" id="weaponSearch" placeholder="Search weapons…" type="text" />
+    </div>
+    <div id="weaponContent"></div>
+  </section>
+
+  <!-- ============================================================ ARMOR ENCYCLOPEDIA -->
+  <section class="section" id="armor-encyclopedia">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Armor Encyclopedia</div>
+      <h2><span class="icon" style="background:rgba(74,127,193,0.2)">🛡️</span> All Armor</h2>
+      <p>Every armor piece — helmets, chest pieces, and boots for all three armor types with abilities.</p>
+    </div>
+    <div class="filter-bar" id="armorFilterBar">
+      <button class="filter-btn active" data-afilter="all">All Types</button>
+      <button class="filter-btn" data-afilter="Cloth">🧣 Cloth</button>
+      <button class="filter-btn" data-afilter="Leather">🥋 Leather</button>
+      <button class="filter-btn" data-afilter="Plate">🛡️ Plate</button>
+    </div>
+    <div id="armorContent"></div>
+  </section>
+
+  <!-- ============================================================ META BUILDS -->
+  <section class="section" id="meta-builds">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Meta Builds</div>
+      <h2><span class="icon" style="background:rgba(201,168,76,0.2)">🏆</span> Meta Builds</h2>
+      <p>11 fully detailed meta builds — exact loadouts, playstyle rotations, counters, and expected rewards.</p>
+    </div>
+    <div class="filter-bar" id="buildFilterBar">
+      <button class="filter-btn active" data-bfilter="all">All</button>
+      <button class="filter-btn" data-bfilter="Solo PvP">Solo PvP</button>
+      <button class="filter-btn" data-bfilter="Solo PvE">Solo PvE</button>
+      <button class="filter-btn" data-bfilter="Group PvP">Group PvP</button>
+      <button class="filter-btn" data-bfilter="ZvZ">ZvZ</button>
+      <button class="filter-btn" data-bfilter="Healer">Healer</button>
+      <button class="filter-btn" data-bfilter="GvG">GvG</button>
+    </div>
+    <div class="info-block tip" style="margin-bottom:20px">
+      <div class="info-title">💡 About These Builds</div>
+      <p>All builds are based on the current meta. <strong>T6 is the sweet spot</strong> for most content. Click "Full Details" on any build to expand the full rotation, counters, and reward estimates.</p>
+    </div>
+    <div id="buildContent"></div>
+  </section>
+
+  <!-- ============================================================ CONTENT REWARDS -->
+  <section class="section" id="content-rewards">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Content Rewards</div>
+      <h2><span class="icon" style="background:rgba(201,168,76,0.2)">💎</span> Content Rewards</h2>
+      <p>Exact silver/hour, fame/hour, risk level, and loot tables for every type of content in Albion.</p>
+    </div>
+    <div class="info-block" style="margin-bottom:20px">
+      <div class="info-title">📊 How to Read This</div>
+      <p>Silver/hour estimates assume <strong>Premium status</strong>, appropriate gear tier, and average skill. Filter by risk to find content that matches your playstyle.</p>
+    </div>
+    <div class="filter-bar" id="rewardFilterBar">
+      <button class="filter-btn active" data-rfilter="all">All Content</button>
+      <button class="filter-btn" data-rfilter="None">Safe</button>
+      <button class="filter-btn" data-rfilter="Low">Low Risk</button>
+      <button class="filter-btn" data-rfilter="Medium">Medium Risk</button>
+      <button class="filter-btn" data-rfilter="High">High Risk</button>
+    </div>
+    <div id="rewardContent"></div>
+  </section>
+
+  <!-- ============================================================ PROGRESSION ROADMAP -->
+  <section class="section" id="progression-roadmap">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Progression Roadmap</div>
+      <h2><span class="icon" style="background:rgba(74,156,110,0.2)">🗺️</span> Progression Roadmap</h2>
+      <p>A clear week-by-week path from complete beginner to endgame. Follow this and you won't get lost.</p>
+    </div>
+
+    <div class="info-block tip">
+      <div class="info-title">💡 How to Use This Guide</div>
+      <p>Don't try to rush every stage. Each milestone builds on the last. If you feel stuck, you're probably trying to skip a step — go back one stage and make sure you've completed those goals first.</p>
+    </div>
+
+    <!-- STAGE 1 -->
+    <div class="content-section">
+      <h3>🌱 Stage 1 — Day 1 to 3: The Foundation</h3>
+      <p>Your only goal right now is learning how the game works. Don't worry about efficiency yet.</p>
+      <ul class="step-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Complete Beginner's Isle fully</h4>
+            <p>Do every tutorial quest. You'll earn free gear, silver, and Tomes of Insight. Don't skip or rush — these rewards are free fame you can't get back.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Open the Destiny Board (K) and pick ONE weapon</h4>
+            <p>Don't pick two. Swords, Axes, Bows, Fire Staff — anything. You'll branch out later. Trying to unlock everything simultaneously is the #1 reason new players quit feeling like they made no progress.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Choose a Starter City and sell everything you don't need</h4>
+            <p>Check the market for your raw resources. Always sell on the market (sell order) rather than to the vendor — you'll earn 3–10× more silver.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Start the Adventurer's Challenge</h4>
+            <p>Press the chest icon on your HUD. Complete daily tasks for Tomes of Insight and premium rewards. This is free daily progress — do it every single day.</p>
+          </div>
+        </li>
+      </ul>
+      <div class="info-block">
+        <div class="info-title">✅ Stage 1 Exit Goal</div>
+        <p>T3 weapon unlocked on Destiny Board, 50,000+ silver in your bank, understand how the market works.</p>
+      </div>
+    </div>
+
+    <!-- STAGE 2 -->
+    <div class="content-section">
+      <h3>⚒️ Stage 2 — Week 1: Reaching T4</h3>
+      <p>T4 is the first real gear tier. Everything before this is just the tutorial. This is where the game actually starts.</p>
+      <ul class="step-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Farm Blue Zone mobs around your Starter City</h4>
+            <p>Kill T3–T4 mobs consistently. Use T3 gear you craft or buy cheaply. The goal is 9,000 fame on your chosen weapon to unlock T4.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Run Solo Expeditions from the Expedition Master NPC</h4>
+            <p>These are 100% safe instanced dungeons. Do T3 and T4 expeditions daily — they give good fame and guaranteed silver drops. Free daily run available each day.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Gather T3–T4 resources in Blue/Yellow zones and refine them</h4>
+            <p>Gathering gives both silver AND gathering fame on your Destiny Board simultaneously. Pick one resource type (ore, wood, fibre, hide, or stone) and focus on it.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Craft and sell T3–T4 gear on the market</h4>
+            <p>Don't just sell raw materials. Refined bars, planks, and cloth sell for 20–50% more than raw resources. Simple crafting is almost always worth it at this stage.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h4>Use Tomes of Insight on crafting and gathering nodes</h4>
+            <p>Save your Tomes for nodes that are slow to grind (refining, crafting). Combat nodes fill up fast through normal play. Don't waste Tomes on sword/bow fame you'll naturally earn anyway.</p>
+          </div>
+        </li>
+      </ul>
+      <div class="info-block">
+        <div class="info-title">✅ Stage 2 Exit Goal</div>
+        <p>T4 weapon and armour unlocked. 200,000+ silver saved. Understand refining vs raw selling.</p>
+      </div>
+    </div>
+
+    <!-- STAGE 3 -->
+    <div class="content-section">
+      <h3>⚔️ Stage 3 — Weeks 2–3: T4 to T5, Join a Guild</h3>
+      <p>This is where most new players stall. Yellow zones feel risky but they're essential. Push through them.</p>
+      <ul class="step-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Enter Yellow Zones with T4 gear</h4>
+            <p>Yellow zones have flagged PvP (you have to opt in to attack). You can gather and kill mobs safely as long as you don't flag yourself. T5 resources and better dungeon portals start here.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Farm Yellow Zone Randomised Dungeons</h4>
+            <p>Look for glowing portals in yellow zones. Solo dungeons (one entrance) are the safest. T4–T5 dungeons give 5,000–20,000 fame per run and solid silver drops. This is your primary fame source now.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Join a beginner-friendly guild</h4>
+            <p>Check the in-game Guild Finder or post in General chat. A guild gives you safety in numbers, shared knowledge, and access to a guild island with better crafting stations. Don't solo the whole game.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Buy Premium with Silver if you can afford it</h4>
+            <p>Once you're making 300,000+ silver/day, check the Gold Market. Buy Gold with Silver and activate Premium. The +50% fame bonus means every hour of grinding from this point forward is 50% more effective. It compounds enormously.</p>
+          </div>
+        </li>
+      </ul>
+      <div class="info-block">
+        <div class="info-title">✅ Stage 3 Exit Goal</div>
+        <p>T5 weapon unlocked. In a guild. Premium active. 1M+ silver saved. Comfortable in yellow zones.</p>
+      </div>
+    </div>
+
+    <!-- STAGE 4 -->
+    <div class="content-section">
+      <h3>🔴 Stage 4 — Month 1: T5 to T6, First Red Zone</h3>
+      <p>Red zones are scary at first. They're also where real money starts. Understand the risk before you go in — don't go in blind.</p>
+      <ul class="step-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Scout red zones in cheap gear first</h4>
+            <p>Your first few visits to red zones should be in T4 throw-away gear. Learn the map, find the dungeon portal locations, identify the gank corridors. Knowledge is worth more than any gear piece.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Farm Red Zone Solo Dungeons in T5 gear</h4>
+            <p>Red zone solo dungeons give 2–3× the fame and silver of yellow zone equivalents. T5 dungeons: ~20,000–50,000 fame per run. T6 dungeons: ~50,000–100,000 fame per run. This is your new primary grind.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Buy a Personal Island (requires Premium)</h4>
+            <p>Visit the Island Merchant NPC in any Starter City. A Level 1 island costs around 12,500 silver to rent. Place farming plots immediately — passive income starts the moment your crops go in the ground.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Specialise your Destiny Board path deeper</h4>
+            <p>By now you should have your main weapon at T5. Push it to T6 before branching. Start speccing into the matching armour type (cloth for mage, leather for ranged, plate for melee tank).</p>
+          </div>
+        </li>
+      </ul>
+      <div class="info-block">
+        <div class="info-title">✅ Stage 4 Exit Goal</div>
+        <p>T6 weapon unlocked. Personal Island Level 2+ with farming running. 5M+ silver saved. Making 500k–1M/day.</p>
+      </div>
+    </div>
+
+    <!-- STAGE 5 -->
+    <div class="content-section">
+      <h3>⚫ Stage 5 — Months 2–3: T6 to T7, Black Zone Access</h3>
+      <p>Black zones are full-loot PvP. Go with your guild. Keep your gear value reasonable. The rewards justify the risk.</p>
+      <ul class="step-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Travel to black zones with guildmates</h4>
+            <p>Never go alone your first time. Travel in a group of 3–5 through the black zone portal. Learn the safe paths and the high-traffic gank corridors before going solo.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Farm Black Zone Solo Dungeons (T6–T7)</h4>
+            <p>These give 100,000–500,000 fame per run and 500k–2M+ silver. This is when your income jumps dramatically. Keep gear value reasonable — T6 normal quality, not T7 enchanted.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Explore the Roads of Avalon</h4>
+            <p>Roads portals appear in yellow/red/black zones. The Roads have excellent T7–T8 resource density with fewer players than black zones. Great for solo gathering with a fast escape mount.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Upgrade your island to Level 4–5 and start mount breeding</h4>
+            <p>By this stage your island should be generating meaningful passive income. Add Animal Pastures and start breeding T5 horses and oxen. See the Island Guide for full details.</p>
+          </div>
+        </li>
+      </ul>
+      <div class="info-block">
+        <div class="info-title">✅ Stage 5 Exit Goal</div>
+        <p>T7 weapon. Island Level 4+ with mount breeding running. Making 2M–5M/day. Comfortable in black zones.</p>
+      </div>
+    </div>
+
+    <!-- STAGE 6 -->
+    <div class="content-section">
+      <h3>👑 Stage 6 — Endgame: T7 to T8 and Beyond</h3>
+      <p>You're now in the top tier of the game. The grind to T8 is long but you have consistent income to fund it.</p>
+      <ul class="step-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Push weapon to T8 through Black Zone content</h4>
+            <p>T8 requires 4,500,000 fame. At 500k fame/hour in black zones with Premium, that's 9 hours of focused grinding. Most players reach T8 over 2–4 weeks of consistent play.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Join a guild running Hardcore Expeditions (HCE)</h4>
+            <p>HCE is the best fame/silver PvE content in the game. It requires T8 gear and a coordinated 5-man team. Find HCE groups in your guild or through LFG channels.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Participate in Crystal League and Guild Season</h4>
+            <p>Crystal League 5v5 fights earn Season Points toward guild ranking. Top guilds at season end receive exclusive mounts, cosmetics, and prestige. This is the competitive endgame.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Diversify your income streams</h4>
+            <p>At endgame, the best players have 3–4 income sources running simultaneously: HCE, island passive, crafting with focus, and black zone gathering. No single source dominates — redundancy is stability.</p>
+          </div>
+        </li>
+      </ul>
+      <div class="info-block">
+        <div class="info-title">✅ Endgame Goal</div>
+        <p>T8 weapon. Multiple income streams generating 5M–15M+/day. Active guild with Crystal League participation.</p>
+      </div>
+    </div>
+
+    <div class="info-block tip">
+      <div class="info-title">⏱️ Realistic Timeline</div>
+      <p>With Premium and consistent play (2–3 hours/day): <strong>T4 in 3 days</strong>, <strong>T5 in 1–2 weeks</strong>, <strong>T6 in 3–5 weeks</strong>, <strong>T7 in 2–3 months</strong>, <strong>T8 in 4–6 months</strong>. Without Premium, add roughly 50% to each estimate. Joining an active guild can cut these times significantly through shared content and knowledge.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ FAME FARMING -->
+  <section class="section" id="fame-farming">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Fame Farming</div>
+      <h2><span class="icon" style="background:rgba(201,168,76,0.15)">⭐</span> Fame Farming Guide</h2>
+      <p>The fastest route from T3 to T8 — best methods at every tier with fame/hour estimates and bonus stacking.</p>
+    </div>
+
+    <div class="content-section">
+      <h3>📈 How Fame Works</h3>
+      <p>Fame is Albion's XP system. You earn it by doing whatever activity corresponds to the Destiny Board node you want to unlock. Kill mobs → combat fame. Gather ore → mining fame. Refine bars → refining fame. The key insight: <strong>fame earned scales with content tier</strong>. T6 mobs give roughly 5–8× the fame of T4 mobs per kill.</p>
+      <div class="two-col">
+        <div>
+          <h4>Fame Multiplier Stack</h4>
+          <ul>
+            <li><strong>Premium status:</strong> +50% all fame</li>
+            <li><strong>Group content:</strong> +50% to +100% (scales with group size)</li>
+            <li><strong>Tomes of Insight:</strong> Instant fame — use on slow nodes</li>
+            <li><strong>Adventurer's Challenge:</strong> Free Tomes daily</li>
+            <li><strong>Guild bonuses:</strong> Some guilds offer +5–10% fame</li>
+            <li><strong>Gear tier vs node tier:</strong> Fighting enemies 1 tier above your current unlock gives maximum fame efficiency</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Best Uses for Tomes of Insight</h4>
+          <ul>
+            <li><strong>Refining nodes</strong> — require consuming expensive materials</li>
+            <li><strong>Crafting nodes</strong> — slow to grind naturally</li>
+            <li><strong>Cooking &amp; Alchemy</strong> — material-intensive</li>
+            <li><strong>Never on combat nodes</strong> — you'll earn these naturally through play</li>
+            <li><strong>Riding skill</strong> — gets you faster mounts sooner</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>⚒️ T3 → T4: Getting Off the Ground (~9,000 fame)</h3>
+      <table class="tier-table">
+        <thead><tr><th>Method</th><th>Fame/Hour</th><th>Zone</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Blue Zone mob grinding</td><td>3,000–6,000</td><td>Blue</td><td>Safe, boring, fine for T3→T4</td></tr>
+          <tr><td>Solo Expeditions (T3)</td><td>5,000–10,000</td><td>Instanced</td><td>100% safe, free daily run</td></tr>
+          <tr><td>Tutorial quest mobs</td><td>2,000–4,000</td><td>Blue</td><td>One-time but very efficient while doing quests</td></tr>
+          <tr><td>Group Expedition (T3)</td><td>10,000–18,000</td><td>Instanced</td><td>Find 4 guildmates — fastest safe method</td></tr>
+        </tbody>
+      </table>
+      <div class="info-block tip">
+        <div class="info-title">💡 T3→T4 Tip</div>
+        <p>Just run expeditions. Don't overthink the route at this stage. Daily expeditions + Adventurer's Challenge tasks will get you to T4 in 2–3 days without leaving safe zones.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>⚔️ T4 → T5: The First Real Grind (~22,500 fame)</h3>
+      <table class="tier-table">
+        <thead><tr><th>Method</th><th>Fame/Hour</th><th>Zone</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>T4 Solo Expeditions</td><td>8,000–15,000</td><td>Instanced</td><td>Safe, reliable, good for learning</td></tr>
+          <tr><td>Yellow Zone Solo Dungeons</td><td>15,000–30,000</td><td>Yellow</td><td>Best fame per hour, low PvP risk</td></tr>
+          <tr><td>T5 Group Expeditions</td><td>20,000–40,000</td><td>Instanced</td><td>Requires group, very efficient</td></tr>
+          <tr><td>Yellow Zone mob grinding</td><td>8,000–15,000</td><td>Yellow</td><td>Lower fame but good silver too</td></tr>
+        </tbody>
+      </table>
+      <div class="info-block tip">
+        <div class="info-title">💡 T4→T5 Tip</div>
+        <p>Yellow zone randomised dungeons are the meta at this stage. Find the portal in a yellow zone, run through, clear every room, open every chest. A full clear takes 15–20 minutes and gives 10,000–20,000 fame. Chain 3–4 runs per session.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>🔴 T5 → T6: Pushing Into Danger (~90,000 fame)</h3>
+      <table class="tier-table">
+        <thead><tr><th>Method</th><th>Fame/Hour</th><th>Zone</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Red Zone Solo Dungeons</td><td>40,000–80,000</td><td>Red</td><td>Best solo fame, moderate risk</td></tr>
+          <tr><td>T5–T6 Group Expeditions</td><td>50,000–100,000</td><td>Instanced</td><td>Safe, requires organised group</td></tr>
+          <tr><td>2v2 Hellgates</td><td>40,000–70,000</td><td>Yellow/Red</td><td>Mixed PvP/PvE, high skill ceiling</td></tr>
+          <tr><td>Yellow Zone Group Dungeons</td><td>30,000–60,000</td><td>Yellow</td><td>3 entrances — expect players inside</td></tr>
+          <tr><td>Static Dungeons</td><td>50,000–90,000</td><td>Red/Black</td><td>Fixed locations, harder mobs, better loot</td></tr>
+        </tbody>
+      </table>
+      <div class="info-block tip">
+        <div class="info-title">💡 T5→T6 Tip</div>
+        <p>Red zone solo dungeons are the defining grind of this tier. Use a sustain build (Claws or Lifecurse) that can chain pull multiple mobs simultaneously. Checking your escape route before each dungeon run takes 30 seconds and can save millions of silver.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>⚫ T6 → T7: Black Zone Breakthrough (~270,000 fame)</h3>
+      <table class="tier-table">
+        <thead><tr><th>Method</th><th>Fame/Hour</th><th>Zone</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Black Zone Solo Dungeons</td><td>100,000–250,000</td><td>Black</td><td>High risk, highest solo fame</td></tr>
+          <tr><td>Roads of Avalon Dungeons</td><td>100,000–200,000</td><td>Roads</td><td>Lower player count, good safety</td></tr>
+          <tr><td>T6 Group Expeditions</td><td>80,000–150,000</td><td>Instanced</td><td>Safe — good for skill building</td></tr>
+          <tr><td>Black Zone Group Dungeons</td><td>200,000–400,000</td><td>Black</td><td>Best fame in game outside HCE</td></tr>
+          <tr><td>5v5 Hellgates</td><td>150,000–300,000</td><td>Black</td><td>Elite PvP/PvE, requires team</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-section">
+      <h3>👑 T7 → T8: The Long Grind (~4,500,000 fame)</h3>
+      <table class="tier-table">
+        <thead><tr><th>Method</th><th>Fame/Hour</th><th>Time to T8 (est.)</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>HCE Floor 5–10</td><td>500,000–1,500,000</td><td>3–9 hours</td><td>Best fame/hr, requires T8 + team</td></tr>
+          <tr><td>Black Zone Group Dungeons</td><td>300,000–600,000</td><td>7–15 hours</td><td>Most accessible high-fame method</td></tr>
+          <tr><td>Black Zone Solo Dungeons</td><td>150,000–350,000</td><td>13–30 hours</td><td>Solo option, slower but safer pace</td></tr>
+          <tr><td>Roads of Avalon Group Dungeons</td><td>200,000–500,000</td><td>9–22 hours</td><td>Good balance of safety and fame</td></tr>
+        </tbody>
+      </table>
+      <div class="info-block warn">
+        <div class="info-title">⚠️ T7→T8 Reality Check</div>
+        <p>T8 is a prestige milestone, not a requirement. Most endgame content is perfectly viable at T6–T7. Don't burn out grinding T8 — play at a pace you enjoy. The game doesn't suddenly become better at T8; you're already in the endgame loop at T6.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ SILVER GUIDE -->
+  <section class="section" id="silver-guide">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Silver Making Guide</div>
+      <h2><span class="icon" style="background:rgba(180,180,60,0.15)">🪙</span> Silver Making Guide</h2>
+      <p>Find your current silver amount below and follow the exact steps for your stage — no guesswork.</p>
+    </div>
+
+    <div class="info-block">
+      <div class="info-title">📌 The Core Rule</div>
+      <p>At every stage the same principle applies: <strong>add value before selling</strong>. Raw ore is worth X. Refined bars are worth 1.4X. Crafted gear is worth 2X. Whoever does the least processing earns the least. Move up the value chain as fast as your Destiny Board allows.</p>
+    </div>
+
+    <!-- STAGE 0 -->
+    <div class="content-section">
+      <h3>🪙 Stage 1 — 0 to 100,000 Silver: Getting Started</h3>
+      <p><em>You just started. Your only assets are time and the tutorial rewards.</em></p>
+      <h4>Best Methods:</h4>
+      <ul>
+        <li><strong>Sell tutorial rewards on the market</strong> — don't vendor them. Market prices are almost always higher.</li>
+        <li><strong>Gather T2–T3 resources in blue zones</strong> and refine them. Refined T2 materials sell surprisingly well as crafting components.</li>
+        <li><strong>Complete Adventurer's Challenge daily</strong> — the Tomes you earn can be sold directly on the market for instant silver.</li>
+        <li><strong>Run T3 expeditions</strong> for the silver bag drops. Small but consistent.</li>
+      </ul>
+      <div class="highlight"><strong>Target:</strong> 100k silver in 2–3 days of casual play. Don't stress this stage — it passes quickly.</div>
+    </div>
+
+    <!-- STAGE 1 -->
+    <div class="content-section">
+      <h3>🪙🪙 Stage 2 — 100k to 1M Silver: Finding Your Method</h3>
+      <p><em>You have T4 gear and some market knowledge. Now pick a lane.</em></p>
+      <div class="two-col">
+        <div>
+          <h4>Path A: Gathering + Refining</h4>
+          <ul>
+            <li>Gather T4 resources in yellow zones (1–2 hours/session)</li>
+            <li>Refine everything — never sell raw at this stage</li>
+            <li>Sell refined materials at the best-priced city</li>
+            <li>Expected: 150,000–300,000 silver/hour</li>
+            <li><strong>Best for:</strong> Safe play, no PvP</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Path B: Dungeon Farming</h4>
+          <ul>
+            <li>Run yellow zone solo dungeons with T4–T5 gear</li>
+            <li>Sell all dropped gear and materials</li>
+            <li>Expected: 200,000–400,000 silver/hour</li>
+            <li><strong>Best for:</strong> Players who enjoy combat</li>
+          </ul>
+        </div>
+      </div>
+      <div class="info-block tip">
+        <div class="info-title">💡 Key Move at This Stage</div>
+        <p>Start placing <strong>buy orders</strong> on the market for resources you need rather than instant-buying. Buy orders are consistently 10–20% cheaper. The patience pays off immediately.</p>
+      </div>
+    </div>
+
+    <!-- STAGE 2 -->
+    <div class="content-section">
+      <h3>🪙🪙🪙 Stage 3 — 1M to 10M Silver: Scaling Up</h3>
+      <p><em>You have T5 gear, possibly Premium, maybe a guild. Multiple income streams are now viable.</em></p>
+      <h4>Stack These Income Sources Simultaneously:</h4>
+      <ul>
+        <li><strong>Island farming (passive):</strong> Set up farming plots on your island — 10 minutes of upkeep/day earns 200,000–500,000 silver/week passively. See the Island Guide for setup.</li>
+        <li><strong>Red zone gathering:</strong> T5–T6 resources in red zones earn 400,000–900,000 silver/hour. Use gatherer gear, not fighting gear. Have an escape plan.</li>
+        <li><strong>T5–T6 dungeon runs:</strong> 300,000–700,000 silver/hour in red zone solo dungeons with a solid build.</li>
+        <li><strong>Transport trading:</strong> Buy cheap in one city, sell expensive in another. Use albiononline2r.com to find price gaps of 20%+. Use an Ox for carry weight.</li>
+      </ul>
+      <div class="info-block">
+        <div class="info-title">📊 What 1M–10M Actually Looks Like Per Day</div>
+        <p>2 hours of red zone gathering = ~1.5M silver. 30 min island upkeep daily = ~70k/day passive. 2 transport runs/day = ~500k–1M. Combined: easily hitting 3–5M/day with 3–4 hours played.</p>
+      </div>
+    </div>
+
+    <!-- STAGE 3 -->
+    <div class="content-section">
+      <h3>🪙🪙🪙🪙 Stage 4 — 10M to 100M Silver: Serious Money</h3>
+      <p><em>You have T6–T7 gear. You're playing the economy as much as the game.</em></p>
+      <div class="two-col">
+        <div>
+          <h4>High-Income Activities</h4>
+          <ul>
+            <li><strong>T6–T7 black zone gathering:</strong> 2M–6M silver/hour</li>
+            <li><strong>Black zone solo dungeons:</strong> 1M–3M silver/hour</li>
+            <li><strong>Crafting T6+ with Focus Points:</strong> 1M–4M silver/day</li>
+            <li><strong>Roads of Avalon gathering:</strong> 1.5M–5M silver/hour</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Passive &amp; Economy Income</h4>
+          <ul>
+            <li><strong>Level 5+ island mount breeding:</strong> 2M–5M silver/week passive</li>
+            <li><strong>Market flipping T5–T6 refined materials:</strong> 1M–3M silver/day with capital</li>
+            <li><strong>Transport trading (large loads):</strong> 2M–8M silver per run</li>
+            <li><strong>Selling crafting services:</strong> Charge fees for high-specialization crafting</li>
+          </ul>
+        </div>
+      </div>
+      <div class="info-block tip">
+        <div class="info-title">💡 The Crafting With Focus Secret</div>
+        <p>At T6+ crafting specialisation with Focus Points, you achieve a resource return rate of 40–47%. Meaning: you use 100 materials, you get ~45 back. The items you craft cost you only ~55% of market material value. Sell slightly below market and you still profit enormously at volume.</p>
+      </div>
+    </div>
+
+    <!-- STAGE 4 -->
+    <div class="content-section">
+      <h3>👑 Stage 5 — 100M+ Silver: Endgame Economy</h3>
+      <p><em>You're now a market player as much as a combat player. Silver compounds at this stage.</em></p>
+      <ul>
+        <li><strong>HCE Floor 8+:</strong> 5M–15M silver/hour — the single highest PvE silver rate in the game.</li>
+        <li><strong>T8 enchanted resource gathering:</strong> A single T8.3 or T8.4 resource node can be worth 500,000–2M silver per node. Black zone, high risk, enormous reward.</li>
+        <li><strong>Market manipulation:</strong> With 50M+ capital you can place large buy orders on consumables (food, potions) ahead of patch days or ZvZ content updates that spike demand.</li>
+        <li><strong>Bulk crafting at scale:</strong> Process 10,000+ T6 refined materials daily using guild crafting stations with maximum city bonus. The return rate advantage compounds at volume.</li>
+        <li><strong>Full island operation:</strong> T6 oxen breeding, T5 horses, T5 bears — a max island earns 5M–10M/week passively with 15 minutes of daily upkeep.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================ ISLAND & MOUNT GUIDE -->
+  <section class="section" id="island-guide">
+    <div class="page-header">
+      <div class="breadcrumb">Home <span>›</span> Island &amp; Mount Farming</div>
+      <h2><span class="icon" style="background:rgba(60,130,60,0.2)">🏝️</span> Private Island &amp; Mount Farming</h2>
+      <p>Build a profitable passive income machine — breed horses, oxen, and exotic mounts and sell them for consistent silver with minimal daily effort.</p>
+    </div>
+
+    <div class="info-block tip">
+      <div class="info-title">💡 Why Island Farming?</div>
+      <p>A fully set-up Level 5 island can generate <strong>2M–6M silver per week</strong> with just 10–15 minutes of daily upkeep. It's the best silver-per-time-played activity in the game once it's running. The setup cost pays for itself within 2 weeks.</p>
+    </div>
+
+    <!-- GETTING AN ISLAND -->
+    <div class="content-section">
+      <h3>🏝️ Step 1 — Getting Your Island</h3>
+      <div class="info-block warn">
+        <div class="info-title">⚠️ Premium Required</div>
+        <p>You must have active <strong>Premium status</strong> to rent a Personal Island. Buy Premium with real money or purchase Gold on the in-game Gold Market using Silver (recommended once you have 500k+/day income).</p>
+      </div>
+      <ul class="step-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Find the Island Merchant NPC</h4>
+            <p>Located in every Starter City — look for the island icon on your minimap or ask in chat. The NPC is usually near the city docks or centre square.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Rent a Level 1 Island (~12,500 silver/month)</h4>
+            <p>This is a rental — you pay monthly to keep the island. It's extremely cheap relative to what you'll earn. Always keep your Premium and island rental paid up.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Travel to your island</h4>
+            <p>Use the portal next to the Island Merchant. Your island is a private, PvP-free zone. You can invite friends and guildmates by adjusting island permissions.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ISLAND UPGRADES -->
+    <div class="content-section">
+      <h3>🏗️ Step 2 — Upgrading Your Island</h3>
+      <p>Each island level unlocks more building plots. Upgrading costs Island Upgrade Tokens purchased from the Island Merchant using silver.</p>
+      <table class="tier-table">
+        <thead><tr><th>Level</th><th>Upgrade Cost</th><th>Building Plots</th><th>Priority</th></tr></thead>
+        <tbody>
+          <tr><td>Level 1</td><td>12,500 silver</td><td>2 plots</td><td>Start here — place 2 Crop Plots</td></tr>
+          <tr><td>Level 2</td><td>37,500 silver</td><td>4 plots</td><td>Add first Animal Pasture</td></tr>
+          <tr><td>Level 3</td><td>150,000 silver</td><td>6 plots</td><td>Add second Animal Pasture</td></tr>
+          <tr><td>Level 4</td><td>750,000 silver</td><td>9 plots</td><td>Core farming operation fully running</td></tr>
+          <tr><td>Level 5</td><td>3,750,000 silver</td><td>12 plots</td><td>Full mount breeding operation</td></tr>
+          <tr><td>Level 6</td><td>15,000,000 silver</td><td>16 plots</td><td>Maximum output — endgame investment</td></tr>
+        </tbody>
+      </table>
+      <div class="info-block tip">
+        <div class="info-title">💡 Upgrade Priority</div>
+        <p>Go to Level 3 as soon as possible — that's when you can run two Animal Pastures simultaneously, which is when mount breeding becomes a real income source. Level 4 is the sweet spot for most players. Only go to Level 5–6 once your operation is running smoothly.</p>
+      </div>
+    </div>
+
+    <!-- FARMING SETUP -->
+    <div class="content-section">
+      <h3>🌾 Step 3 — Setting Up Crop Farming</h3>
+      <p>Crops are the fuel for your animal pastures. You need to grow feed before you can breed mounts. This part of the operation runs itself once set up.</p>
+      <div class="two-col">
+        <div>
+          <h4>Best Crops to Grow</h4>
+          <ul>
+            <li><strong>Wheat</strong> — Makes Grain, which makes Hay. Hay is the primary food for horses and oxen. Plant as much wheat as you can.</li>
+            <li><strong>Pumpkins</strong> — Used for cooking (high demand on market). Profitable to sell raw.</li>
+            <li><strong>Cabbage</strong> — High-value cooking ingredient, consistent demand.</li>
+            <li><strong>Herbs (Yarrow, Burdock)</strong> — Alchemy ingredients. High market value, good backup crop.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Using Focus Points on Crops</h4>
+          <ul>
+            <li>When you tend crops with Focus Points (click "Use Focus"), you get significantly higher yield per harvest</li>
+            <li>Focus Points regenerate daily — 10,000 per day with Premium</li>
+            <li>Always use Focus when tending your crops — it's free and materially increases output</li>
+            <li>Without Focus you still profit, just at a lower rate</li>
+          </ul>
+        </div>
+      </div>
+      <div class="info-block">
+        <div class="info-title">📋 Crop Farming Routine</div>
+        <p>Log in → travel to island → harvest ready crops → replant same crop type → use Focus on all plots → log off. This takes <strong>5–7 minutes</strong>. Most crops have a 22-hour growth cycle so you can harvest once per day.</p>
+      </div>
+    </div>
+
+    <!-- MOUNT BREEDING -->
+    <div class="content-section">
+      <h3>🐴 Step 4 — Breeding Mounts</h3>
+      <p>Animal Pastures let you raise baby animals into adult mounts. Place a baby animal on a pasture, feed it daily, and harvest the grown mount to sell.</p>
+
+      <h4>Most Profitable Mounts to Breed</h4>
+      <table class="tier-table">
+        <thead><tr><th>Mount</th><th>Feed Required</th><th>Grow Time</th><th>Sell Price (approx)</th><th>Profit Margin</th></tr></thead>
+        <tbody>
+          <tr><td>🐴 <strong>T4 Horse (Foal)</strong></td><td>Hay × 60</td><td>22 hours</td><td>30,000–60,000 silver</td><td>Low — starter only</td></tr>
+          <tr><td>🐴 <strong>T5 Horse (Young Horse)</strong></td><td>Hay × 90</td><td>22 hours</td><td>100,000–200,000 silver</td><td>Good — consistent demand</td></tr>
+          <tr><td>🐮 <strong>T4 Ox (Calf)</strong></td><td>Hay × 80</td><td>22 hours</td><td>80,000–150,000 silver</td><td>Good — gatherer demand</td></tr>
+          <tr><td>🐮 <strong>T5 Ox (Young Ox)</strong></td><td>Hay × 120</td><td>22 hours</td><td>250,000–500,000 silver</td><td>Very Good — high demand</td></tr>
+          <tr><td>🐮 <strong>T6 Ox (Ox)</strong></td><td>Hay × 180</td><td>22 hours</td><td>800,000–1,500,000 silver</td><td>Excellent — top earner</td></tr>
+          <tr><td>🐻 <strong>T5 Bear (Young Bear)</strong></td><td>Honey + Meat × 100</td><td>22 hours</td><td>400,000–700,000 silver</td><td>Very Good — if feed available</td></tr>
+          <tr><td>🐺 <strong>T5 Direwolf Cub</strong></td><td>Raw Meat × 120</td><td>22 hours</td><td>500,000–900,000 silver</td><td>Excellent — if cubs available</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-block tip">
+        <div class="info-title">💡 What to Breed First</div>
+        <p>Start with <strong>T5 Horses</strong> — baby foals are cheap, Hay is easy to grow yourself, growth time is reliable, and T5 horses have consistent demand from players upgrading from T4. Once you understand the cycle, add <strong>T5 or T6 Oxen</strong> — they're the highest-demand transport mounts and command premium prices.</p>
+      </div>
+    </div>
+
+    <!-- WHERE TO BUY BABIES -->
+    <div class="content-section">
+      <h3>🛒 Step 5 — Sourcing Baby Animals</h3>
+      <p>Baby animals (foals, calves, pups) are purchased from the player market. Check the market in your Starter City or Caerleon for the best prices.</p>
+      <ul>
+        <li><strong>Foals (baby horses):</strong> Usually very cheap — 5,000–20,000 silver each. High supply.</li>
+        <li><strong>Calves (baby oxen):</strong> 15,000–50,000 silver. Higher value reflects the ox's market price.</li>
+        <li><strong>Bear Cubs:</strong> 50,000–150,000 silver. Rarer, but the grown bear fetches a large premium.</li>
+        <li><strong>Direwolf Pups:</strong> 100,000–300,000 silver. Scarce supply — check Caerleon market for best availability.</li>
+        <li><strong>Tip:</strong> Place <strong>buy orders</strong> for baby animals rather than instant buying. You can often get them 20–30% cheaper by being patient.</li>
+      </ul>
+    </div>
+
+    <!-- SELLING MOUNTS -->
+    <div class="content-section">
+      <h3>💰 Step 6 — Selling Mounts for Maximum Profit</h3>
+      <p>Where and how you sell matters almost as much as what you're selling.</p>
+      <div class="two-col">
+        <div>
+          <h4>Best Markets to Sell</h4>
+          <ul>
+            <li><strong>Caerleon</strong> — The central black zone city. Highest prices for T5–T6 mounts. Most active market. Best first choice.</li>
+            <li><strong>Your Starter City</strong> — Good for T4–T5 horses. Consistent local demand from new players.</li>
+            <li><strong>Bridgewatch / Martlock</strong> — Strong demand for oxen due to proximity to gathering zones.</li>
+            <li><strong>Fort Sterling</strong> — Good demand for plate-relevant gear and transport animals.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Pricing Strategy</h4>
+          <ul>
+            <li>Check the current lowest sell price before listing</li>
+            <li>List at 2–5% below the lowest price — you want to sell, not sit in queue for weeks</li>
+            <li>Don't dump everything at once — stagger your listings to avoid crashing your own market</li>
+            <li>Weekends have higher player activity → higher demand → sell high-value mounts Friday–Sunday</li>
+            <li>After major patches, mount demand spikes as new players join — great time to sell</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- FULL OPERATION -->
+    <div class="content-section">
+      <h3>📋 Full Island Operation — Daily Routine</h3>
+      <ul class="step-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Travel to island (1 min)</h4>
+            <p>Use the island portal in your Starter City. It's instant.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Harvest crops and replant (3–4 min)</h4>
+            <p>Click each farming plot to harvest, then immediately replant the same crop. Apply Focus Points to all plots for bonus yield.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Feed animals and harvest grown mounts (3–5 min)</h4>
+            <p>Click each Animal Pasture. Feed animals that need feeding (use the Hay from your crops). Collect any animals that have fully grown — these go into your inventory ready to sell.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Place new baby animals if pastures are empty (1–2 min)</h4>
+            <p>If any pastures are empty after harvesting, open the market, buy replacement baby animals, and place them. Keep all pastures running at all times.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h4>List grown mounts on the market (2–3 min)</h4>
+            <p>Travel to the nearest city market. Check current prices, list your mounts slightly below the lowest sell order, collect silver from any completed previous sales.</p>
+          </div>
+        </li>
+      </ul>
+      <div class="info-block tip">
+        <div class="info-title">💡 Total Daily Time: 10–15 Minutes</div>
+        <p>That's it. A Level 4–5 island running T5 horses and T5–T6 oxen earns <strong>2M–6M silver per week</strong> from 10–15 minutes of daily login time. It's genuinely the best silver-per-minute activity in the game once the operation is established.</p>
+      </div>
+    </div>
+
+    <!-- ROI BREAKDOWN -->
+    <div class="content-section">
+      <h3>📊 Return on Investment Breakdown</h3>
+      <table class="tier-table">
+        <thead><tr><th>Island Level</th><th>Setup Cost</th><th>Weekly Income (est.)</th><th>Payback Period</th></tr></thead>
+        <tbody>
+          <tr><td>Level 2 (1 pasture)</td><td>~100,000 silver total</td><td>300,000–600,000</td><td>3–5 days</td></tr>
+          <tr><td>Level 3 (2 pastures)</td><td>~400,000 silver total</td><td>700,000–1,400,000</td><td>4–7 days</td></tr>
+          <tr><td>Level 4 (3 pastures)</td><td>~1.5M silver total</td><td>1.5M–3M</td><td>5–10 days</td></tr>
+          <tr><td>Level 5 (4+ pastures)</td><td>~6M silver total</td><td>3M–6M</td><td>7–14 days</td></tr>
+          <tr><td>Level 6 (full operation)</td><td>~22M silver total</td><td>5M–10M</td><td>15–30 days</td></tr>
+        </tbody>
+      </table>
+      <div class="info-block">
+        <div class="info-title">📌 Important Notes</div>
+        <p>Income estimates assume T5–T6 ox breeding. T4 horse breeding yields roughly 30% of these numbers. All costs are recouped through normal play — don't feel you need to rush to max level. Every level is immediately profitable.</p>
+      </div>
+    </div>
+
+    <div class="info-block tip">
+      <div class="info-title">🚀 Island Farming Fast-Start Checklist</div>
+      <p>
+        ✅ Get Premium status<br>
+        ✅ Rent Level 1 island from Island Merchant<br>
+        ✅ Place 2 Wheat Crop Plots immediately<br>
+        ✅ Upgrade to Level 2, add 1 Animal Pasture<br>
+        ✅ Buy 3–5 T5 Foals from the market<br>
+        ✅ Grow wheat → process into Hay → feed foals<br>
+        ✅ Harvest grown T5 Horses after 22 hours<br>
+        ✅ Sell at Caerleon or your Starter City market<br>
+        ✅ Reinvest profits into Level 3 upgrade + T5 Ox calves<br>
+        ✅ Repeat — add pastures as you level the island
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
