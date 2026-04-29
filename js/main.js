@@ -225,28 +225,33 @@ function renderWeapons(typeFilter, metaOnly, searchQ, containerId = 'weaponConte
 
   container.innerHTML = Object.entries(lines).map(([lineName, lineData]) => {
     const typeCls = 'type-' + lineData.type.toLowerCase();
-    const weaponCards = lineData.weapons.map(w => `
+    const weaponCards = lineData.weapons.map(w => {
+      const renderId = weaponRenderIds[w.id];
+      const imgHtml = renderId
+        ? `<img class="item-render${w.meta ? ' meta' : ''}" src="${itemImg(renderId, 96)}" alt="${w.name}" onerror="this.classList.add('broken')" />`
+        : `<div class="weapon-line-icon" style="font-size:28px">${lineData.icon}</div>`;
+      return `
       <div class="weapon-card ${typeCls} ${w.meta ? 'meta-weapon' : ''}">
         ${w.meta ? '<div class="meta-badge">⭐ Meta</div>' : ''}
-        <div class="weapon-header">
-          <div class="weapon-line-icon">${lineData.icon}</div>
-          <div class="weapon-title">
-            <h4>${w.name}</h4>
-            <div class="weapon-line">${w.line} · ${w.role}</div>
+        <div class="weapon-card-inner">
+          ${imgHtml}
+          <div class="weapon-card-body">
+            <div class="weapon-title" style="margin-bottom:6px">
+              <h4>${w.name}</h4>
+              <div class="weapon-line">${w.line} · ${w.role}</div>
+            </div>
+            <div class="weapon-tags">${typeTag(w.type)}${roleTag(w.role)}</div>
           </div>
         </div>
-        <div class="weapon-tags">
-          ${typeTag(w.type)}${roleTag(w.role)}
-        </div>
-        <p class="weapon-description">${w.description}</p>
+        <p class="weapon-description" style="margin-top:10px">${w.description}</p>
         <div class="weapon-key-ability">
           <div class="key-ability-label">Key Ability</div>
           <div class="key-ability-text">${w.keyAbility}</div>
         </div>
         <div class="weapon-ratings">${ratingCells(w)}</div>
         <div class="weapon-tip"><strong>Tip:</strong> ${w.tip}</div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
 
     return `
       <div class="line-section">
@@ -318,23 +323,28 @@ function renderArmor(typeFilter) {
 
     const typeSections = ['Cloth','Leather','Plate'].map(type => {
       if (!byType[type]) return '';
-      const cards = byType[type].map(a => `
+      const cards = byType[type].map(a => {
+        const renderId = armorRenderIds[a.id];
+        const imgHtml = renderId
+          ? `<img class="item-render small${a.meta ? ' meta' : ''}" src="${itemImg(renderId, 80)}" alt="${a.name}" onerror="this.classList.add('broken')" />`
+          : `<div class="armor-type-icon armor-type-${a.armorType.toLowerCase()}">${typeIcons[a.armorType]}</div>`;
+        return `
         <div class="armor-card ${a.meta ? 'meta-armor' : ''}">
-          <div class="armor-header">
-            <div class="armor-type-icon armor-type-${a.armorType.toLowerCase()}">${typeIcons[a.armorType]}</div>
-            <div>
+          <div class="armor-card-inner">
+            ${imgHtml}
+            <div class="armor-card-body">
               <div class="armor-name">${a.name} ${a.meta ? '⭐' : ''}</div>
               <div class="armor-slot">${a.slot} · ${a.armorType} · ${a.role}</div>
             </div>
           </div>
-          <div class="armor-ability">
+          <div class="armor-ability" style="margin-top:10px">
             <div class="ab-label">Active Ability</div>
             <div class="ab-text">${a.ability}</div>
           </div>
           <div class="armor-passive"><strong>Passive:</strong> ${a.passive}</div>
           <div class="armor-desc">${a.description}</div>
-        </div>
-      `).join('');
+        </div>`;
+      }).join('');
       return `<div class="armor-type-section ats-${type.toLowerCase()}">${typeIcons[type]} ${type}</div><div class="armor-grid">${cards}</div>`;
     }).join('');
 
