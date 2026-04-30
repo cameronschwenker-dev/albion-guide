@@ -256,9 +256,12 @@ function renderWeapons(typeFilter, metaOnly, searchQ, containerId = 'weaponConte
     const typeCls = 'type-' + lineData.type.toLowerCase();
     const weaponCards = lineData.weapons.map(w => {
       const renderId = weaponRenderIds[w.id];
-      const imgHtml = renderId
-        ? `<img class="item-render${w.meta ? ' meta' : ''}" src="${itemImg(renderId, 96)}" alt="${w.name}" onerror="this.classList.add('broken')" />`
-        : `<div class="weapon-line-icon" style="font-size:28px">${lineData.icon}</div>`;
+      // Emoji always visible; image overlays and hides on error
+      const imgHtml = `
+        <div class="weapon-icon-wrap">
+          <div class="weapon-line-icon" style="font-size:28px;width:80px;height:80px">${lineData.icon}</div>
+          ${renderId ? `<img class="weapon-render-img${w.meta ? ' meta' : ''}" src="${itemImg(renderId, 96)}" alt="${w.name}" onerror="this.style.display='none'" />` : ''}
+        </div>`;
       return `
       <div class="weapon-card ${typeCls} ${w.meta ? 'meta-weapon' : ''}">
         ${w.meta ? '<div class="meta-badge">⭐ Meta</div>' : ''}
@@ -282,11 +285,13 @@ function renderWeapons(typeFilter, metaOnly, searchQ, containerId = 'weaponConte
       </div>`;
     }).join('');
 
-    // Use first weapon's render as the line header icon
+    // Line header: emoji base + real image overlay
     const firstRid = weaponRenderIds[lineData.weapons[0]?.id];
-    const lineHeaderIcon = firstRid
-      ? `<img class="line-icon-img" src="${itemImg(firstRid, 48)}" alt="${lineName}" onerror="this.style.display='none'" />`
-      : `<span class="line-icon">${lineData.icon}</span>`;
+    const lineHeaderIcon = `
+      <div style="position:relative;width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center">
+        <span class="line-icon" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px">${lineData.icon}</span>
+        ${firstRid ? `<img src="${itemImg(firstRid, 48)}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.5))" onerror="this.style.display='none'" />` : ''}
+      </div>`;
 
     return `
       <div class="line-section">
@@ -360,9 +365,12 @@ function renderArmor(typeFilter) {
       if (!byType[type]) return '';
       const cards = byType[type].map(a => {
         const renderId = armorRenderIds[a.id];
-        const imgHtml = renderId
-          ? `<img class="item-render small${a.meta ? ' meta' : ''}" src="${itemImg(renderId, 80)}" alt="${a.name}" onerror="this.classList.add('broken')" />`
-          : `<div class="armor-type-icon armor-type-${a.armorType.toLowerCase()}">${typeIcons[a.armorType]}</div>`;
+        // Always show the emoji icon; image overlays it and hides on error
+        const imgHtml = `
+          <div class="armor-icon-wrap">
+            <div class="armor-type-icon armor-type-${a.armorType.toLowerCase()}" style="font-size:20px">${typeIcons[a.armorType]}</div>
+            ${renderId ? `<img class="armor-render-img${a.meta ? ' meta' : ''}" src="${itemImg(renderId, 80)}" alt="${a.name}" onerror="this.style.display='none'" />` : ''}
+          </div>`;
         return `
         <div class="armor-card ${a.meta ? 'meta-armor' : ''}">
           <div class="armor-card-inner">
