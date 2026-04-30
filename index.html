@@ -118,6 +118,27 @@
 
   <div class="nav-divider" style="margin:6px 0"></div>
 
+  <!-- BUILDS — own prominent section -->
+  <div class="nav-builds-section">
+    <div class="nav-builds-header" data-section="meta-builds" onclick="showSection('meta-builds');setBuildFilter('all')">
+      <span class="nav-builds-icon">🏆</span>
+      <div>
+        <div class="nav-builds-title">Builds</div>
+        <div class="nav-builds-sub">16 builds · All weapon types</div>
+      </div>
+    </div>
+    <div class="nav-builds-filters">
+      <a class="nav-build-filter active" data-section="meta-builds" data-buildfilter="all">All Builds</a>
+      <a class="nav-build-filter" data-section="meta-builds" data-buildfilter="Solo PvP">Solo PvP</a>
+      <a class="nav-build-filter" data-section="meta-builds" data-buildfilter="Solo PvE">Solo PvE</a>
+      <a class="nav-build-filter" data-section="meta-builds" data-buildfilter="Group PvP">Group</a>
+      <a class="nav-build-filter" data-section="meta-builds" data-buildfilter="ZvZ">ZvZ</a>
+      <a class="nav-build-filter" data-section="meta-builds" data-buildfilter="Healer">Healer</a>
+    </div>
+  </div>
+
+  <div class="nav-divider" style="margin:6px 0"></div>
+
   <!-- Quick Access — always visible -->
   <div class="nav-quick">
     <div class="nav-quick-title">Quick Access</div>
@@ -1651,23 +1672,57 @@
   <!-- ============================================================ META BUILDS -->
   <section class="section" id="meta-builds">
     <div class="page-header">
-      <div class="breadcrumb">Home <span>›</span> Meta Builds</div>
-      <h2><span class="icon" style="background:rgba(201,168,76,0.2)">🏆</span> Meta Builds</h2>
-      <p>11 fully detailed meta builds — exact loadouts, playstyle rotations, counters, and expected rewards.</p>
+      <div class="breadcrumb">Home <span>›</span> Builds</div>
+      <h2><span class="icon" style="background:rgba(201,168,76,0.2)">🏆</span> Builds</h2>
+      <p>16 fully detailed builds covering every playstyle — filter by weapon, armor type, or role to find exactly what fits how you want to play.</p>
     </div>
-    <div class="filter-bar" id="buildFilterBar">
-      <button class="filter-btn active" data-bfilter="all">All</button>
-      <button class="filter-btn" data-bfilter="Solo PvP">Solo PvP</button>
-      <button class="filter-btn" data-bfilter="Solo PvE">Solo PvE</button>
-      <button class="filter-btn" data-bfilter="Group PvP">Group PvP</button>
-      <button class="filter-btn" data-bfilter="ZvZ">ZvZ</button>
-      <button class="filter-btn" data-bfilter="Healer">Healer</button>
-      <button class="filter-btn" data-bfilter="GvG">GvG</button>
+
+    <!-- FILTER: By Role -->
+    <div class="builds-filter-group">
+      <div class="builds-filter-label">By Role</div>
+      <div class="filter-bar" id="buildFilterBar" style="margin-bottom:0">
+        <button class="filter-btn active" data-bfilter="all">All Builds</button>
+        <button class="filter-btn" data-bfilter="Solo PvP">⚔️ Solo PvP</button>
+        <button class="filter-btn" data-bfilter="Solo PvE">🏚️ Solo PvE</button>
+        <button class="filter-btn" data-bfilter="Group PvP">👥 Group</button>
+        <button class="filter-btn" data-bfilter="ZvZ">⚡ ZvZ</button>
+        <button class="filter-btn" data-bfilter="Healer">💚 Healer</button>
+        <button class="filter-btn" data-bfilter="GvG">💎 GvG</button>
+      </div>
     </div>
-    <div class="info-block tip" style="margin-bottom:20px">
-      <div class="info-title">💡 About These Builds</div>
-      <p>All builds are based on the current meta. <strong>T6 is the sweet spot</strong> for most content. Click "Full Details" on any build to expand the full rotation, counters, and reward estimates.</p>
+
+    <!-- FILTER: By Weapon -->
+    <div class="builds-filter-group">
+      <div class="builds-filter-label">By Weapon Line</div>
+      <div class="weapon-line-filters" id="weaponLineFilterBar">
+        <button class="wl-filter-btn active" data-wlfilter="all">All</button>
+        <button class="wl-filter-btn" data-wlfilter="Swords">🗡️ Swords</button>
+        <button class="wl-filter-btn" data-wlfilter="Axes">🪓 Axes</button>
+        <button class="wl-filter-btn" data-wlfilter="Hammers">🔨 Hammers</button>
+        <button class="wl-filter-btn" data-wlfilter="Spears">🔱 Spears</button>
+        <button class="wl-filter-btn" data-wlfilter="Daggers">🔪 Daggers</button>
+        <button class="wl-filter-btn" data-wlfilter="Crossbows">🔫 Crossbows</button>
+        <button class="wl-filter-btn" data-wlfilter="Bows">🏹 Bows</button>
+        <button class="wl-filter-btn" data-wlfilter="Fire Staffs">🔥 Fire</button>
+        <button class="wl-filter-btn" data-wlfilter="Frost Staffs">❄️ Frost</button>
+        <button class="wl-filter-btn" data-wlfilter="Cursed Staffs">💀 Cursed</button>
+        <button class="wl-filter-btn" data-wlfilter="Nature Staffs">🌿 Nature</button>
+        <button class="wl-filter-btn" data-wlfilter="Holy Staffs">✨ Holy</button>
+        <button class="wl-filter-btn" data-wlfilter="Arcane Staffs">🔮 Arcane</button>
+      </div>
     </div>
+
+    <!-- FILTER: By Armor -->
+    <div class="builds-filter-group" style="margin-bottom:20px">
+      <div class="builds-filter-label">By Armor Type</div>
+      <div class="filter-bar" id="armorTypeFilterBar" style="margin-bottom:0">
+        <button class="filter-btn active" data-atfilter="all">All Armor</button>
+        <button class="filter-btn" data-atfilter="Cloth">🧣 Cloth</button>
+        <button class="filter-btn" data-atfilter="Leather">🥋 Leather</button>
+        <button class="filter-btn" data-atfilter="Plate">🛡️ Plate</button>
+      </div>
+    </div>
+
     <div id="buildContent"></div>
   </section>
 

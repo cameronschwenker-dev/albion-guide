@@ -153,7 +153,7 @@ const searchIndex = [
   { title:'Island & Mount Farming',   section:'island-guide',          keywords:'island mount farm horse ox breed passive income farming animal pasture sell mounts profit' },
   { title:'All Weapons',             section:'weapons-encyclopedia',  keywords:'weapons sword axe hammer spear dagger crossbow bow fire frost nature holy arcane cursed' },
   { title:'All Armor',               section:'armor-encyclopedia',    keywords:'armor helmet boots robe jacket plate cloth leather' },
-  { title:'Meta Builds',             section:'meta-builds',           keywords:'meta build loadout bloodletter claws brimstone hallowfall' },
+  { title:'Builds',                   section:'meta-builds',           keywords:'meta build loadout bloodletter claws brimstone hallowfall frost sword crossbow nature spear weapon armor filter' },
   { title:'Content Rewards',         section:'content-rewards',       keywords:'rewards silver fame dungeon expedition hellgate hce gathering' },
 ];
 
@@ -442,19 +442,37 @@ function loadoutImg(itemName) {
   return `<img class="loadout-img" src="${itemImg(rid, 48)}" alt="${itemName}" onerror="this.style.display='none'" />`;
 }
 
+// Active build filter state
+const _buildFilters = { role: 'all', weapon: 'all', armor: 'all' };
+
+function setBuildFilter(role = 'all', weapon = 'all', armor = 'all') {
+  _buildFilters.role   = role;
+  _buildFilters.weapon = weapon;
+  _buildFilters.armor  = armor;
+  renderBuilds();
+}
+
 // ============================================================
 // RENDER BUILDS
 // ============================================================
 function renderBuilds(tagFilter) {
+  // tagFilter param kept for backward compat — prefer _buildFilters
+  if (tagFilter && tagFilter !== 'all') _buildFilters.role = tagFilter;
   const container = document.getElementById('buildContent');
   if (!container) return;
 
-  const filtered = tagFilter === 'all'
-    ? metaBuilds
-    : metaBuilds.filter(b => b.tags.includes(tagFilter));
+  const filtered = metaBuilds.filter(b => {
+    if (_buildFilters.role   !== 'all' && !b.tags.includes(_buildFilters.role))     return false;
+    if (_buildFilters.weapon !== 'all' && b.weaponLine !== _buildFilters.weapon)    return false;
+    if (_buildFilters.armor  !== 'all' && b.armorType  !== _buildFilters.armor)     return false;
+    return true;
+  });
 
   if (!filtered.length) {
-    container.innerHTML = '<div class="info-block"><p>No builds match this filter.</p></div>';
+    container.innerHTML = `<div class="info-block warn">
+      <div class="info-title">No builds match these filters</div>
+      <p>Try widening your search — select "All" in one of the filter rows above. Not every weapon line has a dedicated build yet; check back after future updates.</p>
+    </div>`;
     return;
   }
 
@@ -570,7 +588,45 @@ document.addEventListener('click', e => {
   if (!btn) return;
   document.querySelectorAll('#buildFilterBar .filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renderBuilds(btn.dataset.bfilter || 'all');
+  _buildFilters.role = btn.dataset.bfilter || 'all';
+  renderBuilds();
+});
+
+// Weapon line filter
+document.addEventListener('click', e => {
+  const btn = e.target.closest('#weaponLineFilterBar .wl-filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('#weaponLineFilterBar .wl-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  _buildFilters.weapon = btn.dataset.wlfilter || 'all';
+  renderBuilds();
+});
+
+// Armor type filter
+document.addEventListener('click', e => {
+  const btn = e.target.closest('#armorTypeFilterBar .filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('#armorTypeFilterBar .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  _buildFilters.armor = btn.dataset.atfilter || 'all';
+  renderBuilds();
+});
+
+// Sidebar nav-build-filter quick links
+document.addEventListener('click', e => {
+  const link = e.target.closest('.nav-build-filter');
+  if (!link) return;
+  document.querySelectorAll('.nav-build-filter').forEach(l => l.classList.remove('active'));
+  link.classList.add('active');
+  _buildFilters.role = link.dataset.buildfilter || 'all';
+  _buildFilters.weapon = 'all';
+  _buildFilters.armor  = 'all';
+  showSection('meta-builds');
+  // Sync the role filter button
+  const roleBtns = document.querySelectorAll('#buildFilterBar .filter-btn');
+  roleBtns.forEach(b => {
+    b.classList.toggle('active', (b.dataset.bfilter || 'all') === _buildFilters.role);
+  });
 });
 
 // ============================================================

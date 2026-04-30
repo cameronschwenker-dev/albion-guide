@@ -600,6 +600,105 @@
   line-height: 1.55;
 }
 
+/* ===== BUILDS NAV SECTION ===== */
+.nav-builds-section {
+  padding: 10px 8px 6px;
+}
+
+.nav-builds-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px 8px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s;
+  background: rgba(201,168,76,0.06);
+  border: 1px solid rgba(201,168,76,0.15);
+  margin-bottom: 8px;
+}
+
+.nav-builds-header:hover { background: rgba(201,168,76,0.1); }
+
+.nav-builds-icon { font-size: 22px; }
+
+.nav-builds-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold-light);
+}
+
+.nav-builds-sub {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 1px;
+}
+
+.nav-builds-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0 4px;
+}
+
+.nav-build-filter {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.nav-build-filter:hover { border-color: var(--gold-dim); color: var(--gold-light); }
+.nav-build-filter.active { background: rgba(201,168,76,0.1); border-color: var(--gold-dim); color: var(--gold-light); }
+
+/* ===== BUILDS FILTER GROUPS ===== */
+.builds-filter-group {
+  margin-bottom: 12px;
+}
+
+.builds-filter-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+/* Weapon line filter row — scrollable pill strip */
+.weapon-line-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.wl-filter-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.wl-filter-btn:hover { border-color: var(--gold-dim); color: var(--text); }
+
+.wl-filter-btn.active {
+  background: rgba(201,168,76,0.1);
+  border-color: var(--gold);
+  color: var(--gold-light);
+  font-weight: 600;
+}
+
 /* ===== PATCH BANNER ===== */
 .patch-banner {
   display: flex;
