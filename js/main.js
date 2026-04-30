@@ -458,7 +458,24 @@ function renderBuilds(tagFilter) {
     return;
   }
 
-  container.innerHTML = '<div class="build-grid">' + filtered.map(b => {
+  // Tier colours
+  const tierColor = { S:'#e8c96a', A:'#4a9c6e', B:'#4a7fc1', C:'#7a8098' };
+  const tierLabel = { S:'S-Tier', A:'A-Tier', B:'B-Tier', C:'C-Tier' };
+
+  // Patch banner — rendered once above the grid
+  const patchBanner = `
+    <div class="patch-banner">
+      <div class="patch-banner-left">
+        <span class="patch-icon">🔖</span>
+        <div>
+          <div class="patch-name">${metaPatchInfo.patch} <span class="patch-version">${metaPatchInfo.version}</span></div>
+          <div class="patch-summary">${metaPatchInfo.summary}</div>
+        </div>
+      </div>
+      <a class="patch-notes-link" href="${metaPatchInfo.notes}" target="_blank" rel="noopener">Patch Notes ↗</a>
+    </div>`;
+
+  container.innerHTML = patchBanner + '<div class="build-grid">' + filtered.map(b => {
     const loadoutRows = Object.entries(b.loadout).map(([slot, item]) => {
       const img = loadoutImg(item.name);
       return `
@@ -487,9 +504,13 @@ function renderBuilds(tagFilter) {
             <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">${b.icon}</span>
             ${weaponImg ? weaponImg.replace('class="loadout-img"', 'class="loadout-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:4px"') : ''}
           </div>
-          <div>
-            <div class="build-name">${b.name}</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="build-name">${b.name}</div>
+              ${b.metaTier ? `<span class="tier-badge" style="background:${tierColor[b.metaTier]}20;color:${tierColor[b.metaTier]};border:1px solid ${tierColor[b.metaTier]}50">${tierLabel[b.metaTier]}</span>` : ''}
+            </div>
             <div class="build-role">${b.role}</div>
+            ${b.patchVerified ? `<div class="patch-verified-badge">✓ ${b.patchVerified}</div>` : ''}
           </div>
         </div>
         <div class="build-tags">${b.tags.map(t => `<span class="btag">${t}</span>`).join('')}</div>

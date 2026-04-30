@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // WEAPONS DATA
 // ============================================================
 const weaponsData = [
@@ -1017,11 +1017,22 @@ const armorData = {
 };
 
 // ============================================================
+// META PATCH INFO — update this when a new patch drops
+// ============================================================
+const metaPatchInfo = {
+  patch:   'Foundations Update',
+  version: 'Season 24',
+  date:    '2024-12-01',
+  notes:   'https://albiononline.com/en/news',
+  summary: 'Current meta favours burst assassin builds in small-scale PvP, Great Frost Staff / Great Hammer combos in ZvZ, and Hallowfall healers in HCE.',
+};
+
+// ============================================================
 // META BUILDS DATA
 // ============================================================
 const metaBuilds = [
   {
-    id: 'bloodletter-assassin',
+    id: 'bloodletter-assassin', metaTier: 'S', patchVerified: metaPatchInfo.patch,
     name: 'Bloodletter Assassin',
     role: 'Solo PvP / Ganker',
     difficulty: 4,
@@ -1052,7 +1063,7 @@ const metaBuilds = [
     rewards: 'Best solo PvP potential in the game. Can kill T8-geared players solo. Extremely high silver per hour when ganking gatherers.',
   },
   {
-    id: 'claws-solo-pve',
+    id: 'claws-solo-pve', metaTier: 'S', patchVerified: metaPatchInfo.patch,
     name: 'Claws Solo PvE Farmer',
     role: 'Solo Dungeons / PvE Farming',
     difficulty: 2,
@@ -1083,7 +1094,7 @@ const metaBuilds = [
     rewards: '400k–1.5M silver/hour solo dungeons at T6+. Consistent fame for Destiny Board. Safe income source.',
   },
   {
-    id: 'great-arcane-solo',
+    id: 'great-arcane-solo', metaTier: 'A', patchVerified: metaPatchInfo.patch,
     name: 'Great Arcane Staff Solo All-Rounder',
     role: 'Solo PvE + PvP',
     difficulty: 3,
@@ -1114,7 +1125,7 @@ const metaBuilds = [
     rewards: '600k–2M silver/hour at high level. Flexible enough to PvP opportunistically while farming.',
   },
   {
-    id: 'hallowfall-group-healer',
+    id: 'hallowfall-group-healer', metaTier: 'S', patchVerified: metaPatchInfo.patch,
     name: 'Hallowfall Group Healer',
     role: 'Group Healer — HCE / GvG',
     difficulty: 4,
@@ -1145,7 +1156,7 @@ const metaBuilds = [
     rewards: 'Essential for HCE Floor 8+ — impossible without a skilled healer. GvG participation in top guilds.',
   },
   {
-    id: 'great-hammer-zvz',
+    id: 'great-hammer-zvz', metaTier: 'S', patchVerified: metaPatchInfo.patch,
     name: 'Great Hammer ZvZ Initiator',
     role: 'ZvZ Frontline / Initiator',
     difficulty: 3,
@@ -1176,7 +1187,7 @@ const metaBuilds = [
     rewards: 'Season Points from territory fights. Guild recognition as initiator. Key to GvG victory.',
   },
   {
-    id: 'brimstone-small-group',
+    id: 'brimstone-small-group', metaTier: 'A', patchVerified: metaPatchInfo.patch,
     name: 'Brimstone Staff Small Group DPS',
     role: 'Small Group PvP / Ganking',
     difficulty: 3,
@@ -1207,7 +1218,7 @@ const metaBuilds = [
     rewards: '2–6M silver/hour in Hellgates. Strong in HCE and group dungeons.',
   },
   {
-    id: 'shadowcaller-sustained',
+    id: 'shadowcaller-sustained', metaTier: 'A', patchVerified: metaPatchInfo.patch,
     name: 'Shadowcaller Sustained DoT',
     role: 'Group PvP / ZvZ DoT',
     difficulty: 4,
@@ -1238,7 +1249,7 @@ const metaBuilds = [
     rewards: 'Excellent in ZvZ for sustained team damage. Roads of Avalon group content.',
   },
   {
-    id: 'bow-of-badon-support',
+    id: 'bow-of-badon-support', metaTier: 'A', patchVerified: metaPatchInfo.patch,
     name: 'Bow of Badon Support',
     role: 'ZvZ Support / Objective Defense',
     difficulty: 3,
@@ -1269,7 +1280,7 @@ const metaBuilds = [
     rewards: 'Critical for Crystal League teams. ZvZ season point contributions.',
   },
   {
-    id: 'infernal-scythe-solo',
+    id: 'infernal-scythe-solo', metaTier: 'B', patchVerified: metaPatchInfo.patch,
     name: 'Infernal Scythe Solo Farmer',
     role: 'Open World Farming',
     difficulty: 2,
@@ -1300,7 +1311,7 @@ const metaBuilds = [
     rewards: '1–3M silver/hour open world mob farming at T6+. Fast fame for Destiny Board.',
   },
   {
-    id: 'lifecurse-solo-dungeons',
+    id: 'lifecurse-solo-dungeons', metaTier: 'B', patchVerified: metaPatchInfo.patch,
     name: 'Lifecurse Dungeon Sustain',
     role: 'Solo Dungeons / Sustained PvE',
     difficulty: 3,
@@ -1331,7 +1342,7 @@ const metaBuilds = [
     rewards: '500k–1.8M silver/hour solo dungeons. Forgiving playstyle good for newer players.',
   },
   {
-    id: 'redemption-gvg-healer',
+    id: 'redemption-gvg-healer', metaTier: 'S', patchVerified: metaPatchInfo.patch,
     name: 'Redemption GvG Healer',
     role: 'Crystal League / GvG Healer',
     difficulty: 5,

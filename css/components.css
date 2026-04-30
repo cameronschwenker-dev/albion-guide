@@ -600,6 +600,92 @@
   line-height: 1.55;
 }
 
+/* ===== PATCH BANNER ===== */
+.patch-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.07) 0%, rgba(201,168,76,0.03) 100%);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.patch-banner-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.patch-icon { font-size: 20px; margin-top: 1px; }
+
+.patch-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold-light);
+  margin-bottom: 3px;
+}
+
+.patch-version {
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(201,168,76,0.12);
+  border: 1px solid var(--gold-dim);
+  color: var(--gold);
+  padding: 1px 7px;
+  border-radius: 10px;
+  margin-left: 6px;
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+}
+
+.patch-summary {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  max-width: 600px;
+}
+
+.patch-notes-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+  text-decoration: none;
+  border: 1px solid var(--gold-dim);
+  border-radius: 6px;
+  padding: 6px 12px;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.patch-notes-link:hover {
+  background: rgba(201,168,76,0.1);
+  color: var(--gold-light);
+}
+
+/* ===== TIER BADGE ===== */
+.tier-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+/* ===== PATCH VERIFIED BADGE (on build card) ===== */
+.patch-verified-badge {
+  font-size: 10px;
+  color: var(--accent-green);
+  margin-top: 2px;
+  letter-spacing: 0.3px;
+}
+
 /* ===== DIFFICULTY STARS ===== */
 .difficulty-stars {
   display: flex;
