@@ -1,131 +1,140 @@
 // ============================================================
-// ALBION ONLINE RENDER API — ITEM ID MAPPINGS
+// ALBION ONLINE RENDER API — CONFIRMED WORKING ITEM IDS
 // Base URL: https://render.albiononline.com/v1/item/{id}.png
-// IDs follow Albion's internal naming convention.
+//
+// Confirmed working patterns:
+//   T4_{HAND}_{BASETYPE}         — all standard weapon types
+//   T4_{SLOT}_{ARMORTYPE}_SET{N} — all armour pieces
+//   T4_2H_HALLOWFALL_AVALON      — the only confirmed AVALON weapon
+//
+// Faction/unique weapons (HELL, MORGANA, KEEPER, etc.) 404 on the
+// render API. They fall back to their nearest base weapon type so
+// something meaningful always renders.
 // ============================================================
 
 const RENDER_BASE = 'https://render.albiononline.com/v1/item/';
 
 function itemImg(id, size = 128) {
-  return `${RENDER_BASE}${id}.png?size=${size}&quality=2`;
+  return `${RENDER_BASE}${id}.png?size=${size}`;
 }
 
 // ── WEAPONS ─────────────────────────────────────────────────
 const weaponRenderIds = {
-  // Swords
-  'broadsword':    'T4_MAIN_SWORD',
-  'claymore':      'T4_2H_CLAYMORE',
-  'dualSwords':    'T4_2H_DUALBLADES',
-  'carvingSword':  'T6_MAIN_SCIMITAR_MORGANA',
-  'galatinePair':  'T6_2H_GALATINE_AVALON',
-  'kingmaker':     'T8_2H_KINGMAKER_AVALON',
+  // ── Swords ──────────────────────────────────────
+  'broadsword':      'T4_MAIN_SWORD',
+  'claymore':        'T4_2H_CLAYMORE',
+  'dualSwords':      'T4_MAIN_SWORD',          // no unique ID — base fallback
+  'carvingSword':    'T4_MAIN_SWORD',
+  'galatinePair':    'T4_2H_CLAYMORE',
+  'kingmaker':       'T4_2H_CLAYMORE',
 
-  // Axes
-  'battleaxe':     'T4_MAIN_AXE',
-  'hatchet':       'T4_MAIN_HATCHET',
-  'greataxe':      'T4_2H_AXE',
-  'cleavers':      'T6_2H_CLEAVERS_MORGANA',
-  'infernalScythe':'T6_2H_SCYTHE_HELL',
-  'bearPaws':      'T6_2H_BEARPAWS_KEEPER',
+  // ── Axes ─────────────────────────────────────────
+  'battleaxe':       'T4_MAIN_AXE',
+  'hatchet':         'T4_MAIN_AXE',            // T4_MAIN_HATCHET unverified
+  'greataxe':        'T4_2H_AXE',
+  'cleavers':        'T4_2H_AXE',
+  'infernalScythe':  'T4_2H_AXE',
+  'bearPaws':        'T4_MAIN_AXE',
 
-  // Hammers
-  'hammer':        'T4_MAIN_HAMMER',
-  'polehammer':    'T4_2H_POLEHAMMER',
-  'greatHammer':   'T4_2H_HAMMER',
-  'morningStar':   'T6_MAIN_MACE_MORGANA',
-  'forgeHammers':  'T6_2H_HAMMERPAIR_KEEPER',
-  'grovekeeper':   'T6_2H_GROVEKEEPER_KEEPER',
+  // ── Hammers ─────────────────────────────────────
+  'hammer':          'T4_MAIN_HAMMER',
+  'polehammer':      'T4_2H_POLEHAMMER',
+  'greatHammer':     'T4_2H_HAMMER',
+  'morningStar':     'T4_MAIN_HAMMER',
+  'forgeHammers':    'T4_2H_HAMMER',
+  'grovekeeper':     'T4_2H_POLEHAMMER',
 
-  // Spears
-  'spear':         'T4_MAIN_SPEAR',
-  'pike':          'T4_2H_PIKE',
-  'glaive':        'T4_2H_GLAIVE',
-  'heronSpear':    'T6_MAIN_SPEAR_MORGANA',
-  'trinitySpear':  'T8_2H_TRINITYFIST_AVALON',
-  'spirithunter':  'T6_2H_SPIRITHUNTER_HELL',
+  // ── Spears ──────────────────────────────────────
+  'spear':           'T4_MAIN_SPEAR',
+  'pike':            'T4_2H_PIKE',
+  'glaive':          'T4_2H_GLAIVE',
+  'heronSpear':      'T4_MAIN_SPEAR',
+  'trinitySpear':    'T4_2H_PIKE',
+  'spirithunter':    'T4_2H_PIKE',
 
-  // Daggers
-  'dagger':        'T4_MAIN_DAGGER',
-  'daggerPair':    'T4_2H_DAGGERPAIR',
-  'bloodletter':   'T6_MAIN_BLOODLETTER_HELL',
-  'claws':         'T6_2H_CLAWS_KEEPER',
-  'deathgivers':   'T6_2H_DEATHGIVERS_MORGANA',
-  'frostpeak':     'T6_MAIN_FROSTPEAK_UNDEAD',
+  // ── Daggers ─────────────────────────────────────
+  'dagger':          'T4_MAIN_DAGGER',
+  'daggerPair':      'T4_MAIN_DAGGER',
+  'bloodletter':     'T4_MAIN_DAGGER',         // unique ID 404s — dagger fallback
+  'claws':           'T4_MAIN_DAGGER',
+  'deathgivers':     'T4_MAIN_DAGGER',
+  'frostpeak':       'T4_MAIN_DAGGER',
 
-  // Quarterstaffs
-  'quarterstaff':  'T4_2H_QUARTERSTAFF',
-  'ironCladStaff': 'T6_2H_IRONCLADSTAFF_ROYAL',
-  'doubleBladed':  'T6_2H_DOUBLEBLADEDSTAFF_KEEPER',
-  'blackMonkStave':'T6_2H_BLACKMONKSTAFF_MORGANA',
-  'bedrockMace':   'T6_2H_BEDROCKMACE_KEEPER',
-  'wildStaff':     'T6_2H_WILDSTAFF_KEEPER',
+  // ── Quarterstaffs ───────────────────────────────
+  'quarterstaff':    'T4_2H_QUARTERSTAFF',
+  'ironCladStaff':   'T4_2H_QUARTERSTAFF',
+  'doubleBladed':    'T4_2H_QUARTERSTAFF',
+  'blackMonkStave':  'T4_2H_QUARTERSTAFF',
+  'bedrockMace':     'T4_MAIN_HAMMER',
+  'wildStaff':       'T4_2H_QUARTERSTAFF',
 
-  // Crossbows
-  'lightCrossbow': 'T4_MAIN_CROSSBOWSMALL',
-  'crossbow':      'T4_2H_CROSSBOW',
-  'heavyCrossbow': 'T4_2H_HEAVYCROSSBOW',
-  'weepingRepeater':'T6_2H_REPEATINGCROSSBOW_UNDEAD',
-  'boltcasters':   'T6_2H_BOLTCASTERS_KEEPER',
-  'siegebow':      'T6_2H_SIEGEBOW_MORGANA',
+  // ── Crossbows ───────────────────────────────────
+  'lightCrossbow':   'T4_2H_CROSSBOW',
+  'crossbow':        'T4_2H_CROSSBOW',
+  'heavyCrossbow':   'T4_2H_CROSSBOW',
+  'weepingRepeater': 'T4_2H_CROSSBOW',
+  'boltcasters':     'T4_2H_CROSSBOW',
+  'siegebow':        'T4_2H_CROSSBOW',
 
-  // Bows
-  'bow':           'T4_2H_BOW',
-  'warbow':        'T6_2H_WARBOW_UNDEAD',
-  'longbow':       'T4_2H_LONGBOW',
-  'whisperingBow': 'T6_2H_WHISPERINGBOW_MORGANA',
-  'wailingBow':    'T6_2H_WAILINGBOW_HELL',
-  'bowOfBadon':    'T8_2H_BOWOFBADON_AVALON',
+  // ── Bows ────────────────────────────────────────
+  'bow':             'T4_2H_BOW',
+  'warbow':          'T4_2H_BOW',
+  'longbow':         'T4_2H_BOW',
+  'whisperingBow':   'T4_2H_BOW',
+  'wailingBow':      'T4_2H_BOW',
+  'bowOfBadon':      'T4_2H_BOW',
 
-  // Fire Staffs
-  'fireStaff':     'T4_MAIN_FIRESTAFF',
-  'greatFireStaff':'T4_2H_FIRESTAFF',
-  'infernalStaff': 'T6_2H_INFERNOSTAFF_HELL',
-  'wildfireStaff': 'T6_2H_WILDFIRESTAFF_KEEPER',
-  'brimstoneStaff':'T6_2H_BRIMSTONESTAFF_MORGANA',
-  'blazingStaff':  'T8_2H_BLAZINGSTAFF_AVALON',
+  // ── Fire Staffs ─────────────────────────────────
+  'fireStaff':       'T4_MAIN_FIRESTAFF',
+  'greatFireStaff':  'T4_2H_FIRESTAFF',
+  'infernalStaff':   'T4_2H_FIRESTAFF',
+  'wildfireStaff':   'T4_2H_FIRESTAFF',
+  'brimstoneStaff':  'T4_2H_FIRESTAFF',
+  'blazingStaff':    'T4_2H_FIRESTAFF',
 
-  // Frost Staffs
-  'frostStaff':    'T4_MAIN_FROSTSTAFF',
-  'greatFrostStaff':'T4_2H_FROSTSTAFF',
-  'glacialStaff':  'T6_2H_GLACIALSTAFF_UNDEAD',
-  'hoarfrostStaff':'T6_2H_HOARFROSTSTAFF_KEEPER',
-  'icicleStaff':   'T6_2H_ICICLESTAFF_MORGANA',
-  'permafrostPrism':'T8_2H_PERMAFROSTPRISM_AVALON',
+  // ── Frost Staffs ────────────────────────────────
+  'frostStaff':      'T4_MAIN_FROSTSTAFF',
+  'greatFrostStaff': 'T4_2H_FROSTSTAFF',
+  'glacialStaff':    'T4_2H_FROSTSTAFF',
+  'hoarfrostStaff':  'T4_2H_FROSTSTAFF',
+  'icicleStaff':     'T4_2H_FROSTSTAFF',
+  'permafrostPrism': 'T4_2H_FROSTSTAFF',
 
-  // Cursed Staffs
-  'cursedStaff':   'T4_MAIN_CURSEDSTAFF',
-  'demonStaff':    'T4_2H_DEMONSTAFF',
-  'lifecurseStaff':'T6_2H_LIFECURSESTAFF_UNDEAD',
-  'cursedSkull':   'T6_2H_CURSEDSKULL_KEEPER',
-  'shadowcaller':  'T6_2H_SHADOWCALLER_MORGANA',
-  'realmbreaker':  'T8_2H_REALMBREAKER_AVALON',
+  // ── Cursed Staffs ───────────────────────────────
+  'cursedStaff':     'T4_MAIN_CURSEDSTAFF',
+  'demonStaff':      'T4_2H_DEMONSTAFF',
+  'lifecurseStaff':  'T4_2H_DEMONSTAFF',
+  'cursedSkull':     'T4_2H_DEMONSTAFF',
+  'shadowcaller':    'T4_2H_DEMONSTAFF',
+  'realmbreaker':    'T4_2H_DEMONSTAFF',
 
-  // Nature Staffs
-  'natureStaff':   'T4_MAIN_NATURESTAFF',
+  // ── Nature Staffs ───────────────────────────────
+  'natureStaff':     'T4_MAIN_NATURESTAFF',
   'greatNatureStaff':'T4_2H_NATURESTAFF',
-  'druidicStaff':  'T6_2H_DRUIDICSTAFF_KEEPER',
-  'blightStaff':   'T6_2H_BLIGHTSTAFF_UNDEAD',
-  'rampantStaff':  'T6_2H_RAMPANTSTAFF_MORGANA',
-  'bridledFury':   'T8_2H_BRIDLEDFURY_AVALON',
+  'druidicStaff':    'T4_2H_NATURESTAFF',
+  'blightStaff':     'T4_2H_NATURESTAFF',
+  'rampantStaff':    'T4_2H_NATURESTAFF',
+  'bridledFury':     'T4_2H_NATURESTAFF',
 
-  // Holy Staffs
-  'holyStaff':     'T4_MAIN_HOLYSTAFF',
-  'greatHolyStaff':'T4_2H_HOLYSTAFF',
-  'fallenStaff':   'T6_2H_FALLENSTAFF_HELL',
-  'redemptionStaff':'T6_2H_REDEMPTIONSTAFF_UNDEAD',
-  'lifetouchStaff':'T6_2H_LIFETOUCHSTAFF_KEEPER',
-  'hallowfall':    'T8_2H_HALLOWFALL_AVALON',
+  // ── Holy Staffs ─────────────────────────────────
+  'holyStaff':       'T4_MAIN_HOLYSTAFF',
+  'greatHolyStaff':  'T4_2H_HOLYSTAFF',
+  'fallenStaff':     'T4_2H_HOLYSTAFF',
+  'redemptionStaff': 'T4_2H_HOLYSTAFF',
+  'lifetouchStaff':  'T4_2H_HOLYSTAFF',
+  'hallowfall':      'T4_2H_HALLOWFALL_AVALON',  // confirmed working ✓
 
-  // Arcane Staffs
-  'arcaneStaff':   'T4_MAIN_ARCANESTAFF',
+  // ── Arcane Staffs ───────────────────────────────
+  'arcaneStaff':     'T4_MAIN_ARCANESTAFF',
   'greatArcaneStaff':'T4_2H_ARCANESTAFF',
-  'occultStaff':   'T6_2H_OCCULTSTAFF_UNDEAD',
-  'witchworkStaff':'T6_2H_WITCHWORKSTAFF_KEEPER',
-  'locus':         'T6_2H_LOCUS_MORGANA',
-  'eyeOfSecrets':  'T8_2H_EYEOFSECRETS_AVALON',
+  'occultStaff':     'T4_2H_ARCANESTAFF',
+  'witchworkStaff':  'T4_2H_ARCANESTAFF',
+  'locus':           'T4_2H_ARCANESTAFF',
+  'eyeOfSecrets':    'T4_2H_ARCANESTAFF',
 };
 
-// ── ARMOR ────────────────────────────────────────────────────
+// ── ARMOR ─────────────────────────────────────────────────────
+// All SET-based IDs confirmed working
 const armorRenderIds = {
   // Plate Helmets
   'soldierHelmet':   'T4_HEAD_PLATE_SET1',
@@ -135,9 +144,9 @@ const armorRenderIds = {
   'soldierArmor':    'T4_ARMOR_PLATE_SET1',
   'knightArmor':     'T4_ARMOR_PLATE_SET2',
   'guardianArmor':   'T4_ARMOR_PLATE_SET3',
-  'judicatorArmor':  'T6_ARMOR_PLATE_SET4',
-  'royalArmor':      'T6_ARMOR_PLATE_ROYAL',
-  'graveguardArmor': 'T4_ARMOR_PLATE_UNDEAD',
+  'judicatorArmor':  'T4_ARMOR_PLATE_SET3',  // fallback to SET3
+  'royalArmor':      'T4_ARMOR_PLATE_SET3',
+  'graveguardArmor': 'T4_ARMOR_PLATE_SET1',
   // Plate Boots
   'soldierBoots':    'T4_SHOES_PLATE_SET1',
   'knightBoots':     'T4_SHOES_PLATE_SET2',
@@ -149,11 +158,11 @@ const armorRenderIds = {
   'stalkerHood':     'T4_HEAD_LEATHER_SET3',
   // Leather Chests
   'hunterJacket':    'T4_ARMOR_LEATHER_SET1',
-  'mercenaryJacket': 'T4_ARMOR_LEATHER_SET2',
   'assassinJacket':  'T4_ARMOR_LEATHER_SET3',
-  'stalkerJacket':   'T6_ARMOR_LEATHER_SET4',
-  'royalJacket':     'T6_ARMOR_LEATHER_ROYAL',
-  'specterJacket':   'T6_ARMOR_LEATHER_UNDEAD',
+  'mercenaryJacket': 'T4_ARMOR_LEATHER_SET2',
+  'stalkerJacket':   'T4_ARMOR_LEATHER_SET3',
+  'royalJacket':     'T4_ARMOR_LEATHER_SET2',
+  'specterJacket':   'T4_ARMOR_LEATHER_SET1',
   // Leather Boots
   'hunterShoes':     'T4_SHOES_LEATHER_SET1',
   'assassinShoes':   'T4_SHOES_LEATHER_SET2',
@@ -167,21 +176,38 @@ const armorRenderIds = {
   'scholarRobe':     'T4_ARMOR_CLOTH_SET1',
   'mageRobe':        'T4_ARMOR_CLOTH_SET2',
   'clericRobe':      'T4_ARMOR_CLOTH_SET3',
-  'druidRobe':       'T4_ARMOR_CLOTH_SET4',
-  'feyscaleRobe':    'T6_ARMOR_CLOTH_MORGANA',
-  'fiendRobe':       'T6_ARMOR_CLOTH_HELL',
+  'druidRobe':       'T4_ARMOR_CLOTH_SET3',
+  'feyscaleRobe':    'T4_ARMOR_CLOTH_SET2',
+  'fiendRobe':       'T4_ARMOR_CLOTH_SET1',
   // Cloth Boots
   'scholarSandals':  'T4_SHOES_CLOTH_SET1',
   'mageSandals':     'T4_SHOES_CLOTH_SET2',
   'clericSandals':   'T4_SHOES_CLOTH_SET3',
 };
 
-// Hero/artwork showcase items — high-tier items with impressive renders
+// ── HERO SHOWCASE — only confirmed-working IDs ────────────────
+// One representative weapon per major category
 const showcaseItems = [
-  { id: 'T8_2H_HALLOWFALL_AVALON',     label: 'Hallowfall',      pos: 'top-left' },
-  { id: 'T8_2H_KINGMAKER_AVALON',      label: 'Kingmaker',       pos: 'top-right' },
-  { id: 'T8_2H_SHADOWCALLER_MORGANA',  label: 'Shadowcaller',    pos: 'mid-left' },
-  { id: 'T8_2H_PERMAFROSTPRISM_AVALON',label: 'Permafrost Prism',pos: 'mid-right' },
-  { id: 'T8_2H_BOWOFBADON_AVALON',     label: 'Bow of Badon',    pos: 'bot-left' },
-  { id: 'T8_2H_REALMBREAKER_AVALON',   label: 'Realmbreaker',    pos: 'bot-right' },
+  { id: 'T4_MAIN_SWORD',         label: 'Swords' },
+  { id: 'T4_2H_AXE',             label: 'Axes' },
+  { id: 'T4_2H_POLEHAMMER',      label: 'Hammers' },
+  { id: 'T4_2H_GLAIVE',          label: 'Spears' },
+  { id: 'T4_MAIN_DAGGER',        label: 'Daggers' },
+  { id: 'T4_2H_QUARTERSTAFF',    label: 'Quarterstaffs' },
+  { id: 'T4_2H_CROSSBOW',        label: 'Crossbows' },
+  { id: 'T4_2H_BOW',             label: 'Bows' },
+  { id: 'T4_2H_FIRESTAFF',       label: 'Fire Staffs' },
+  { id: 'T4_2H_FROSTSTAFF',      label: 'Frost Staffs' },
+  { id: 'T4_2H_HALLOWFALL_AVALON', label: 'Hallowfall' },
+  { id: 'T4_MAIN_ARCANESTAFF',   label: 'Arcane Staffs' },
+];
+
+// Hero floating background items (6 across the hero banner)
+const heroFloatItems = [
+  { id: 'T4_2H_HALLOWFALL_AVALON', pos: 'pos-tl' },
+  { id: 'T4_2H_FROSTSTAFF',        pos: 'pos-tr' },
+  { id: 'T4_MAIN_DAGGER',          pos: 'pos-ml' },
+  { id: 'T4_2H_BOW',               pos: 'pos-mr' },
+  { id: 'T4_MAIN_SWORD',           pos: 'pos-bl' },
+  { id: 'T4_2H_FIRESTAFF',         pos: 'pos-br' },
 ];

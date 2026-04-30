@@ -405,26 +405,31 @@ document.addEventListener('click', e => {
 // ============================================================
 // Flat name → renderId map built from weaponRenderIds + armorRenderIds
 const _buildImgCache = {};
+// Normalise an item name for cache lookup:
+// strip apostrophes, tier suffixes, trailing whitespace
+function _normName(name) {
+  return name.toLowerCase()
+    .replace(/'/g, '')                        // "assassin's" → "assassins"
+    .replace(/\s*\(t[0-9][^)]*\)/gi, '')     // strip "(T6+)" "(T8)" etc
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function _buildImgMap() {
   if (Object.keys(_buildImgCache).length) return;
   weaponsData.forEach(w => {
     const rid = weaponRenderIds[w.id];
-    if (rid) _buildImgCache[w.name.toLowerCase()] = rid;
+    if (rid) _buildImgCache[_normName(w.name)] = rid;
   });
   [...(armorData.helmets||[]), ...(armorData.chests||[]), ...(armorData.boots||[])].forEach(a => {
     const rid = armorRenderIds[a.id];
-    if (rid) _buildImgCache[a.name.toLowerCase()] = rid;
+    if (rid) _buildImgCache[_normName(a.name)] = rid;
   });
 }
 
 function loadoutImg(itemName) {
   _buildImgMap();
-  // Strip tier suffix like "(T6+)" or "(T8)" and look up
-  const clean = itemName.toLowerCase()
-    .replace(/\s*\(t[0-9][^)]*\)/gi, '')
-    .replace(/\s+(all types?|any)?$/i, '')
-    .trim();
-  const rid = _buildImgCache[clean];
+  const rid = _buildImgCache[_normName(itemName)];
   if (!rid) return '';
   return `<img class="loadout-img" src="${itemImg(rid, 48)}" alt="${itemName}" onerror="this.style.display='none'" />`;
 }
@@ -470,8 +475,9 @@ function renderBuilds(tagFilter) {
       <div class="build-header">
         <div class="build-accent" style="background:linear-gradient(90deg,${b.color},transparent)"></div>
         <div class="build-icon-name">
-          <div class="build-icon-wrap" style="background:rgba(0,0,0,0.3);border-color:${b.color}40">
-            ${weaponImg || b.icon}
+          <div class="build-icon-wrap" style="background:rgba(0,0,0,0.3);border-color:${b.color}40;position:relative;overflow:hidden;font-size:24px">
+            <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">${b.icon}</span>
+            ${weaponImg ? weaponImg.replace('class="loadout-img"', 'class="loadout-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:4px"') : ''}
           </div>
           <div>
             <div class="build-name">${b.name}</div>

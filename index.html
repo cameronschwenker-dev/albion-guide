@@ -3121,36 +3121,30 @@
 <script src="js/render-ids.js"></script>
 <script src="js/main.js"></script>
 <script>
-// ── Hero floating items ──
+// ── Hero: floating background items + showcase strip ──
+// Uses heroFloatItems and showcaseItems from render-ids.js (all confirmed working)
 (function() {
-  const posClasses = ['pos-tl','pos-tr','pos-ml','pos-mr','pos-bl','pos-br'];
-  const container  = document.getElementById('heroItems');
-  if (!container) return;
-  showcaseItems.forEach((item, i) => {
-    const el  = document.createElement('div');
-    el.className = `hero-float ${posClasses[i] || ''}`;
-    el.innerHTML = `<img src="${RENDER_BASE}${item.id}.png?size=180" alt="${item.label}" onerror="this.parentElement.style.display='none'" />`;
-    container.appendChild(el);
-  });
+  // Floating background weapons
+  const container = document.getElementById('heroItems');
+  if (container) {
+    heroFloatItems.forEach(item => {
+      const el = document.createElement('div');
+      el.className = `hero-float ${item.pos}`;
+      el.innerHTML = `<img src="${RENDER_BASE}${item.id}.png?size=180" alt="" onerror="this.parentElement.style.display='none'" />`;
+      container.appendChild(el);
+    });
+  }
 
-  // Endgame showcase strip
+  // Showcase strip — one weapon per category
   const showcase = document.getElementById('heroShowcase');
-  if (!showcase) return;
-  const strip = [
-    'T8_2H_HALLOWFALL_AVALON','T8_2H_KINGMAKER_AVALON','T8_2H_SHADOWCALLER_MORGANA',
-    'T8_2H_REALMBREAKER_AVALON','T8_2H_PERMAFROSTPRISM_AVALON','T8_2H_BOWOFBADON_AVALON',
-    'T8_2H_BLAZINGSTAFF_AVALON','T8_2H_BRIDLEDFURY_AVALON','T8_2H_EYEOFSECRETS_AVALON',
-    'T8_2H_CLAWS_KEEPER','T6_MAIN_BLOODLETTER_HELL','T8_2H_DEATHGIVERS_MORGANA',
-  ];
-  const labels = ['Hallowfall','Kingmaker','Shadowcaller','Realmbreaker','Permafrost Prism',
-                  'Bow of Badon','Blazing Staff','Bridled Fury','Eye of Secrets',
-                  'Claws','Bloodletter','Deathgivers'];
-  strip.forEach((id, i) => {
-    const el = document.createElement('div');
-    el.className = 'showcase-item';
-    el.innerHTML = `<img src="${RENDER_BASE}${id}.png?size=80" alt="${labels[i]}" onerror="this.parentElement.style.display='none'" /><span>${labels[i]}</span>`;
-    showcase.appendChild(el);
-  });
+  if (showcase) {
+    showcaseItems.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'showcase-item';
+      el.innerHTML = `<img src="${RENDER_BASE}${item.id}.png?size=80" alt="${item.label}" onerror="this.parentElement.style.display='none'" /><span>${item.label}</span>`;
+      showcase.appendChild(el);
+    });
+  }
 })();
 </script>
 </body>
