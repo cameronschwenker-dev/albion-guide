@@ -903,6 +903,116 @@ const armorData = {
       passive:'Guardian\'s Step — movement speed bonus for nearby allies',
       description:'The initiator boots. Forceful Sprint clears a path through enemies allowing your group to follow. The ally speed bonus is a rare group buff from boots.',
       bestFor:['GvG initiation','ZvZ frontline','Group mobility'], meta:true },
+
+    // ── SET4 & Faction Helmets ──────────────────────────────
+    { id:'druidCowl', slot:'Head', armorType:'Cloth', name:'Druid Cowl', role:'Nature Healer',
+      ability:'Lingering Spores — releases a persistent spore cloud that heals allies standing inside it',
+      passive:'Nature\'s Wisdom — +8% effectiveness to all nature magic',
+      description:'The dedicated nature healer helmet. Lingering Spores creates a ground-based HoT zone — excellent in static fights where allies hold position. Pairs naturally with Great Nature Staff and Druidic Staff.',
+      bestFor:['Nature Staff healers','Group PvE','Sustained healing'], meta:false },
+
+    { id:'feyscaleCowl', slot:'Head', armorType:'Cloth', name:'Feyscale Cowl', role:'Utility Caster',
+      ability:'Fey Charm — briefly disorients a single enemy, causing them to walk randomly for 2 seconds',
+      passive:'Fey Aura — 5% chance to negate each incoming spell entirely',
+      description:'Morgana-faction cloth helmet. Fey Charm\'s disorientation is rare CC for a helmet slot. Fey Aura\'s spell negation makes you unpredictably tanky against caster-heavy compositions.',
+      bestFor:['Anti-caster builds','Solo PvP mage'], meta:false },
+
+    { id:'fiendCowl', slot:'Head', armorType:'Cloth', name:'Fiend Cowl', role:'Offensive Caster',
+      ability:'Searing Eye — channels a focused fire beam dealing damage over 2 seconds to a single target',
+      passive:'Hellfire Focus — +10% fire and curse damage',
+      description:'Hell-faction cloth helmet built for aggressive fire and curse mage builds. Searing Eye channels don\'t cost energy — free extra DPS. Hellfire Focus flat bonus stacks with weapon and chest bonuses.',
+      bestFor:['Fire Staff builds','Cursed Staff builds','Burst mages'], meta:false },
+
+    { id:'mercenaryHood', slot:'Head', armorType:'Leather', name:'Mercenary Hood', role:'Balanced Fighter',
+      ability:'Veteran\'s Instinct — brief burst of damage and CC resistance on activation',
+      passive:'Combat Experience — +5% damage against enemies with more max HP than you',
+      description:'The balanced leather SET4 helmet for all-rounder builds. Veteran\'s Instinct is a clean damage + survivability cooldown. Combat Experience rewards punching up — effective against tanks and bosses.',
+      bestFor:['Balanced builds','Solo PvE','Dungeon farming'], meta:false },
+
+    { id:'royalHood', slot:'Head', armorType:'Leather', name:'Royal Hood', role:'Support/Utility',
+      ability:'Royal Signal — marks nearby allies briefly granting them +20% movement speed',
+      passive:'Noble Presence — nearby allies take 5% reduced damage',
+      description:'Royal-faction leather helmet focused on group support. Royal Signal is a rare movement speed group buff from a helmet — extremely useful for repositioning groups in ZvZ or GvG. Noble Presence passive provides constant damage reduction.',
+      bestFor:['Group support','ZvZ mobility','GvG repositioning'], meta:false },
+
+    { id:'specterHood', slot:'Head', armorType:'Leather', name:'Specter Hood', role:'Evasion',
+      ability:'Phase Cloak — become partially incorporeal for 3 seconds, reducing all incoming damage by 35%',
+      passive:'Ghostly Presence — enemies have a 10% chance to miss attacks against you',
+      description:'Undead-faction leather helmet with exceptional damage mitigation through partial phasing. Phase Cloak is one of the strongest defensive cooldowns available to leather wearers — pop it when focused.',
+      bestFor:['Solo PvP survival','Gank escapes','Anti-burst builds'], meta:true },
+
+    { id:'judicatorHelmet', slot:'Head', armorType:'Plate', name:'Judicator Helmet', role:'CC Tank',
+      ability:'Judgment Strike — wide cone AoE stun in front of you hitting all enemies',
+      passive:'Iron Judgment — CC duration from all your abilities increased by 15%',
+      description:'The CC-specialist plate helmet. Judgment Strike in a cone hits multiple targets — excellent as an opener when enemies are clustered. Iron Judgment passive amplifies every CC ability in your kit.',
+      bestFor:['CC tank','GvG frontline','Crowd control builds'], meta:false },
+
+    { id:'royalHelmet', slot:'Head', armorType:'Plate', name:'Royal Helmet', role:'Commander/Support',
+      ability:'Battle Cry — grants all nearby allies +15% damage for 5 seconds',
+      passive:'Royal Command — nearby allies gain +5% resistance',
+      description:'The commander plate helmet. Battle Cry is a straightforward but powerful group damage cooldown — synchronise with your group\'s burst window for maximum value. Royal Command provides constant passive protection.',
+      bestFor:['Group damage windows','ZvZ calls','Crystal League'], meta:true },
+
+    { id:'graveguardHelmet', slot:'Head', armorType:'Plate', name:'Graveguard Helmet', role:'Death Tank',
+      ability:'Death\'s Stare — fear nearby enemies for 2 seconds causing them to flee',
+      passive:'Undead Resilience — HP regeneration triples when below 20% HP',
+      description:'Undead-faction plate helmet. Death\'s Stare fear is excellent crowd control for creating breathing room in melee brawls. Undead Resilience makes you extremely hard to finish off at low HP.',
+      bestFor:['1v1 brawling','Sustained fighting','Anti-melee builds'], meta:false },
+
+    // ── SET4 & Faction Boots ────────────────────────────────
+    { id:'druidSandals', slot:'Boots', armorType:'Cloth', name:'Druid Sandals', role:'Nature Healer',
+      ability:'Root Stride — sprint that roots the first enemy you run through',
+      passive:'Earthen Steps — leave a brief HoT trail that heals allies who walk through it',
+      description:'Nature healer boots that combine escape and offence. Root Stride roots a pursuer while you disengage. Earthen Steps trail lets your teammates heal passively as they advance behind you.',
+      bestFor:['Nature healer mobility','Kiting while healing'], meta:false },
+
+    { id:'feyscaleSandals', slot:'Boots', armorType:'Cloth', name:'Feyscale Sandals', role:'Mobile Caster',
+      ability:'Fairy Step — blink forward leaving a slow field at your departure point',
+      passive:'Fey Movement — +8% movement speed while any spell is on cooldown',
+      description:'Morgana boots with unique crowd control on escape. Fairy Step blinks you away while trapping pursuers in a slow zone — excellent anti-chase tool. Fey Movement keeps you constantly faster during active combat.',
+      bestFor:['Mobile caster','Anti-chase','Solo PvP mage'], meta:false },
+
+    { id:'fiendSandals', slot:'Boots', armorType:'Cloth', name:'Fiend Sandals', role:'Aggressive Caster',
+      ability:'Inferno Step — sprint that leaves a fire trail damaging enemies who walk through it',
+      passive:'Burning Stride — first spell after sprinting deals 15% bonus damage',
+      description:'Hell-faction boots that create terrain hazard as you move. Inferno Step trail forces enemies to route around you or take damage. Burning Stride rewards sprinting into range before opening your combo.',
+      bestFor:['Aggressive mage','Zone control','Fire Staff builds'], meta:false },
+
+    { id:'mercenaryShoes', slot:'Boots', armorType:'Leather', name:'Mercenary Shoes', role:'Balanced Fighter',
+      ability:'Double Step — two rapid consecutive short dashes in any direction',
+      passive:'Road-Worn — CC duration from all sources reduced by 15%',
+      description:'Practical balanced leather boots. Double Step provides excellent repositioning for dodging skill shots or repositioning mid-fight. Road-Worn CC reduction stacks with other anti-CC passives for a highly disruption-resistant build.',
+      bestFor:['Balanced builds','Anti-CC','Skilled repositioning'], meta:false },
+
+    { id:'royalShoes', slot:'Boots', armorType:'Leather', name:'Royal Shoes', role:'Support/Group',
+      ability:'Royal Stride — sprint to a targeted ally granting them a brief damage-absorbing shield',
+      passive:'Noble Stride — +10% movement speed aura for all nearby allies',
+      description:'Royal leather boots focused on protecting allies through mobility. Royal Stride lets you sprint to a distant ally and instantly shield them — excellent reactive play during focused fire. Noble Stride aura benefits the entire group constantly.',
+      bestFor:['Group support','Protecting backline','Escort builds'], meta:false },
+
+    { id:'specterShoes', slot:'Boots', armorType:'Leather', name:'Specter Shoes', role:'Ghost/Evasion',
+      ability:'Death Step — short-range phase teleport that passes through solid obstacles',
+      passive:'Spectral Walk — reduced detection range by enemy players while moving',
+      description:'Undead leather boots with a unique obstacle-phase teleport. Death Step can bypass walls, pillars, and terrain — enabling escapes impossible with any other boot. Spectral Walk makes you harder to spot while traveling.',
+      bestFor:['Escape artist builds','Black zone travel','Dungeon runs'], meta:false },
+
+    { id:'judicatorBoots', slot:'Boots', armorType:'Plate', name:'Judicator Boots', role:'CC Tank',
+      ability:'Tribunal March — charge forward stunning the first enemy hit',
+      passive:'Judicator\'s Stride — leave a slow trail on the ground when sprinting',
+      description:'CC-focused plate boots. Tribunal March stun on charge is a strong single-target CC opener. Judicator\'s Stride slow trail is exceptional — it forces enemies to route around your path or be slowed, giving your team huge positional advantage.',
+      bestFor:['CC tank','Frontline control','GvG'], meta:false },
+
+    { id:'royalBoots', slot:'Boots', armorType:'Plate', name:'Royal Boots', role:'Commander/Initiator',
+      ability:'Advance — charge forward knocking back enemies, allies behind gain a brief speed boost',
+      passive:'Royal March — +8% movement speed aura for all nearby allies',
+      description:'Royal plate boots that both charge forward AND benefit trailing allies. Advance knocks back the frontline creating a gap while your allies rush through behind you. Royal March aura provides constant positioning advantage to your whole group.',
+      bestFor:['Crystal League initiator','ZvZ charge','Group mobility'], meta:true },
+
+    { id:'graveguardBoots', slot:'Boots', armorType:'Plate', name:'Graveguard Boots', role:'Death Tank',
+      ability:'Grave March — charge that leaves an anti-heal trail reducing enemy healing by 40%',
+      passive:'Death\'s Embrace — incoming damage reduced by 30% when below 25% HP',
+      description:'Undead plate boots with the rare anti-heal utility. Grave March\'s trail directly counters healer-heavy compositions — enemies walking through your path cannot be efficiently healed. Death\'s Embrace survival passive at low HP makes you exceptionally hard to kill.',
+      bestFor:['Anti-healer builds','Last-stand tanking','Counter-healing comps'], meta:true },
   ]
 };
 

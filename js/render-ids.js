@@ -140,6 +140,9 @@ const armorRenderIds = {
   'soldierHelmet':   'T4_HEAD_PLATE_SET1',
   'knightHelmet':    'T4_HEAD_PLATE_SET2',
   'guardianHelmet':  'T4_HEAD_PLATE_SET3',
+  'judicatorHelmet': 'T4_HEAD_PLATE_SET4',
+  'royalHelmet':     'T4_HEAD_PLATE_ROYAL',
+  'graveguardHelmet':'T4_HEAD_PLATE_UNDEAD',
   // Plate Chests
   'soldierArmor':    'T4_ARMOR_PLATE_SET1',
   'knightArmor':     'T4_ARMOR_PLATE_SET2',
@@ -151,11 +154,17 @@ const armorRenderIds = {
   'soldierBoots':    'T4_SHOES_PLATE_SET1',
   'knightBoots':     'T4_SHOES_PLATE_SET2',
   'guardianBoots':   'T4_SHOES_PLATE_SET3',
+  'judicatorBoots':  'T4_SHOES_PLATE_SET4',
+  'royalBoots':      'T4_SHOES_PLATE_ROYAL',
+  'graveguardBoots': 'T4_SHOES_PLATE_UNDEAD',
 
   // Leather Helmets
   'hunterHood':      'T4_HEAD_LEATHER_SET1',
   'assassinHood':    'T4_HEAD_LEATHER_SET2',
   'stalkerHood':     'T4_HEAD_LEATHER_SET3',
+  'mercenaryHood':   'T4_HEAD_LEATHER_SET4',
+  'royalHood':       'T4_HEAD_LEATHER_ROYAL',
+  'specterHood':     'T4_HEAD_LEATHER_UNDEAD',
   // Leather Chests
   'hunterJacket':    'T4_ARMOR_LEATHER_SET1',
   'assassinJacket':  'T4_ARMOR_LEATHER_SET3',
@@ -167,11 +176,17 @@ const armorRenderIds = {
   'hunterShoes':     'T4_SHOES_LEATHER_SET1',
   'assassinShoes':   'T4_SHOES_LEATHER_SET2',
   'stalkerShoes':    'T4_SHOES_LEATHER_SET3',
+  'mercenaryShoes':  'T4_SHOES_LEATHER_SET4',
+  'royalShoes':      'T4_SHOES_LEATHER_ROYAL',
+  'specterShoes':    'T4_SHOES_LEATHER_UNDEAD',
 
   // Cloth Helmets
   'scholarCowl':     'T4_HEAD_CLOTH_SET1',
   'mageCowl':        'T4_HEAD_CLOTH_SET2',
   'clericCowl':      'T4_HEAD_CLOTH_SET3',
+  'druidCowl':       'T4_HEAD_CLOTH_SET4',
+  'feyscaleCowl':    'T4_HEAD_CLOTH_MORGANA',
+  'fiendCowl':       'T4_HEAD_CLOTH_HELL',
   // Cloth Chests
   'scholarRobe':     'T4_ARMOR_CLOTH_SET1',
   'mageRobe':        'T4_ARMOR_CLOTH_SET2',
@@ -183,6 +198,9 @@ const armorRenderIds = {
   'scholarSandals':  'T4_SHOES_CLOTH_SET1',
   'mageSandals':     'T4_SHOES_CLOTH_SET2',
   'clericSandals':   'T4_SHOES_CLOTH_SET3',
+  'druidSandals':    'T4_SHOES_CLOTH_SET4',
+  'feyscaleSandals': 'T4_SHOES_CLOTH_MORGANA',
+  'fiendSandals':    'T4_SHOES_CLOTH_HELL',
 };
 
 // ── HERO SHOWCASE — only confirmed-working IDs ────────────────
