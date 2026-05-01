@@ -47,6 +47,7 @@
   <link rel="stylesheet" href="css/visuals.css" />
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/redesign.css" />
+  <link rel="stylesheet" href="css/builder.css" />
   <style>
     /* Search dropdown */
     .topbar-search { position: relative; }
@@ -156,6 +157,8 @@
         <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildFilter('GvG')">💎 GvG / Crystal League</button>
         <div class="topnav-dd-divider"></div>
         <button class="topnav-dd-item" onclick="showSection('beginner-builds')">🌱 Beginner Builds (T4–T5)</button>
+        <div class="topnav-dd-divider"></div>
+        <button class="topnav-dd-item featured" onclick="showSection('character-builder')">🎮 Character Builder — Build Your Loadout</button>
       </div>
     </div>
 
@@ -236,6 +239,8 @@
     <button class="mnp-item" onclick="closeNav();setBuildFilter('Solo PvE');showSection('meta-builds')">🏚️ Solo PvE Builds</button>
     <button class="mnp-item" onclick="closeNav();setBuildFilter('ZvZ');showSection('meta-builds')">⚡ ZvZ Builds</button>
     <button class="mnp-item" onclick="closeNav();showSection('beginner-builds')">🌱 Beginner Builds</button>
+    <button class="mnp-item featured" onclick="closeNav();showSection('character-builder')">🎮 Character Builder</button>
+    <button class="mnp-item featured" onclick="closeNav();showSection('character-builder')">🎮 Character Builder</button>
   </div>
   <div class="mnp-divider"></div>
   <div class="mnp-section">
@@ -3272,6 +3277,18 @@
     </div>
   </section>
 
+
+  <!-- ============================================================ CHARACTER BUILDER -->
+  <section class="section" id="character-builder">
+    <div class="section-inner" style="padding-bottom:0">
+      <div class="page-header">
+        <div class="breadcrumb">Home <span>›</span> Character Builder</div>
+        <h2><span class="icon" style="background:rgba(201,168,76,0.2)">⚔️</span> Character Builder</h2>
+        <p>Build your character slot by slot — see estimated HP, silver cost, abilities from every piece, and your overall role.</p>
+      </div>
+    </div>
+    <div id="builderContainer"></div>
+  </section>
 </main>
 
 <!-- ===== FOOTER ===== -->
@@ -3306,6 +3323,7 @@
 </div>
 
 <script src="js/data.js"></script>
+<script src="js/builder.js"></script>
 <script src="js/crafting-data.js"></script>
 <script src="js/render-ids.js"></script>
 <script src="js/main.js"></script>

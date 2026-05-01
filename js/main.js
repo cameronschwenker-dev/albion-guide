@@ -81,6 +81,7 @@ const _pageTitles = {
   'beginner-builds':      'Beginner Builds (T4-T5) — Albion Online',
   'safe-travel':          'Safe Travel Guide — Albion Online',
   'passive-income':       'Passive Income Guide — Albion Online',
+  'character-builder':    'Character Builder — Build Your Loadout | Albion Online Guide',
 };
 
 function showSection(id) {
@@ -99,6 +100,7 @@ function showSection(id) {
 
   // Lazy-render data-driven sections
   if (id === 'home')                 initHomePage();
+  if (id === 'character-builder')   renderCharacterBuilder();
   if (id === 'weapons-encyclopedia') renderWeapons('all', false, '', 'weaponContent');
   if (id === 'armor-encyclopedia')   renderArmor('all');
   if (id === 'meta-builds')          renderBuilds('all');
@@ -191,6 +193,7 @@ const searchIndex = [
   { title:'Island & Mount Farming',   section:'island-guide',          keywords:'island mount farm horse ox breed passive income farming animal pasture sell mounts profit' },
   { title:'All Weapons',             section:'weapons-encyclopedia',  keywords:'weapons sword axe hammer spear dagger crossbow bow fire frost nature holy arcane cursed' },
   { title:'All Armor',               section:'armor-encyclopedia',    keywords:'armor helmet boots robe jacket plate cloth leather' },
+  { title:'Character Builder',         section:'character-builder',     keywords:'character builder loadout gear slots weapon armor cost hp stats build planner' },
   { title:'Builds',                   section:'meta-builds',           keywords:'meta build loadout bloodletter claws brimstone hallowfall frost sword crossbow nature spear weapon armor filter' },
   { title:'Content Rewards',         section:'content-rewards',       keywords:'rewards silver fame dungeon expedition hellgate hce gathering' },
 ];
