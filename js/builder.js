@@ -204,7 +204,6 @@ function calcFullSetCost() {
 
 function renderSlot(slotKey, emoji, label) {
   const item = builderState.slots[slotKey];
-  const cost = calcItemCost(slotKey);
 
   if (!item) {
     return `
@@ -241,7 +240,6 @@ function renderSlot(slotKey, emoji, label) {
 function renderBuilderStats() {
   const state  = builderState;
   const totalHP   = calcTotalHP(state);
-  const totalCost = calcTotalCost(state);
   const role      = detectRole(state);
   const dmgType   = detectDmgType(state);
   const filledCount = Object.values(state.slots).filter(Boolean).length;
@@ -276,13 +274,30 @@ function renderBuilderStats() {
     ['Potion',  'potion'],
   ].map(([label, key]) => {
     const hasItem = !!state.slots[key];
-    const cost = hasItem ? fmtSilver(calcItemCost(key)) : '—';
+    const live = hasItem ? getLivePrice(key) : null;
+    const cost = hasItem ? fmtSilver(live ? live.price : calcItemCost(key)) : '—';
+    const badge = live ? `<span title="Live price from ${live.city}" style="font-size:9px;background:rgba(74,156,110,0.2);color:#4a9c6e;border:1px solid rgba(74,156,110,0.3);border-radius:3px;padding:0 4px;margin-left:4px">LIVE</span>` : '';
     return `
       <div class="cost-row">
-        <span class="cost-row-slot">${label} ${hasItem ? `<span style="color:var(--text-dim)">(T${state.tier})</span>` : ''}</span>
+        <span class="cost-row-slot">${label} ${hasItem ? `<span style="color:var(--text-dim)">(T${state.tier})</span>${badge}` : ''}</span>
         <span class="cost-row-val ${hasItem?'':'empty'}">${cost}</span>
       </div>`;
   }).join('');
+
+  // Live-aware total
+  const liveTotalCost = (() => {
+    let t = 0;
+    ['weapon','offhand','helmet','chest','boots','food','potion'].forEach(slot => {
+      if (!state.slots[slot]) return;
+      const live = getLivePrice(slot);
+      t += live ? live.price : (SILVER_COST[slot]?.[state.tier] || 0);
+    });
+    return t;
+  })();
+  const anyLive = Object.keys(_livePrices).some(k => state.slots[k]);
+  const liveLabel = anyLive
+    ? '<span style="font-size:10px;background:rgba(74,156,110,0.15);color:#4a9c6e;border:1px solid rgba(74,156,110,0.3);border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle">LIVE</span>'
+    : '';
 
   const roleColor = {
     Healer:'#90d090', Tank:'#80b0e0', Assassin:'#e08080', 'Caster DPS':'#b090e8',
@@ -294,8 +309,8 @@ function renderBuilderStats() {
     <div class="stat-panel">
       <div class="stat-panel-title">💰 Silver Cost</div>
       <div class="cost-total">
-        <span class="cost-total-num">${fmtSilver(totalCost)}</span>
-        <span class="cost-total-label">silver${totalCost===0?' (nothing selected)':''}</span>
+        <span class="cost-total-num">${fmtSilver(liveTotalCost)}${liveLabel}</span>
+        <span class="cost-total-label">silver${liveTotalCost===0?' (nothing selected)':''}</span>
       </div>
       <div class="cost-rows">${costRows}</div>
     </div>
@@ -516,6 +531,7 @@ function selectItem(itemId) {
     closePicker();
     refreshBuilder();
     showToast(`${item.name} equipped!`);
+    setTimeout(fetchAndApplyLivePrices, 100);
   }
 }
 
@@ -533,13 +549,16 @@ function clearSlot(slot) {
 
 function clearAllSlots() {
   Object.keys(builderState.slots).forEach(k => builderState.slots[k] = null);
+  _livePrices = {};
   refreshBuilder();
   showToast('All slots cleared');
 }
 
 function setBuilderTier(tier) {
   builderState.tier = tier;
+  _livePrices = {}; // stale at new tier
   refreshBuilder();
+  setTimeout(fetchAndApplyLivePrices, 100);
 }
 
 // Close picker on overlay click or ESC
@@ -571,6 +590,105 @@ function randomBuild() {
 
   refreshBuilder();
   showToast('Random build generated!');
+}
+
+// ── Build from meta loadout ───────────────────────────────────
+function buildFromMeta(buildId) {
+  const build = (typeof metaBuilds !== 'undefined') && metaBuilds.find(b => b.id === buildId);
+  if (!build || !build.loadout) return;
+
+  const allArmor = [...(armorData.helmets||[]),...(armorData.chests||[]),...(armorData.boots||[])];
+
+  function normMatch(name, candidates) {
+    const norm = n => n.toLowerCase().replace(/'/g,'').replace(/\s*\(t[0-9][^)]*\)/gi,'').replace(/\s+/g,' ').trim();
+    const key = norm(name);
+    return candidates.find(c => norm(c.name) === key) ||
+           candidates.find(c => norm(c.name).startsWith(key)) ||
+           candidates.find(c => key.startsWith(norm(c.name).split(' ')[0]));
+  }
+
+  const lo = build.loadout;
+  builderState.tier = 6;
+
+  // Weapon
+  if (lo.weapon?.name) {
+    const w = normMatch(lo.weapon.name, weaponsData);
+    builderState.slots.weapon = w ? { ...w, renderId: weaponRenderIds[w.id] || null } : null;
+  }
+  // Off-hand
+  if (lo.offhand?.name) {
+    const o = normMatch(lo.offhand.name, offhandItems);
+    builderState.slots.offhand = o || null;
+  }
+  // Helmet
+  if (lo.helmet?.name) {
+    const heads = allArmor.filter(a => a.slot === 'Head');
+    const h = normMatch(lo.helmet.name, heads);
+    builderState.slots.helmet = h ? { ...h, renderId: armorRenderIds[h.id] || null } : null;
+  }
+  // Chest
+  if (lo.chest?.name) {
+    const chests = allArmor.filter(a => a.slot === 'Chest');
+    const c = normMatch(lo.chest.name, chests);
+    builderState.slots.chest = c ? { ...c, renderId: armorRenderIds[c.id] || null } : null;
+  }
+  // Boots
+  if (lo.boots?.name) {
+    const boots = allArmor.filter(a => a.slot === 'Boots');
+    const b = normMatch(lo.boots.name, boots);
+    builderState.slots.boots = b ? { ...b, renderId: armorRenderIds[b.id] || null } : null;
+  }
+  // Food
+  if (lo.food?.name) {
+    const f = normMatch(lo.food.name, foodItems);
+    builderState.slots.food = f || null;
+  }
+  // Potion
+  if (lo.potion?.name) {
+    const p = normMatch(lo.potion.name, potionItems);
+    builderState.slots.potion = p || null;
+  }
+
+  // Navigate to builder, render, then fetch live prices
+  closeQuiz?.();
+  showSection('character-builder');
+  setTimeout(() => {
+    renderCharacterBuilder();
+    fetchAndApplyLivePrices();
+    showToast(`🎮 ${build.name} loaded!`);
+  }, 150);
+}
+
+// Live price state
+let _livePrices = {}; // slotName → {price, city}
+let _livePricePending = false;
+
+async function fetchAndApplyLivePrices() {
+  if (!window.AlbionPrices) return;
+  if (_livePricePending) return;
+  _livePricePending = true;
+
+  // Show "fetching" badge on cost panel
+  const costNum = document.querySelector('.cost-total-num');
+  if (costNum) costNum.innerHTML += ' <span id="liveBadge" style="font-size:11px;color:var(--text-dim);vertical-align:middle">⏳</span>';
+
+  try {
+    _livePrices = await AlbionPrices.fetchBuilderPrices(builderState);
+    // Re-render stats panel with live data
+    const statsEl = document.getElementById('builderStats');
+    if (statsEl) statsEl.innerHTML = renderBuilderStats();
+  } finally {
+    _livePricePending = false;
+  }
+}
+
+function getLivePrice(slot) {
+  return _livePrices[slot] || null;
+}
+
+function calcItemCostLive(slotKey) {
+  const live = getLivePrice(slotKey);
+  return live ? live.price : calcItemCost(slotKey);
 }
 
 // ── Copy build text ───────────────────────────────────────────

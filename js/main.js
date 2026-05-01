@@ -975,7 +975,8 @@ function showQuizResult() {
       <div class="quiz-result-role">${top.role} · <span style="color:${tc[top.metaTier]}">${top.metaTier}-Tier</span> · ${top.cost} Cost · ${top.successRate||0}% success rate</div>
       <p class="quiz-result-summary">${top.summary}</p>
       <div class="quiz-result-btns">
-        <button class="btn btn-primary" onclick="closeQuiz();showSection('meta-builds');setTimeout(()=>document.getElementById('build-${top.id}')?.scrollIntoView({behavior:'smooth'}),300)">View Full Build →</button>
+        <button class="btn btn-primary" onclick="buildFromMeta('${top.id}')">🎮 Build This Loadout</button>
+        <button class="btn btn-outline" onclick="closeQuiz();showSection('meta-builds');setTimeout(()=>document.getElementById('build-${top.id}')?.scrollIntoView({behavior:'smooth'}),300)">View Full Build →</button>
         <button class="btn btn-outline" onclick="quizStep=0;Object.keys(quizAnswers).forEach(k=>delete quizAnswers[k]);renderQuizStep()">Try Again</button>
       </div>
       <div style="margin-top:16px;font-size:11px;color:var(--text-dim)">
