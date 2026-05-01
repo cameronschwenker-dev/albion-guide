@@ -216,7 +216,7 @@
   <!-- Right side -->
   <div class="topbar-right">
     <div class="topbar-search">
-      <input type="text" id="searchInput" placeholder="Search…" autocomplete="off" />
+      <input type="text" id="searchInput" placeholder="Search… ( / )" autocomplete="off" />
       <span class="search-icon">🔍</span>
       <div id="searchResults"></div>
     </div>
@@ -226,6 +226,41 @@
 </header>
 
 <!-- ===== MOBILE BOTTOM NAV ===== -->
+<!-- ===== MOBILE NAV PANEL ===== -->
+<div class="mobile-nav-panel" id="mobileNavPanel">
+  <div class="mnp-section">
+    <div class="mnp-section-title">Builds</div>
+    <button class="mnp-item featured" onclick="closeNav();setBuildFilter('all');showSection('meta-builds')">🎯 Find My Build — Quiz</button>
+    <button class="mnp-item" onclick="closeNav();setBuildFilter('all');showSection('meta-builds')">🏆 All 33 Builds</button>
+    <button class="mnp-item" onclick="closeNav();setBuildFilter('Solo PvP');showSection('meta-builds')">⚔️ Solo PvP Builds</button>
+    <button class="mnp-item" onclick="closeNav();setBuildFilter('Solo PvE');showSection('meta-builds')">🏚️ Solo PvE Builds</button>
+    <button class="mnp-item" onclick="closeNav();setBuildFilter('ZvZ');showSection('meta-builds')">⚡ ZvZ Builds</button>
+    <button class="mnp-item" onclick="closeNav();showSection('beginner-builds')">🌱 Beginner Builds</button>
+  </div>
+  <div class="mnp-divider"></div>
+  <div class="mnp-section">
+    <div class="mnp-section-title">Weapons & Armor</div>
+    <button class="mnp-item" onclick="closeNav();showSection('weapons-encyclopedia')">⚔️ All 84 Weapons</button>
+    <button class="mnp-item" onclick="closeNav();showSection('armor-encyclopedia')">🛡️ All Armor Pieces</button>
+    <button class="mnp-item" onclick="closeNav();showSection('combat')">📖 Combat Guide</button>
+  </div>
+  <div class="mnp-divider"></div>
+  <div class="mnp-section">
+    <div class="mnp-section-title">Progression</div>
+    <button class="mnp-item" onclick="closeNav();showSection('progression-roadmap')">🗺️ New Player Path</button>
+    <button class="mnp-item" onclick="closeNav();showSection('fame-farming')">⭐ Fame Farming</button>
+    <button class="mnp-item" onclick="closeNav();showSection('silver-guide')">🪙 Silver Making</button>
+    <button class="mnp-item" onclick="closeNav();showSection('island-guide')">🏝️ Island & Mounts</button>
+  </div>
+  <div class="mnp-divider"></div>
+  <div class="mnp-section">
+    <div class="mnp-section-title">Economy</div>
+    <button class="mnp-item" onclick="closeNav();showSection('crafting-guide')">⚒️ Crafting for Profit</button>
+    <button class="mnp-item" onclick="closeNav();showSection('economy')">📈 Market & Trading</button>
+    <button class="mnp-item" onclick="closeNav();showSection('content-rewards')">💎 Content Rewards</button>
+    <button class="mnp-item" onclick="closeNav();showSection('passive-income')">💤 Passive Income</button>
+  </div>
+</div>
 <nav class="mobile-bottom-nav">
   <div class="mbn-items">
     <button class="mbn-item active" onclick="showSection('home')"><span class="mbn-icon">🏠</span><span class="mbn-label">Home</span></button>
@@ -418,6 +453,9 @@
         <div class="item-showcase" id="heroShowcase" style="justify-content:center"></div>
       </div>
     </div>
+
+    <!-- Ad Zone — Leaderboard -->
+    <div class="ad-zone ad-zone-leaderboard" id="adHome"><!-- AdSense: ca-pub-XXXXXXXXXXXXXXXX / slot-XXXXXXXXXX --></div>
 
     <!-- MAGAZINE LAYOUT BODY -->
     <div class="home-magazine">

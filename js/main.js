@@ -612,9 +612,13 @@ function renderBuilds(tagFilter) {
 
         <div class="build-rewards"><strong>💰 Rewards:</strong> ${b.rewards}</div>
       </div>
-      <button class="build-toggle" onclick="toggleBuild(this)">
-        Full Details — Rotation &amp; Counters <span>▶</span>
-      </button>
+      <div class="build-actions">
+        <button class="build-toggle" onclick="toggleBuild(this)" style="flex:1">
+          Full Details — Rotation &amp; Counters <span>▶</span>
+        </button>
+        <button class="build-action-btn" onclick="copyBuild('${b.id}',this)" title="Copy build to clipboard">📋 Copy</button>
+        <a class="build-action-btn" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(b.name+' — '+b.metaTier+'-Tier Albion Online build. Full guide: https://albionnewbs.netlify.app')}" target="_blank" rel="noopener" title="Share on X/Twitter">𝕏 Share</a>
+      </div>
       <div class="build-expandable">
         <div style="font-size:12px;color:var(--gold-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Playstyle / Rotation</div>
         <ul class="playstyle-steps">${psSteps}</ul>
@@ -833,7 +837,7 @@ function renderRadarChart(scenarios) {
       <svg class="radar-svg" width="180" height="180" viewBox="0 0 180 180">
         ${gridLines}${axes}
         <polygon points="${dataPoints}" fill="rgba(201,168,76,0.18)" stroke="rgba(201,168,76,0.7)" stroke-width="1.5"/>
-        ${axisPoints.map((p,i)=>{const v=(scenarios[keys[i]]||0)/5;const a=(i/n)*Math.PI*2-Math.PI/2;const x=cx+maxR*v*Math.cos(a),y=cy+maxR*v*Math.sin(a);return `<circle cx="${x}" cy="${y}" r="3" fill="var(--gold)"/>`;}).join('')}
+        ${axisPoints.map((_,i)=>{const v=(scenarios[keys[i]]||0)/5;const a=(i/n)*Math.PI*2-Math.PI/2;const x=cx+maxR*v*Math.cos(a),y=cy+maxR*v*Math.sin(a);return `<circle cx="${x}" cy="${y}" r="3" fill="var(--gold)"/>`;}).join('')}
         ${lbs}
       </svg>
       <div class="radar-legend">
@@ -1381,8 +1385,118 @@ const observer = new IntersectionObserver(entries => {
 document.querySelectorAll('.progress-bar').forEach(bar => observer.observe(bar));
 
 // ============================================================
+// TOAST NOTIFICATIONS
+// ============================================================
+function showToast(message, type = 'success') {
+  const t = document.createElement('div');
+  t.className = `site-toast site-toast-${type}`;
+  t.textContent = message;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 2400);
+}
+
+// ============================================================
+// COPY BUILD TO CLIPBOARD
+// ============================================================
+function copyBuild(buildId, btn) {
+  const b = metaBuilds.find(x => x.id === buildId);
+  if (!b) return;
+  const lines = [
+    `${b.name} — ${b.metaTier}-Tier ${b.role}`,
+    `Cost: ${b.cost} | Success Rate: ${b.successRate||'?'}%`,
+    '',
+    'LOADOUT:',
+    ...Object.entries(b.loadout).map(([slot, item]) =>
+      `  ${slot.charAt(0).toUpperCase()+slot.slice(1)}: ${item.name} — ${item.note}`),
+    '',
+    b.summary,
+    '',
+    `Full guide: https://albionnewbs.netlify.app`,
+  ];
+  navigator.clipboard.writeText(lines.join('\n')).then(() => {
+    showToast('Build copied to clipboard!');
+    if (btn) { const orig = btn.textContent; btn.textContent = '✓ Copied'; setTimeout(() => btn.textContent = orig, 1800); }
+  }).catch(() => showToast('Copy failed — try manually selecting the text.', 'error'));
+}
+
+// ============================================================
+// SCROLL-TO-TOP BUTTON
+// ============================================================
+(function() {
+  const btn = document.createElement('button');
+  btn.id = 'scrollTopBtn';
+  btn.innerHTML = '↑';
+  btn.title = 'Back to top';
+  document.body.appendChild(btn);
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+})();
+
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
+document.addEventListener('keydown', e => {
+  // / or Ctrl+K → focus search
+  if ((e.key === '/' || (e.ctrlKey && e.key === 'k')) && document.activeElement?.tagName !== 'INPUT') {
+    e.preventDefault();
+    const inp = document.getElementById('searchInput');
+    if (inp) { inp.focus(); inp.select(); }
+  }
+  // Escape → close quiz, blur search
+  if (e.key === 'Escape') {
+    closeQuiz();
+    document.getElementById('searchInput')?.blur();
+    document.getElementById('searchResults').style.display = 'none';
+  }
+});
+
+// ============================================================
+// MOBILE TOPNAV DROPDOWNS (tap to toggle on touch devices)
+// ============================================================
+document.querySelectorAll('.topnav-item').forEach(item => {
+  const btn = item.querySelector('.topnav-btn');
+  const dd  = item.querySelector('.topnav-dropdown');
+  if (!btn || !dd) return;
+  btn.addEventListener('click', e => {
+    if (window.innerWidth > 1000) return; // desktop uses CSS hover
+    e.stopPropagation();
+    const open = item.classList.contains('tap-open');
+    document.querySelectorAll('.topnav-item.tap-open').forEach(i => i.classList.remove('tap-open'));
+    if (!open) item.classList.add('tap-open');
+  });
+});
+document.addEventListener('click', () => {
+  document.querySelectorAll('.topnav-item.tap-open').forEach(i => i.classList.remove('tap-open'));
+});
+
+// ============================================================
+// HAMBURGER / MOBILE NAV
+// ============================================================
+function closeNav() {
+  document.getElementById('mobileNavPanel')?.classList.remove('open');
+  document.getElementById('topnavHamburger')?.classList.remove('active');
+}
+
+document.getElementById('topnavHamburger')?.addEventListener('click', e => {
+  e.stopPropagation();
+  const panel = document.getElementById('mobileNavPanel');
+  const ham   = document.getElementById('topnavHamburger');
+  if (!panel) return;
+  const open = panel.classList.toggle('open');
+  ham.classList.toggle('active', open);
+  ham.textContent = open ? '✕' : '☰';
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#mobileNavPanel') && !e.target.closest('#topnavHamburger')) closeNav();
+});
+
+// ============================================================
 // INIT
 // ============================================================
-_buildImgMap();   // build cache synchronously before anything renders
+_buildImgMap();
 showSection('home');
 initHomePage();
