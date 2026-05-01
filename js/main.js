@@ -98,6 +98,7 @@ function showSection(id) {
   closeSidebar();
 
   // Lazy-render data-driven sections
+  if (id === 'home')                 initHomePage();
   if (id === 'weapons-encyclopedia') renderWeapons('all', false, '', 'weaponContent');
   if (id === 'armor-encyclopedia')   renderArmor('all');
   if (id === 'meta-builds')          renderBuilds('all');
@@ -527,16 +528,6 @@ function renderBuilds(tagFilter) {
     </div>`;
 
   container.innerHTML = patchBanner + '<div class="build-grid">' + filtered.map(b => {
-    const loadoutRows = Object.entries(b.loadout).map(([slot, item]) => {
-      const img = loadoutImg(item.name);
-      return `
-      <tr>
-        <td class="loadout-slot">${slot.charAt(0).toUpperCase() + slot.slice(1)}</td>
-        <td class="loadout-item"><div class="loadout-img-cell">${img}<span>${item.name}</span></div></td>
-        <td class="loadout-note">${item.note}</td>
-      </tr>`;
-    }).join('');
-
     const psSteps = b.playstyle.map((step, i) => `
       <li><div class="ps-num">${i+1}</div><span>${step}</span></li>`).join('');
 
@@ -593,33 +584,11 @@ function renderBuilds(tagFilter) {
           </div>
         </div>
 
-        <!-- Scenario suitability chart -->
-        ${b.scenarios ? `
-        <div class="scenario-chart">
-          <div class="scenario-chart-label">Scenario Suitability</div>
-          <div class="scenario-bars">
-            ${[
-              ['Solo Open World', b.scenarios.soloOpen],
-              ['Solo Dungeons',   b.scenarios.soloDung],
-              ['Group Dungeons',  b.scenarios.groupDung],
-              ['Hellgates',       b.scenarios.hellgate],
-              ['Small Group PvP', b.scenarios.smallPvP],
-              ['ZvZ',             b.scenarios.zvz],
-              ['GvG',             b.scenarios.gvg],
-              ['HCE',             b.scenarios.hce],
-            ].map(([label, val]) => `
-              <div class="scenario-row">
-                <span class="scenario-label">${label}</span>
-                <div class="scenario-track">
-                  ${Array.from({length:5},(_,i)=>`<div class="scenario-pip ${i<(val||0)?'on':''}"></div>`).join('')}
-                </div>
-                <span class="scenario-val">${val||0}/5</span>
-              </div>`).join('')}
-          </div>
-        </div>` : ''}
-
-        <div style="font-size:12px;color:var(--gold-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Loadout</div>
-        <table class="loadout-table">${loadoutRows}</table>
+        <!-- Radar chart + visual loadout side by side -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          ${renderRadarChart(b.scenarios)}
+          ${renderVisualLoadout(b.loadout)}
+        </div>
 
         <div class="build-rewards"><strong>💰 Rewards:</strong> ${b.rewards}</div>
       </div>
@@ -748,6 +717,293 @@ document.addEventListener('click', e => {
   btn.classList.add('active');
   renderRewards(btn.dataset.rfilter || 'all');
 });
+
+// ============================================================
+// VISUAL LOADOUT DISPLAY
+// ============================================================
+const _slotEmoji = {
+  weapon:'⚔️', offhand:'🛡️', helmet:'⛑️', chest:'👕', boots:'👟', food:'🍗', potion:'⚗️'
+};
+
+function renderVisualLoadout(loadout) {
+  const slot = (key) => {
+    const item = loadout[key];
+    if (!item) return '';
+    const img  = loadoutImg(item.name);
+    const rid  = img ? img.match(/src="([^"]+)"/)?.[1] : null;
+    return `
+      <div class="blv-slot${key==='food'||key==='potion'?' consumable':''}">
+        <div class="blv-slot-label">${key}</div>
+        <div class="blv-slot-img-wrap">
+          <div class="blv-slot-emoji">${_slotEmoji[key]||'📦'}</div>
+          ${rid ? `<img class="blv-slot-img" src="${rid}" alt="${item.name}" onerror="this.style.display='none'" />` : ''}
+        </div>
+        <div class="blv-slot-name">${item.name.replace(/\s*\(T\d[^)]*\)/i,'')}</div>
+        <div class="blv-slot-note">${item.note}</div>
+      </div>`;
+  };
+  return `
+    <div class="build-loadout-visual">
+      <div class="blv-title">Loadout</div>
+      <div class="blv-grid">
+        <div class="blv-row">${slot('helmet')}</div>
+        <div class="blv-row">${slot('weapon')}${slot('offhand')}</div>
+        <div class="blv-row">${slot('chest')}</div>
+        <div class="blv-row">${slot('boots')}</div>
+        <div class="blv-row">${slot('food')}${slot('potion')}</div>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// RADAR CHART (SVG)
+// ============================================================
+function renderRadarChart(scenarios) {
+  if (!scenarios) return '';
+  const keys   = ['soloOpen','soloDung','groupDung','hellgate','smallPvP','zvz','gvg','hce'];
+  const labels = ['Solo Open','Solo Dung','Group','Hellgate','Small PvP','ZvZ','GvG','HCE'];
+  const n      = keys.length;
+  const cx=90, cy=90, maxR=70;
+
+  const axisPoints = keys.map((_,i) => {
+    const a = (i/n)*Math.PI*2 - Math.PI/2;
+    return { x: cx + maxR*Math.cos(a), y: cy + maxR*Math.sin(a), lx: cx+(maxR+18)*Math.cos(a), ly: cy+(maxR+18)*Math.sin(a) };
+  });
+
+  const gridLevels = [0.25,0.5,0.75,1];
+  const gridLines  = gridLevels.map(f => {
+    const pts = keys.map((_,i) => {
+      const a = (i/n)*Math.PI*2 - Math.PI/2;
+      return `${cx+maxR*f*Math.cos(a)},${cy+maxR*f*Math.sin(a)}`;
+    }).join(' ');
+    return `<polygon points="${pts}" fill="none" stroke="rgba(42,48,80,0.8)" stroke-width="1"/>`;
+  }).join('');
+
+  const dataPoints = keys.map((k,i) => {
+    const v = (scenarios[k]||0)/5;
+    const a = (i/n)*Math.PI*2 - Math.PI/2;
+    return `${cx+maxR*v*Math.cos(a)},${cy+maxR*v*Math.sin(a)}`;
+  }).join(' ');
+
+  const axes = axisPoints.map(p => `<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="rgba(42,48,80,0.6)" stroke-width="1"/>`).join('');
+  const lbs  = axisPoints.map((p,i) => `<text x="${p.lx}" y="${p.ly}" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="rgba(122,128,152,0.9)">${labels[i]}</text>`).join('');
+
+  return `
+    <div class="radar-chart-wrap">
+      <svg class="radar-svg" width="180" height="180" viewBox="0 0 180 180">
+        ${gridLines}${axes}
+        <polygon points="${dataPoints}" fill="rgba(201,168,76,0.18)" stroke="rgba(201,168,76,0.7)" stroke-width="1.5"/>
+        ${axisPoints.map((p,i)=>{const v=(scenarios[keys[i]]||0)/5;const a=(i/n)*Math.PI*2-Math.PI/2;const x=cx+maxR*v*Math.cos(a),y=cy+maxR*v*Math.sin(a);return `<circle cx="${x}" cy="${y}" r="3" fill="var(--gold)"/>`;}).join('')}
+        ${lbs}
+      </svg>
+      <div class="radar-legend">
+        ${keys.map((k,i)=>`<div class="radar-legend-item"><div class="radar-pip" style="opacity:${0.3+(scenarios[k]||0)*0.14}"></div>${labels[i]}: <strong style="color:var(--text-bright)">${scenarios[k]||0}/5</strong></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// FIND MY BUILD QUIZ
+// ============================================================
+const quizSteps = [
+  { q:'How do you prefer to play?', options:[
+    { icon:'🗡️', label:'Solo',        sub:'Alone — roaming, farming, hunting', val:'solo' },
+    { icon:'👥', label:'With a Group',sub:'Team content, dungeons, ZvZ',        val:'group'},
+  ]},
+  { q:'Weapon style?', options:[
+    { icon:'⚔️', label:'Melee',   sub:'Get in close and fight face to face', val:'melee'  },
+    { icon:'🏹', label:'Ranged',  sub:'Crossbows, bows — safe distance',     val:'ranged' },
+    { icon:'🪄', label:'Magic',   sub:'Staffs — DPS, CC, or healing',         val:'magic'  },
+    { icon:'💚', label:'Healer',  sub:'Keep your team alive',                 val:'healer' },
+  ]},
+  { q:'Favourite content type?', options:[
+    { icon:'🏚️', label:'Dungeons/PvE', sub:'Safe farming, boss runs',       val:'pve' },
+    { icon:'🗡️', label:'PvP Fights',  sub:'Ganking, Hellgates, small scale',val:'pvp' },
+    { icon:'⚡',  label:'ZvZ / GvG',   sub:'Large battles, territory wars',  val:'zvz' },
+  ]},
+  { q:'What\'s your budget?', options:[
+    { icon:'💰', label:'Learning',  sub:'Under 1M silver — just starting',  val:'low'    },
+    { icon:'💰', label:'Ready',     sub:'1M–10M silver — somewhat geared',  val:'medium' },
+    { icon:'💰', label:'Endgame',   sub:'10M+ silver — min-max mode',       val:'high'   },
+  ]},
+];
+
+const quizAnswers = {};
+let quizStep = 0;
+
+function showQuiz() {
+  quizStep = 0;
+  Object.keys(quizAnswers).forEach(k => delete quizAnswers[k]);
+  document.getElementById('quizOverlay').classList.add('open');
+  renderQuizStep();
+}
+
+function closeQuiz() {
+  document.getElementById('quizOverlay').classList.remove('open');
+}
+
+function renderQuizStep() {
+  const modal = document.getElementById('quizModal');
+  const total = quizSteps.length;
+  const step  = quizSteps[quizStep];
+  const pct   = Math.round((quizStep/total)*100);
+
+  modal.innerHTML = `
+    <div class="quiz-header">
+      <div class="quiz-title">🎯 Find My Build</div>
+      <button class="quiz-close" onclick="closeQuiz()">✕</button>
+    </div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
+    <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">Step ${quizStep+1} of ${total}</div>
+    <div class="quiz-question">${step.q}</div>
+    <div class="quiz-options">
+      ${step.options.map(o=>`
+        <button class="quiz-option" onclick="quizAnswer('${o.val}')">
+          <span class="qo-icon">${o.icon}</span>
+          <span class="qo-label">${o.label}</span>
+          <span class="qo-sub">${o.sub}</span>
+        </button>`).join('')}
+    </div>`;
+}
+
+function quizAnswer(val) {
+  const keys = ['style','weapon','content','budget'];
+  quizAnswers[keys[quizStep]] = val;
+  quizStep++;
+  if (quizStep < quizSteps.length) { renderQuizStep(); return; }
+  showQuizResult();
+}
+
+function showQuizResult() {
+  // Score each build
+  const scored = metaBuilds.map(b => {
+    let score = 0;
+    const { style, weapon, content, budget } = quizAnswers;
+    // Style match
+    if (style==='solo'  && (b.tags.includes('Solo PvP')||b.tags.includes('Solo PvE'))) score+=3;
+    if (style==='group' && (b.tags.includes('Group PvP')||b.tags.includes('ZvZ')||b.tags.includes('GvG')||b.tags.includes('HCE'))) score+=3;
+    // Weapon match
+    const melee   = ['Swords','Axes','Hammers','Spears','Daggers','Quarterstaffs'];
+    const ranged  = ['Crossbows','Bows'];
+    const magic   = ['Fire Staffs','Frost Staffs','Cursed Staffs','Arcane Staffs','Nature Staffs'];
+    const healer  = ['Holy Staffs','Nature Staffs'];
+    if (weapon==='melee'  && melee.includes(b.weaponLine))  score+=2;
+    if (weapon==='ranged' && ranged.includes(b.weaponLine)) score+=2;
+    if (weapon==='magic'  && magic.includes(b.weaponLine))  score+=2;
+    if (weapon==='healer' && healer.includes(b.weaponLine)) score+=3;
+    // Content match
+    if (content==='pve' && (b.tags.includes('Solo PvE')||b.tags.includes('Group PvE')||b.tags.includes('Dungeons')||b.tags.includes('HCE'))) score+=2;
+    if (content==='pvp' && (b.tags.includes('Solo PvP')||b.tags.includes('Ganking')||b.tags.includes('Hellgate')||b.tags.includes('Group PvP'))) score+=2;
+    if (content==='zvz' && (b.tags.includes('ZvZ')||b.tags.includes('GvG')||b.tags.includes('Crystal League'))) score+=2;
+    // Budget match
+    const cheap = ['Low','Low-Medium'];
+    const mid   = ['Medium','Low-Medium'];
+    const exp   = ['High','Very High'];
+    if (budget==='low'    && cheap.includes(b.cost)) score+=1;
+    if (budget==='medium' && mid.includes(b.cost))   score+=1;
+    if (budget==='high'   && exp.includes(b.cost))   score+=1;
+    // Bonus for tier
+    if (b.metaTier==='S') score+=1;
+    score += (b.successRate||0)/25;
+    return { ...b, _score: score };
+  }).sort((a,b)=>b._score-a._score);
+
+  const top = scored[0];
+  const modal = document.getElementById('quizModal');
+  const tc = { S:'#e8c96a', A:'#4a9c6e', B:'#4a7fc1', C:'#7a8098' };
+
+  modal.innerHTML = `
+    <div class="quiz-header">
+      <div class="quiz-title">🎯 Your Build Match</div>
+      <button class="quiz-close" onclick="closeQuiz()">✕</button>
+    </div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:100%;background:var(--accent-green)"></div></div>
+    <div class="quiz-result">
+      <div class="quiz-result-label">✅ Best Match Found</div>
+      <div class="quiz-result-name">${top.name}</div>
+      <div class="quiz-result-role">${top.role} · <span style="color:${tc[top.metaTier]}">${top.metaTier}-Tier</span> · ${top.cost} Cost · ${top.successRate||0}% success rate</div>
+      <p class="quiz-result-summary">${top.summary}</p>
+      <div class="quiz-result-btns">
+        <button class="btn btn-primary" onclick="closeQuiz();showSection('meta-builds');setTimeout(()=>document.getElementById('build-${top.id}')?.scrollIntoView({behavior:'smooth'}),300)">View Full Build →</button>
+        <button class="btn btn-outline" onclick="quizStep=0;Object.keys(quizAnswers).forEach(k=>delete quizAnswers[k]);renderQuizStep()">Try Again</button>
+      </div>
+      <div style="margin-top:16px;font-size:11px;color:var(--text-dim)">
+        Runner-up: <strong style="color:var(--text)">${scored[1]?.name}</strong> (${scored[1]?.role})
+        &nbsp;·&nbsp; <strong style="color:var(--text)">${scored[2]?.name}</strong>
+      </div>
+    </div>`;
+}
+
+// Close quiz on overlay click
+document.getElementById('quizOverlay')?.addEventListener('click', e => {
+  if (e.target === document.getElementById('quizOverlay')) closeQuiz();
+});
+
+// ============================================================
+// HOME PAGE — featured build & weapon strip
+// ============================================================
+function initHomePage() {
+  // Featured build (top S-tier by successRate)
+  const featured = [...metaBuilds].filter(b=>b.metaTier==='S').sort((a,b)=>(b.successRate||0)-(a.successRate||0))[0];
+  if (featured) {
+    const tc = { S:'#e8c96a', A:'#4a9c6e', B:'#4a7fc1' };
+    const card = document.getElementById('featuredBuildCard');
+    const body = document.getElementById('featuredBuildBody');
+    if (card && body) {
+      card.querySelector('.featured-build-accent').style.background = `linear-gradient(90deg,${featured.color},transparent)`;
+      body.innerHTML = `
+        <div class="featured-build-label" style="color:${tc[featured.metaTier]||'var(--gold)'}">⭐ Build of the Week · ${featured.metaTier}-Tier</div>
+        <div class="featured-build-name">${featured.name}</div>
+        <div class="featured-build-role">${featured.role}</div>
+        <p class="featured-build-summary">${featured.summary}</p>
+        <div class="featured-build-meta">
+          <div class="featured-meta-item"><div class="featured-meta-label">Weapon</div><div class="featured-meta-value">${featured.weaponLine}</div></div>
+          <div class="featured-meta-item"><div class="featured-meta-label">Armor</div><div class="featured-meta-value">${featured.armorType}</div></div>
+          <div class="featured-meta-item"><div class="featured-meta-label">Cost</div><div class="featured-meta-value">${featured.cost}</div></div>
+          <div class="featured-meta-item"><div class="featured-meta-label">Success</div><div class="featured-meta-value" style="color:var(--accent-green)">${featured.successRate}%</div></div>
+        </div>
+        <div class="featured-build-weapons" id="featuredWeapons"></div>`;
+      // Load weapon images
+      setTimeout(() => {
+        const fw = document.getElementById('featuredWeapons');
+        if (fw && featured.loadout) {
+          Object.entries(featured.loadout).slice(0,4).forEach(([slot,item]) => {
+            const img = document.createElement('img');
+            const rid = _buildImgCache[_normName(item.name)];
+            if (rid) { img.src = itemImg(rid, 64); img.title = item.name; img.onerror = ()=>img.remove(); fw.appendChild(img); }
+          });
+        }
+      }, 100);
+    }
+  }
+
+  // Weapon type strip
+  const strip = document.getElementById('weaponStrip');
+  if (!strip) return;
+  const lines = [
+    {icon:'🗡️', label:'Swords', wl:'Swords'},
+    {icon:'🪓', label:'Axes',   wl:'Axes'},
+    {icon:'🔨', label:'Hammers',wl:'Hammers'},
+    {icon:'🔱', label:'Spears', wl:'Spears'},
+    {icon:'🔪', label:'Daggers',wl:'Daggers'},
+    {icon:'🥢', label:'Staves', wl:'Quarterstaffs'},
+    {icon:'🔫', label:'Xbows',  wl:'Crossbows'},
+    {icon:'🏹', label:'Bows',   wl:'Bows'},
+    {icon:'🔥', label:'Fire',   wl:'Fire Staffs'},
+    {icon:'❄️', label:'Frost',  wl:'Frost Staffs'},
+    {icon:'💀', label:'Cursed', wl:'Cursed Staffs'},
+    {icon:'🌿', label:'Nature', wl:'Nature Staffs'},
+    {icon:'✨', label:'Holy',   wl:'Holy Staffs'},
+    {icon:'🔮', label:'Arcane', wl:'Arcane Staffs'},
+  ];
+  lines.forEach(l => {
+    const div = document.createElement('div');
+    div.className = 'weapon-strip-item';
+    div.innerHTML = `<span class="ws-icon">${l.icon}</span><span class="ws-label">${l.label}</span>`;
+    div.onclick = () => { _buildFilters.weapon = l.wl; _buildFilters.role='all'; _buildFilters.armor='all'; showSection('meta-builds'); };
+    strip.appendChild(div);
+  });
+}
 
 // ============================================================
 // CRAFTING GUIDE
@@ -1057,3 +1313,5 @@ document.querySelectorAll('.progress-bar').forEach(bar => observer.observe(bar))
 // INIT
 // ============================================================
 showSection('home');
+// Home page needs _buildImgMap built first — defer slightly
+setTimeout(() => { _buildImgMap(); initHomePage(); }, 50);

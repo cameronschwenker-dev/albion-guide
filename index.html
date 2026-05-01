@@ -46,6 +46,7 @@
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/visuals.css" />
   <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/redesign.css" />
   <style>
     /* Search dropdown */
     .topbar-search { position: relative; }
@@ -127,12 +128,8 @@
 </head>
 <body>
 
-<!-- OVERLAY (mobile) -->
-<div class="overlay" id="overlay"></div>
-
-<!-- ===== TOPBAR ===== -->
+<!-- ===== TOPBAR / TOP NAV ===== -->
 <header class="topbar">
-  <button class="menu-toggle" id="menuToggle">&#9776;</button>
   <a class="topbar-logo" href="#" onclick="showSection('home'); return false;">
     <div class="logo-icon">⚔️</div>
     <div>
@@ -140,16 +137,109 @@
       <div class="logo-sub">Complete Reference</div>
     </div>
   </a>
-  <div class="topbar-actions">
-    <a class="topbar-kofi" href="https://ko-fi.com" target="_blank" rel="noopener" title="Support the guide">☕ Support</a>
+
+  <!-- Desktop nav links with dropdowns -->
+  <nav class="topnav-links">
+
+    <div class="topnav-item">
+      <button class="topnav-btn" onclick="showSection('meta-builds')">🏆 Builds <span class="nav-arrow">▾</span></button>
+      <div class="topnav-dropdown">
+        <button class="topnav-dd-item featured" onclick="showQuiz()">🎯 Find My Build — Quiz</button>
+        <div class="topnav-dd-divider"></div>
+        <div class="topnav-dd-section">By Role</div>
+        <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildFilter('all')">All 33 Builds</button>
+        <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildFilter('Solo PvP')">⚔️ Solo PvP</button>
+        <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildFilter('Solo PvE')">🏚️ Solo PvE</button>
+        <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildFilter('Group PvP')">👥 Group / Small Scale</button>
+        <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildFilter('ZvZ')">⚡ ZvZ Large Scale</button>
+        <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildFilter('Healer')">💚 Healer Builds</button>
+        <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildFilter('GvG')">💎 GvG / Crystal League</button>
+        <div class="topnav-dd-divider"></div>
+        <button class="topnav-dd-item" onclick="showSection('beginner-builds')">🌱 Beginner Builds (T4–T5)</button>
+      </div>
+    </div>
+
+    <div class="topnav-item">
+      <button class="topnav-btn" onclick="showSection('weapons-encyclopedia')">⚔️ Weapons <span class="nav-arrow">▾</span></button>
+      <div class="topnav-dropdown">
+        <button class="topnav-dd-item" onclick="showSection('weapons-encyclopedia')">All 84 Weapons</button>
+        <div class="topnav-dd-divider"></div>
+        <div class="topnav-dd-section">By Type</div>
+        <button class="topnav-dd-item" onclick="showSection('weapons-encyclopedia');renderWeapons('Melee',false,'','weaponContent')">🗡️ Melee Weapons</button>
+        <button class="topnav-dd-item" onclick="showSection('weapons-encyclopedia');renderWeapons('Ranged',false,'','weaponContent')">🏹 Ranged Weapons</button>
+        <button class="topnav-dd-item" onclick="showSection('weapons-encyclopedia');renderWeapons('Magic',false,'','weaponContent')">🪄 Magic Weapons</button>
+        <div class="topnav-dd-divider"></div>
+        <button class="topnav-dd-item" onclick="showSection('armor-encyclopedia')">🛡️ All Armor (54 pieces)</button>
+        <button class="topnav-dd-item" onclick="showSection('combat')">📖 Combat & Skills Guide</button>
+      </div>
+    </div>
+
+    <div class="topnav-item">
+      <button class="topnav-btn">📖 Guides <span class="nav-arrow">▾</span></button>
+      <div class="topnav-dropdown">
+        <div class="topnav-dd-section">New Player</div>
+        <button class="topnav-dd-item" onclick="showSection('getting-started')">🌱 Getting Started</button>
+        <button class="topnav-dd-item" onclick="showSection('progression-roadmap')">🗺️ Progression Roadmap</button>
+        <button class="topnav-dd-item" onclick="showSection('destiny-board')">🌟 Destiny Board</button>
+        <button class="topnav-dd-item" onclick="showSection('safe-travel')">🧭 Safe Travel</button>
+        <button class="topnav-dd-item" onclick="showSection('food-potions')">🍖 Food &amp; Potions</button>
+        <div class="topnav-dd-divider"></div>
+        <div class="topnav-dd-section">Open World</div>
+        <button class="topnav-dd-item" onclick="showSection('gathering')">⛏️ Gathering</button>
+        <button class="topnav-dd-item" onclick="showSection('pve')">👹 PvE &amp; Dungeons</button>
+        <button class="topnav-dd-item" onclick="showSection('pvp')">🗡️ PvP Guide</button>
+        <button class="topnav-dd-item" onclick="showSection('roads')">🌀 Roads of Avalon</button>
+        <div class="topnav-dd-divider"></div>
+        <div class="topnav-dd-section">Endgame</div>
+        <button class="topnav-dd-item" onclick="showSection('guilds')">🛡️ Guilds &amp; Alliances</button>
+        <button class="topnav-dd-item" onclick="showSection('endgame')">👑 Endgame Content</button>
+        <button class="topnav-dd-item" onclick="showSection('tips')">💡 Tips &amp; Tricks</button>
+      </div>
+    </div>
+
+    <div class="topnav-item">
+      <button class="topnav-btn">💰 Economy <span class="nav-arrow">▾</span></button>
+      <div class="topnav-dropdown">
+        <button class="topnav-dd-item" onclick="showSection('silver-guide')">🪙 Silver Making Guide</button>
+        <button class="topnav-dd-item" onclick="showSection('fame-farming')">⭐ Fame Farming Guide</button>
+        <button class="topnav-dd-item" onclick="showSection('crafting-guide')">⚒️ Crafting for Profit</button>
+        <button class="topnav-dd-item" onclick="showSection('economy')">📈 Market &amp; Trading</button>
+        <button class="topnav-dd-item" onclick="showSection('passive-income')">💤 Passive Income</button>
+        <button class="topnav-dd-item" onclick="showSection('island-guide')">🏝️ Island &amp; Mount Farming</button>
+        <div class="topnav-dd-divider"></div>
+        <button class="topnav-dd-item" onclick="showSection('content-rewards')">💎 Content Rewards &amp; Silver/Hour</button>
+      </div>
+    </div>
+
+  </nav>
+
+  <!-- Right side -->
+  <div class="topbar-right">
+    <div class="topbar-search">
+      <input type="text" id="searchInput" placeholder="Search…" autocomplete="off" />
+      <span class="search-icon">🔍</span>
+      <div id="searchResults"></div>
+    </div>
+    <a class="topbar-kofi" href="https://ko-fi.com" target="_blank" rel="noopener">☕</a>
     <a class="topbar-play" href="https://albiononline.com/?ref=YOURCODE" target="_blank" rel="noopener">▶ Play Free</a>
   </div>
-  <div class="topbar-search">
-    <input type="text" id="searchInput" placeholder="Search guides…" autocomplete="off" />
-    <span class="search-icon">🔍</span>
-    <div id="searchResults"></div>
-  </div>
 </header>
+
+<!-- ===== MOBILE BOTTOM NAV ===== -->
+<nav class="mobile-bottom-nav">
+  <div class="mbn-items">
+    <button class="mbn-item active" onclick="showSection('home')"><span class="mbn-icon">🏠</span><span class="mbn-label">Home</span></button>
+    <button class="mbn-item" onclick="showSection('meta-builds')"><span class="mbn-icon">🏆</span><span class="mbn-label">Builds</span></button>
+    <button class="mbn-item" onclick="showQuiz()"><span class="mbn-icon">🎯</span><span class="mbn-label">Find Build</span></button>
+    <button class="mbn-item" onclick="showSection('weapons-encyclopedia')"><span class="mbn-icon">⚔️</span><span class="mbn-label">Weapons</span></button>
+    <button class="mbn-item" onclick="showSection('silver-guide')"><span class="mbn-icon">🪙</span><span class="mbn-label">Silver</span></button>
+  </div>
+</nav>
+
+<!-- ===== FIND MY BUILD QUIZ ===== -->
+<div class="quiz-overlay" id="quizOverlay">
+  <div class="quiz-modal" id="quizModal"></div>
+</div>
 
 <!-- ===== SIDEBAR ===== -->
 <nav class="sidebar" id="sidebar">
@@ -300,15 +390,12 @@
 
   <!-- ============================================================ HOME -->
   <section class="section active" id="home">
+    <!-- FULL WIDTH HERO -->
     <div class="hero">
-      <!-- Floating item artwork -->
       <div class="hero-items" id="heroItems"></div>
-
-      <div class="hero-badge">⚔️ Complete Guide 2024 — Updated Weekly</div>
+      <div class="hero-badge">⚔️ Complete Guide 2024 — Updated Monthly</div>
       <h1>Master <span>Albion Online</span></h1>
-      <p>The most detailed free guide on the web. Builds, weapons, crafting, silver farming — everything from your first login to Crystal League endgame.</p>
-
-      <!-- Stats bar -->
+      <p>The most detailed free guide on the web. 33 builds, 84 weapons, crafting calculators, and step-by-step progression from day one to Crystal League.</p>
       <div class="hero-stats">
         <div class="hero-stat"><span class="hero-stat-num">33</span><span class="hero-stat-label">Meta Builds</span></div>
         <div class="hero-stat-divider"></div>
@@ -316,211 +403,98 @@
         <div class="hero-stat-divider"></div>
         <div class="hero-stat"><span class="hero-stat-num">54</span><span class="hero-stat-label">Armor Pieces</span></div>
         <div class="hero-stat-divider"></div>
-        <div class="hero-stat"><span class="hero-stat-num">15</span><span class="hero-stat-label">Content Guides</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">15+</span><span class="hero-stat-label">Deep Guides</span></div>
         <div class="hero-stat-divider"></div>
-        <div class="hero-stat"><span class="hero-stat-num">100%</span><span class="hero-stat-label">Free</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">Free</span><span class="hero-stat-label">Always</span></div>
       </div>
-
       <div class="hero-btn-group">
-        <button class="btn btn-primary" data-goto="progression-roadmap">🗺️ New Player Path</button>
-        <button class="btn btn-outline" data-goto="meta-builds">🏆 Builds</button>
+        <button class="btn btn-primary" onclick="showQuiz()">🎯 Find My Build</button>
+        <button class="btn btn-outline" data-goto="progression-roadmap">🗺️ New Player Path</button>
         <button class="btn btn-outline" data-goto="silver-guide">🪙 Make Silver</button>
         <a class="btn btn-play" href="https://albiononline.com/?ref=YOURCODE" target="_blank" rel="noopener">▶ Play Free</a>
       </div>
-
-      <!-- Endgame item showcase strip -->
       <div class="hero-showcase-strip">
         <div class="hero-showcase-label">All Weapon Types Covered</div>
         <div class="item-showcase" id="heroShowcase" style="justify-content:center"></div>
       </div>
     </div>
 
-    <div class="content-section">
-      <h3>📖 What is Albion Online?</h3>
-      <p>Albion Online is a <strong>sandbox MMORPG</strong> developed by Sandbox Interactive. Unlike traditional MMOs, there are <strong>no classes</strong> — you are what you wear. Your equipped gear determines your abilities, and you can freely switch between playstyles by changing your loadout.</p>
-      <p>The game features a fully <strong>player-driven economy</strong>, open-world PvP, territory control, deep crafting, and a rich destiny board progression system. It is available on PC, Mac, iOS, and Android and offers cross-platform play.</p>
-    </div>
+    <!-- MAGAZINE LAYOUT BODY -->
+    <div class="home-magazine">
 
-    <!-- Quick guide cards -->
-    <div class="cards-grid">
-      <div class="card" data-goto="getting-started">
-        <div class="card-icon">🌱</div>
-        <h3>Getting Started</h3>
-        <p>Account creation, the tutorial island, your first city, and early goals to focus on.</p>
-        <span class="card-tag tag-beginner">Beginner</span>
-      </div>
-      <div class="card" data-goto="destiny-board">
-        <div class="card-icon">🌟</div>
-        <h3>Destiny Board</h3>
-        <p>The heart of Albion's progression. Learn how to unlock nodes and plan your path efficiently.</p>
-        <span class="card-tag tag-beginner">Beginner</span>
-      </div>
-      <div class="card" data-goto="gathering">
-        <div class="card-icon">⛏️</div>
-        <h3>Gathering</h3>
-        <p>All five resource types, tier breakdowns, fame bonuses, and where to gather safely.</p>
-        <span class="card-tag tag-beginner">Beginner</span>
-      </div>
-      <div class="card" data-goto="crafting">
-        <div class="card-icon">🔨</div>
-        <h3>Crafting</h3>
-        <p>Refining, crafting stations, quality tiers, and how to profit from the crafting economy.</p>
-        <span class="card-tag tag-intermediate">Intermediate</span>
-      </div>
-      <div class="card" data-goto="combat">
-        <div class="card-icon">⚔️</div>
-        <h3>Combat &amp; Builds</h3>
-        <p>Weapons, armor, spells, and how to build effective solo, small group, and zerg builds.</p>
-        <span class="card-tag tag-intermediate">Intermediate</span>
-      </div>
-      <div class="card" data-goto="pvp">
-        <div class="card-icon">🗡️</div>
-        <h3>PvP &amp; Open World</h3>
-        <p>Zone danger levels, flagging, ganking, HCE, and how to survive or thrive in red/black zones.</p>
-        <span class="card-tag tag-advanced">Advanced</span>
-      </div>
-      <div class="card" data-goto="economy">
-        <div class="card-icon">💰</div>
-        <h3>Economy &amp; Trading</h3>
-        <p>The player market, flipping, transport profits, and how to make consistent silver.</p>
-        <span class="card-tag tag-intermediate">Intermediate</span>
-      </div>
-      <div class="card" data-goto="guilds">
-        <div class="card-icon">🛡️</div>
-        <h3>Guilds &amp; Alliances</h3>
-        <p>Guild mechanics, territory control, GvG, and how Season Points and rankings work.</p>
-        <span class="card-tag tag-advanced">Advanced</span>
-      </div>
-      <div class="card" data-goto="endgame">
-        <div class="card-icon">👑</div>
-        <h3>Endgame Content</h3>
-        <p>Hardcore Expeditions, Crystal League arenas, the Season meta, and advanced silver farms.</p>
-        <span class="card-tag tag-advanced">Advanced</span>
-      </div>
-    </div>
+      <!-- Featured build + Quick start -->
+      <div class="home-featured-row">
+        <div class="featured-build-card" id="featuredBuildCard" onclick="showSection('meta-builds')">
+          <div class="featured-build-accent"></div>
+          <div class="featured-build-body" id="featuredBuildBody">
+            <div class="featured-build-label">⭐ Build of the Week</div>
+            <div class="featured-build-name">Loading…</div>
+          </div>
+        </div>
 
-    <div class="content-section">
-      <h3>🗺️ Progression Guides — Start Here</h3>
-      <div class="cards-grid">
-        <div class="card" data-goto="progression-roadmap">
-          <div class="card-icon">🗺️</div>
-          <h3>Progression Roadmap</h3>
-          <p>Week-by-week from Day 1 to endgame. Exact milestones, what to prioritise each stage, and how to avoid the common stuck points.</p>
-          <span class="card-tag tag-beginner">Start Here</span>
-        </div>
-        <div class="card" data-goto="fame-farming">
-          <div class="card-icon">⭐</div>
-          <h3>Fame Farming Guide</h3>
-          <p>The fastest route from T3 to T8. Best methods at every tier, fame/hour estimates, and how to stack every bonus.</p>
-          <span class="card-tag tag-beginner">All Tiers</span>
-        </div>
-        <div class="card" data-goto="silver-guide">
-          <div class="card-icon">🪙</div>
-          <h3>Silver Making Guide</h3>
-          <p>From broke to rich — best money methods organised by your current silver amount so you always know your next move.</p>
-          <span class="card-tag tag-intermediate">All Stages</span>
-        </div>
-        <div class="card" data-goto="island-guide">
-          <div class="card-icon">🏝️</div>
-          <h3>Island &amp; Mount Farming</h3>
-          <p>Build a profitable private island, breed horses and oxen, and sell mounts for consistent passive income.</p>
-          <span class="card-tag tag-intermediate">Passive Income</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="content-section">
-      <h3>🔬 Deep Dive Guides</h3>
-      <div class="cards-grid">
-        <div class="card" data-goto="crafting-guide">
-          <div class="card-icon">⚒️</div>
-          <h3>Crafting for Profit</h3>
-          <p>Focus points, city return rates, the maths behind crafting margins, and exactly which items are most profitable at each tier.</p>
-          <span class="card-tag tag-intermediate">All Tiers</span>
-        </div>
-        <div class="card" data-goto="food-potions">
-          <div class="card-icon">🍖</div>
-          <h3>Food &amp; Potions</h3>
-          <p>The most overlooked 20% damage/survivability boost. Exactly what to eat and drink for every activity and build type.</p>
-          <span class="card-tag tag-beginner">All Builds</span>
-        </div>
-        <div class="card" data-goto="beginner-builds">
-          <div class="card-icon">🌱</div>
-          <h3>Beginner Builds (T4–T5)</h3>
-          <p>Cheap, forgiving starter builds with full loadouts, costs, and a plain-English explanation of why every piece was chosen.</p>
-          <span class="card-tag tag-beginner">New Players</span>
-        </div>
-        <div class="card" data-goto="safe-travel">
-          <div class="card-icon">🧭</div>
-          <h3>Safe Travel Guide</h3>
-          <p>How to move between cities safely, avoid gank corridors, use Roads of Avalon as shortcuts, and escape when caught.</p>
-          <span class="card-tag tag-beginner">Survival</span>
-        </div>
-        <div class="card" data-goto="passive-income">
-          <div class="card-icon">💤</div>
-          <h3>Passive Income Guide</h3>
-          <p>All island strategies compared — crops, cooking supply, alchemy, mount breeding, and using your island as a crafting hub.</p>
-          <span class="card-tag tag-intermediate">Passive</span>
+        <div class="quick-start-panel">
+          <div class="quick-start-title">Quick Start</div>
+          <button class="quick-start-link primary" onclick="showQuiz()">
+            <span class="qs-icon">🎯</span>
+            <span class="qs-text"><span>Find My Build</span><span class="qs-sub">Answer 4 questions, get your build</span></span>
+            <span class="qs-arrow">→</span>
+          </button>
+          <button class="quick-start-link" onclick="showSection('progression-roadmap')">
+            <span class="qs-icon">🗺️</span>
+            <span class="qs-text"><span>New Player Path</span><span class="qs-sub">Day 1 → Endgame roadmap</span></span>
+            <span class="qs-arrow">→</span>
+          </button>
+          <button class="quick-start-link" onclick="showSection('silver-guide')">
+            <span class="qs-icon">🪙</span>
+            <span class="qs-text"><span>Make Silver</span><span class="qs-sub">Find your stage, get a method</span></span>
+            <span class="qs-arrow">→</span>
+          </button>
+          <button class="quick-start-link" onclick="showSection('fame-farming')">
+            <span class="qs-icon">⭐</span>
+            <span class="qs-text"><span>Fame Farming</span><span class="qs-sub">T3 → T8 fastest routes</span></span>
+            <span class="qs-arrow">→</span>
+          </button>
+          <button class="quick-start-link" onclick="showSection('beginner-builds')">
+            <span class="qs-icon">🌱</span>
+            <span class="qs-text"><span>Beginner Builds</span><span class="qs-sub">Cheap T4–T5 starter loadouts</span></span>
+            <span class="qs-arrow">→</span>
+          </button>
+          <a class="quick-start-link play-btn" href="https://albiononline.com/?ref=YOURCODE" target="_blank" rel="noopener">
+            <span class="qs-icon">▶</span>
+            <span class="qs-text"><span>Play Albion Free</span><span class="qs-sub">F2P — no credit card needed</span></span>
+            <span class="qs-arrow">↗</span>
+          </a>
         </div>
       </div>
-    </div>
 
-    <div class="content-section">
-      <h3>📚 Encyclopedia &amp; Meta Reference</h3>
-      <div class="cards-grid">
-        <div class="card" data-goto="weapons-encyclopedia">
-          <div class="card-icon">⚔️</div>
-          <h3>All Weapons</h3>
-          <p>All 14 weapon lines with every named weapon — key abilities, ratings, meta picks, and pro tips for each.</p>
-          <span class="card-tag tag-all">84 Weapons</span>
-        </div>
-        <div class="card" data-goto="armor-encyclopedia">
-          <div class="card-icon">🛡️</div>
-          <h3>All Armor</h3>
-          <p>Every helmet, chest, and boot piece across cloth, leather, and plate — active abilities and passives explained.</p>
-          <span class="card-tag tag-all">27 Pieces</span>
-        </div>
-        <div class="card" data-goto="meta-builds">
-          <div class="card-icon">🏆</div>
-          <h3>Meta Builds</h3>
-          <p>11 fully detailed meta builds with exact loadouts, step-by-step rotations, counters, and reward estimates.</p>
-          <span class="card-tag tag-advanced">All Roles</span>
-        </div>
-        <div class="card" data-goto="content-rewards">
-          <div class="card-icon">💎</div>
-          <h3>Content Rewards</h3>
-          <p>Silver/hour, fame/hour, risk ratings, and full loot tables for every activity in the game.</p>
-          <span class="card-tag tag-all">15 Activities</span>
-        </div>
+      <!-- Weapon type strip -->
+      <div class="weapon-type-strip">
+        <div class="weapon-strip-title">Browse by Weapon Type</div>
+        <div class="weapon-strip-scroll" id="weaponStrip"></div>
       </div>
-    </div>
 
-    <div class="info-block tip">
-      <div class="info-title">💡 Tip for New Players</div>
-      <p>Don't rush. Albion Online rewards patience and learning the economy. In your first week, focus on the tutorial, unlock T4 tools on the Destiny Board, and explore Starter City markets before venturing into dangerous zones.</p>
-    </div>
-
-    <div class="content-section">
-      <h3>🗺️ Key Features at a Glance</h3>
-      <div class="two-col">
-        <div>
-          <div class="highlight"><strong>⚔️ Classless System</strong> — Your gear IS your class. Swap playstyle instantly.</div>
-          <div class="highlight"><strong>📦 Player Economy</strong> — 100% player-crafted gear. No vendor gear at endgame.</div>
-          <div class="highlight"><strong>🌍 Cross-Platform</strong> — PC, Mac, Android, iOS all share the same servers.</div>
-          <div class="highlight"><strong>🏰 Territory Wars</strong> — Guilds fight over land, buildings, and resources.</div>
-        </div>
-        <div>
-          <div class="highlight"><strong>🌱 Free to Play</strong> — F2P with optional Premium subscription for bonuses.</div>
-          <div class="highlight"><strong>💀 Full Loot PvP</strong> — Die in red/black zones and lose your gear.</div>
-          <div class="highlight"><strong>🗡️ Open World</strong> — Explore biomes, dungeons, roads, and Avalonian content.</div>
-          <div class="highlight"><strong>🤝 Social Focus</strong> — Designed around guilds, groups, and community trade.</div>
-        </div>
+      <!-- Guide cards grid -->
+      <div style="font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px">All Guides</div>
+      <div class="home-guides-row">
+        <div class="card" data-goto="getting-started"><div class="card-icon">🌱</div><h3>Getting Started</h3><p>Account creation, first city, tutorial, and your week-one goals.</p><span class="card-tag tag-beginner">New Player</span></div>
+        <div class="card" data-goto="destiny-board"><div class="card-icon">🌟</div><h3>Destiny Board</h3><p>How progression works, Learning Points, and the most efficient unlock path.</p><span class="card-tag tag-beginner">Beginner</span></div>
+        <div class="card" data-goto="crafting-guide"><div class="card-icon">⚒️</div><h3>Crafting for Profit</h3><p>Return rates, city bonuses, interactive profit calculator.</p><span class="card-tag tag-intermediate">Economy</span></div>
+        <div class="card" data-goto="gathering"><div class="card-icon">⛏️</div><h3>Gathering</h3><p>All 5 resource types, tier tables, best zones by stage.</p><span class="card-tag tag-beginner">Beginner</span></div>
+        <div class="card" data-goto="pvp"><div class="card-icon">🗡️</div><h3>PvP Guide</h3><p>Zone colors, flagging, ganking, and how to survive red/black zones.</p><span class="card-tag tag-intermediate">PvP</span></div>
+        <div class="card" data-goto="economy"><div class="card-icon">📈</div><h3>Market &amp; Trading</h3><p>Silver making methods, market flipping, transport arbitrage.</p><span class="card-tag tag-intermediate">Economy</span></div>
+        <div class="card" data-goto="pve"><div class="card-icon">👹</div><h3>PvE &amp; Dungeons</h3><p>Expeditions, solo dungeons, Hellgates, and HCE breakdown.</p><span class="card-tag tag-intermediate">PvE</span></div>
+        <div class="card" data-goto="guilds"><div class="card-icon">🛡️</div><h3>Guilds &amp; GvG</h3><p>Territory control, Season Points, Crystal League explained.</p><span class="card-tag tag-advanced">Endgame</span></div>
+        <div class="card" data-goto="passive-income"><div class="card-icon">💤</div><h3>Passive Income</h3><p>Island strategies — crops, mounts, alchemy, and crafting hubs.</p><span class="card-tag tag-intermediate">Economy</span></div>
+        <div class="card" data-goto="endgame"><div class="card-icon">👑</div><h3>Endgame</h3><p>HCE, Crystal League, ZvZ, and how to make 5M+/day.</p><span class="card-tag tag-advanced">Endgame</span></div>
+        <div class="card" data-goto="content-rewards"><div class="card-icon">💎</div><h3>Content Rewards</h3><p>Silver/hour and fame/hour tables for every activity type.</p><span class="card-tag tag-all">Reference</span></div>
+        <div class="card" data-goto="safe-travel"><div class="card-icon">🧭</div><h3>Safe Travel</h3><p>Routes, gank avoidance, and escape tactics when caught.</p><span class="card-tag tag-beginner">Survival</span></div>
       </div>
     </div>
   </section>
 
   <!-- ============================================================ GETTING STARTED -->
   <section class="section" id="getting-started">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Getting Started</div>
       <h2><span class="icon" style="background:rgba(74,156,110,0.2)">🌱</span> Getting Started</h2>
@@ -661,6 +635,7 @@
 
   <!-- ============================================================ DESTINY BOARD -->
   <section class="section" id="destiny-board">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Destiny Board</div>
       <h2><span class="icon" style="background:rgba(201,168,76,0.15)">🌟</span> The Destiny Board</h2>
@@ -752,6 +727,7 @@
 
   <!-- ============================================================ GATHERING -->
   <section class="section" id="gathering">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Gathering</div>
       <h2><span class="icon" style="background:rgba(74,120,74,0.2)">⛏️</span> Gathering</h2>
@@ -864,6 +840,7 @@
 
   <!-- ============================================================ CRAFTING -->
   <section class="section" id="crafting">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Crafting</div>
       <h2><span class="icon" style="background:rgba(130,80,50,0.2)">🔨</span> Crafting</h2>
@@ -965,6 +942,7 @@
 
   <!-- ============================================================ COMBAT & SKILLS -->
   <section class="section" id="combat">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Combat &amp; Skills</div>
       <h2><span class="icon" style="background:rgba(193,80,80,0.2)">⚔️</span> Combat &amp; Skills</h2>
@@ -1032,6 +1010,7 @@
 
   <!-- ============================================================ PvE -->
   <section class="section" id="pve">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> PvE Content</div>
       <h2><span class="icon" style="background:rgba(80,120,80,0.2)">👹</span> Open World PvE</h2>
@@ -1115,6 +1094,7 @@
 
   <!-- ============================================================ PvP -->
   <section class="section" id="pvp">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> PvP &amp; Open World</div>
       <h2><span class="icon" style="background:rgba(193,80,80,0.2)">🗡️</span> PvP &amp; Open World</h2>
@@ -1200,6 +1180,7 @@
 
   <!-- ============================================================ ECONOMY -->
   <section class="section" id="economy">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Economy</div>
       <h2><span class="icon" style="background:rgba(201,168,50,0.2)">💰</span> Economy &amp; Trading</h2>
@@ -1290,6 +1271,7 @@
 
   <!-- ============================================================ MOUNTS -->
   <section class="section" id="mounts">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Mounts &amp; Transport</div>
       <h2><span class="icon" style="background:rgba(130,100,60,0.2)">🐴</span> Mounts &amp; Transport</h2>
@@ -1344,6 +1326,7 @@
 
   <!-- ============================================================ HOUSING -->
   <section class="section" id="housing">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Islands &amp; Housing</div>
       <h2><span class="icon" style="background:rgba(60,130,60,0.2)">🏡</span> Islands &amp; Housing</h2>
@@ -1415,6 +1398,7 @@
 
   <!-- ============================================================ GUILDS -->
   <section class="section" id="guilds">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Guilds &amp; Alliances</div>
       <h2><span class="icon" style="background:rgba(74,100,193,0.2)">🛡️</span> Guilds &amp; Alliances</h2>
@@ -1482,6 +1466,7 @@
 
   <!-- ============================================================ ROADS OF AVALON -->
   <section class="section" id="roads">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Roads of Avalon</div>
       <h2><span class="icon" style="background:rgba(70,100,60,0.2)">🌀</span> Roads of Avalon</h2>
@@ -1537,6 +1522,7 @@
 
   <!-- ============================================================ ENDGAME -->
   <section class="section" id="endgame">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Endgame</div>
       <h2><span class="icon" style="background:rgba(201,168,76,0.2)">👑</span> Endgame &amp; Progression</h2>
@@ -1615,6 +1601,7 @@
 
   <!-- ============================================================ TIPS -->
   <section class="section" id="tips">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Tips &amp; Tricks</div>
       <h2><span class="icon" style="background:rgba(74,127,193,0.2)">💡</span> Tips &amp; Tricks</h2>
@@ -1700,6 +1687,7 @@
 
   <!-- ============================================================ WEAPONS ENCYCLOPEDIA -->
   <section class="section" id="weapons-encyclopedia">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Weapons Encyclopedia</div>
       <h2><span class="icon" style="background:rgba(193,80,80,0.2)">⚔️</span> All Weapons</h2>
@@ -1718,6 +1706,7 @@
 
   <!-- ============================================================ ARMOR ENCYCLOPEDIA -->
   <section class="section" id="armor-encyclopedia">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Armor Encyclopedia</div>
       <h2><span class="icon" style="background:rgba(74,127,193,0.2)">🛡️</span> All Armor</h2>
@@ -1734,6 +1723,7 @@
 
   <!-- ============================================================ META BUILDS -->
   <section class="section" id="meta-builds">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Builds</div>
       <h2><span class="icon" style="background:rgba(201,168,76,0.2)">🏆</span> Builds</h2>
@@ -1793,6 +1783,7 @@
 
   <!-- ============================================================ CONTENT REWARDS -->
   <section class="section" id="content-rewards">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Content Rewards</div>
       <h2><span class="icon" style="background:rgba(201,168,76,0.2)">💎</span> Content Rewards</h2>
@@ -1814,6 +1805,7 @@
 
   <!-- ============================================================ PROGRESSION ROADMAP -->
   <section class="section" id="progression-roadmap">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Progression Roadmap</div>
       <h2><span class="icon" style="background:rgba(74,156,110,0.2)">🗺️</span> Progression Roadmap</h2>
@@ -2080,6 +2072,7 @@
 
   <!-- ============================================================ FAME FARMING -->
   <section class="section" id="fame-farming">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Fame Farming</div>
       <h2><span class="icon" style="background:rgba(201,168,76,0.15)">⭐</span> Fame Farming Guide</h2>
@@ -2200,6 +2193,7 @@
 
   <!-- ============================================================ SILVER GUIDE -->
   <section class="section" id="silver-guide">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Silver Making Guide</div>
       <h2><span class="icon" style="background:rgba(180,180,60,0.15)">🪙</span> Silver Making Guide</h2>
@@ -2319,6 +2313,7 @@
 
   <!-- ============================================================ ISLAND & MOUNT GUIDE -->
   <section class="section" id="island-guide">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Island &amp; Mount Farming</div>
       <h2><span class="icon" style="background:rgba(60,130,60,0.2)">🏝️</span> Private Island &amp; Mount Farming</h2>
@@ -2562,6 +2557,7 @@
 
   <!-- ============================================================ CRAFTING FOR PROFIT -->
   <section class="section" id="crafting-guide">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Crafting for Profit</div>
       <h2><span class="icon" style="background:rgba(130,80,50,0.2)">⚒️</span> Crafting for Profit</h2>
@@ -2750,6 +2746,7 @@
 
   <!-- ============================================================ FOOD & POTIONS -->
   <section class="section" id="food-potions">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Food &amp; Potions</div>
       <h2><span class="icon" style="background:rgba(180,80,50,0.2)">🍖</span> Food &amp; Potions Guide</h2>
@@ -2858,6 +2855,7 @@
 
   <!-- ============================================================ BEGINNER BUILDS -->
   <section class="section" id="beginner-builds">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Beginner Builds</div>
       <h2><span class="icon" style="background:rgba(74,156,110,0.2)">🌱</span> Beginner Builds (T4–T5)</h2>
@@ -2982,6 +2980,7 @@
 
   <!-- ============================================================ SAFE TRAVEL -->
   <section class="section" id="safe-travel">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Safe Travel</div>
       <h2><span class="icon" style="background:rgba(74,127,193,0.2)">🧭</span> Safe Travel &amp; Zone Navigation</h2>
@@ -3090,6 +3089,7 @@
 
   <!-- ============================================================ PASSIVE INCOME -->
   <section class="section" id="passive-income">
+    <div class="section-inner">
     <div class="page-header">
       <div class="breadcrumb">Home <span>›</span> Passive Income Guide</div>
       <h2><span class="icon" style="background:rgba(60,130,60,0.2)">💤</span> Passive Income &amp; Island Guide</h2>
