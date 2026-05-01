@@ -143,17 +143,21 @@ document.addEventListener('click', e => {
   if (card) showSection(card.dataset.goto);
 });
 
-// Mobile sidebar
+// Legacy sidebar refs — sidebar is hidden in new layout but kept in DOM
+// overlay element was removed in redesign; guard all references
 const menuToggle = document.getElementById('menuToggle');
 const sidebar    = document.getElementById('sidebar');
-const overlay    = document.getElementById('overlay');
+const overlay    = document.getElementById('overlay'); // null in new layout — OK
 
 function closeSidebar() {
-  sidebar.classList.remove('open');
-  overlay.classList.remove('open');
+  sidebar?.classList.remove('open');
+  overlay?.classList.remove('open');
 }
-menuToggle.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); });
-overlay.addEventListener('click', closeSidebar);
+menuToggle?.addEventListener('click', () => {
+  sidebar?.classList.toggle('open');
+  overlay?.classList.toggle('open');
+});
+overlay?.addEventListener('click', closeSidebar);
 
 // ============================================================
 // SEARCH
