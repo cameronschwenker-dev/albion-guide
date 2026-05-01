@@ -525,7 +525,7 @@
 
       <!-- Weapon type strip -->
       <div class="weapon-type-strip">
-        <div class="weapon-strip-title">Browse by Weapon Type</div>
+        <div class="weapon-strip-title">Browse Builds by Weapon Type <span style="font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-left:8px">Click any to filter →</span></div>
         <div class="weapon-strip-scroll" id="weaponStrip"></div>
       </div>
 
@@ -3367,13 +3367,29 @@
     });
   }
 
-  // Showcase strip — one weapon per category
+  // Showcase strip — one weapon per category, click → filter builds
   const showcase = document.getElementById('heroShowcase');
   if (showcase) {
+    // Map showcase labels to weapon line filter values
+    const wlMap = {
+      'Swords':'Swords','Axes':'Axes','Hammers':'Hammers','Spears':'Spears',
+      'Daggers':'Daggers','Quarterstaffs':'Quarterstaffs','Crossbows':'Crossbows',
+      'Bows':'Bows','Fire Staffs':'Fire Staffs','Frost Staffs':'Frost Staffs',
+      'Hallowfall':'Holy Staffs','Arcane Staffs':'Arcane Staffs',
+    };
     showcaseItems.forEach(item => {
+      const wl = wlMap[item.label] || item.label;
       const el = document.createElement('div');
-      el.className = 'showcase-item';
-      el.innerHTML = `<img src="${RENDER_BASE}${item.id}.png?size=80" alt="${item.label}" onerror="this.parentElement.style.display='none'" /><span>${item.label}</span>`;
+      el.className = 'showcase-item clickable-weapon';
+      el.title = `View ${item.label} builds →`;
+      el.innerHTML = `
+        <img src="${RENDER_BASE}${item.id}.png?size=80" alt="${item.label}" onerror="this.parentElement.style.display='none'" />
+        <span class="sc-label">${item.label}</span>
+        <span class="sc-cta">View builds</span>`;
+      el.onclick = () => {
+        setBuildFilter('all', wl, 'all');
+        showSection('meta-builds');
+      };
       showcase.appendChild(el);
     });
   }

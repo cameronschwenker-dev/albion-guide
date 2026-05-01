@@ -398,30 +398,52 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 12px 14px;
+  gap: 4px;
+  padding: 10px 14px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 10px;
   cursor: pointer;
-  min-width: 80px;
-  transition: all 0.15s;
+  min-width: 82px;
+  transition: all 0.18s;
   flex-shrink: 0;
+  position: relative;
 }
 
 .weapon-strip-item:hover {
-  border-color: var(--gold-dim);
-  background: rgba(201,168,76,0.06);
-  transform: translateY(-2px);
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
 
+.weapon-strip-item::after {
+  content: '→ Builds';
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: var(--gold-dim);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+
+.weapon-strip-item:hover::after { opacity: 1; }
+
 .weapon-strip-item .ws-icon { font-size: 22px; }
-.weapon-strip-item .ws-label { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+.weapon-strip-item .ws-label { font-size: 11px; color: var(--text); white-space: nowrap; font-weight: 600; }
+.weapon-strip-item .ws-count { font-size: 9px; color: var(--gold-dim); white-space: nowrap; }
 .weapon-strip-item .ws-img {
   width: 36px; height: 36px;
   object-fit: contain;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
 }
+
+/* Scrollable strip needs bottom padding for the hover tooltip */
+.weapon-strip-scroll { padding-bottom: 28px !important; }
 
 /* ── Guide cards section ──────────────────────────────────── */
 .home-guides-row {

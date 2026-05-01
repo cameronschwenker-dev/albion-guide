@@ -254,16 +254,51 @@ img.item-render.broken { display: none; }
   transition: transform 0.2s, filter 0.2s;
 }
 
-.showcase-item img:hover {
-  transform: scale(1.15);
-  filter: drop-shadow(0 4px 16px rgba(201,168,76,0.5));
-}
-
 .showcase-item span {
   font-size: 10px;
   color: var(--text-dim);
   text-align: center;
+  white-space: nowrap;
 }
+
+/* Clickable variant used in hero showcase */
+.clickable-weapon {
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  transition: all 0.18s;
+  position: relative;
+}
+
+.clickable-weapon:hover {
+  border-color: var(--gold-dim);
+  background: rgba(201,168,76,0.07);
+  transform: translateY(-3px);
+}
+
+.clickable-weapon:hover img {
+  transform: scale(1.12);
+  filter: drop-shadow(0 4px 16px rgba(201,168,76,0.5));
+}
+
+.clickable-weapon .sc-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  transition: color 0.15s;
+}
+
+.clickable-weapon:hover .sc-label { color: var(--gold-light); }
+
+.clickable-weapon .sc-cta {
+  font-size: 9px;
+  color: var(--gold-dim);
+  opacity: 0;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+.clickable-weapon:hover .sc-cta { opacity: 1; }
 
 /* ===== BUILD CARD ACCENT COLORS ===== */
 /* Each build card gets a colored left glow based on role */

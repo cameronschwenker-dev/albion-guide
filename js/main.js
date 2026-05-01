@@ -1142,13 +1142,16 @@ function initHomePage() {
   ];
 
   lines.forEach(l => {
+    const count = metaBuilds.filter(b => b.weaponLine === l.wl).length;
     const div = document.createElement('div');
     div.className = 'weapon-strip-item';
-    div.innerHTML = `<span class="ws-icon">${l.icon}</span><span class="ws-label">${l.label}</span>`;
+    div.title = `${count} ${l.label} build${count!==1?'s':''} — click to browse`;
+    div.innerHTML = `
+      <span class="ws-icon">${l.icon}</span>
+      <span class="ws-label">${l.label}</span>
+      <span class="ws-count">${count} build${count!==1?'s':''}</span>`;
     div.onclick = () => {
-      _buildFilters.weapon = l.wl;
-      _buildFilters.role   = 'all';
-      _buildFilters.armor  = 'all';
+      setBuildFilter('all', l.wl, 'all');
       showSection('meta-builds');
     };
     strip.appendChild(div);
