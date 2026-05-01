@@ -489,8 +489,33 @@ function getRid(itemName) {
   return _buildImgCache[_normName(itemName)] || null;
 }
 
-// Active build filter state
+// Active build filter + sort state
 const _buildFilters = { role: 'all', weapon: 'all', armor: 'all' };
+let _buildSort = 'popular'; // popular | success | cheapest | easiest | tier
+
+const _costOrder = { 'Low':0, 'Low-Medium':1, 'Medium':2, 'High':3, 'Very High':4 };
+
+function setBuildSort(sort) {
+  _buildSort = sort;
+  document.querySelectorAll('#buildSortBar .sort-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.bsort === sort));
+  renderBuilds();
+}
+
+function _sortBuilds(arr) {
+  const copy = [...arr];
+  switch (_buildSort) {
+    case 'popular':  return copy.sort((a,b) => (b.popularity||0) - (a.popularity||0));
+    case 'success':  return copy.sort((a,b) => (b.successRate||0) - (a.successRate||0));
+    case 'cheapest': return copy.sort((a,b) => (_costOrder[a.cost]||99) - (_costOrder[b.cost]||99));
+    case 'easiest':  return copy.sort((a,b) => (a.difficulty||5) - (b.difficulty||5));
+    case 'tier': {
+      const t = {S:0,A:1,B:2,C:3};
+      return copy.sort((a,b) => (t[a.metaTier]||9) - (t[b.metaTier]||9));
+    }
+    default: return copy;
+  }
+}
 
 function setBuildFilter(role = 'all', weapon = 'all', armor = 'all') {
   _buildFilters.role   = role;
@@ -508,6 +533,8 @@ function syncBuildFilterUI() {
     b.classList.toggle('active', (b.dataset.wlfilter || 'all') === _buildFilters.weapon));
   document.querySelectorAll('#armorTypeFilterBar .filter-btn').forEach(b =>
     b.classList.toggle('active', (b.dataset.atfilter || 'all') === _buildFilters.armor));
+  document.querySelectorAll('#buildSortBar .sort-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.bsort === _buildSort));
 }
 
 // ============================================================
@@ -520,12 +547,12 @@ function renderBuilds(tagFilter) {
 
   syncBuildFilterUI();
 
-  const filtered = metaBuilds.filter(b => {
+  const filtered = _sortBuilds(metaBuilds.filter(b => {
     if (_buildFilters.role   !== 'all' && !b.tags.includes(_buildFilters.role))  return false;
     if (_buildFilters.weapon !== 'all' && b.weaponLine !== _buildFilters.weapon) return false;
     if (_buildFilters.armor  !== 'all' && b.armorType  !== _buildFilters.armor)  return false;
     return true;
-  });
+  }));
 
   if (!filtered.length) {
     container.innerHTML = `<div class="info-block warn" style="margin-top:20px">
@@ -536,11 +563,20 @@ function renderBuilds(tagFilter) {
     return;
   }
 
-  // Tier colours
   const tierColor = { S:'#e8c96a', A:'#4a9c6e', B:'#4a7fc1', C:'#7a8098' };
   const tierLabel = { S:'S-Tier', A:'A-Tier', B:'B-Tier', C:'C-Tier' };
+  const sortLabels = { popular:'Most Popular', success:'Success Rate', cheapest:'Cheapest First', easiest:'Easiest First', tier:'S-Tier First' };
 
-  // Patch banner — rendered once above the grid
+  // Result count bar
+  const resultBar = `
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+      <div style="font-size:13px;color:var(--text-dim)">
+        Showing <strong style="color:var(--text)">${filtered.length}</strong> build${filtered.length!==1?'s':''} — sorted by <strong style="color:var(--gold)">${sortLabels[_buildSort]}</strong>
+      </div>
+      <button class="btn btn-outline" style="font-size:11px;padding:5px 12px" onclick="showQuiz()">🎯 Not sure? Take the quiz →</button>
+    </div>`;
+
+  // Patch banner
   const patchBanner = `
     <div class="patch-banner">
       <div class="patch-banner-left">
@@ -553,7 +589,7 @@ function renderBuilds(tagFilter) {
       <a class="patch-notes-link" href="${metaPatchInfo.notes}" target="_blank" rel="noopener">Patch Notes ↗</a>
     </div>`;
 
-  container.innerHTML = patchBanner + '<div class="build-grid">' + filtered.map(b => {
+  container.innerHTML = patchBanner + resultBar + '<div class="build-grid">' + filtered.map(b => {
     try {
 
     const psSteps = (b.playstyle||[]).map((step, i) => `

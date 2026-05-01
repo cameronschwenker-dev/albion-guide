@@ -145,10 +145,17 @@
     <div class="topnav-item">
       <button class="topnav-btn" onclick="showSection('meta-builds')">🏆 Builds <span class="nav-arrow">▾</span></button>
       <div class="topnav-dropdown">
-        <button class="topnav-dd-item featured" onclick="showQuiz()">🎯 Find My Build — Quiz</button>
+        <button class="topnav-dd-item featured" onclick="showSection('meta-builds');setBuildFilter('all')">⚔️ All Builds — Most Popular</button>
+        <button class="topnav-dd-item" onclick="showQuiz()">🎯 Not sure? Take the quiz →</button>
+        <div class="topnav-dd-divider"></div>
+        <div class="topnav-dd-section">Sort By</div>
+        <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildSort('cheapest')">🪙 Cheapest First</button>
+        <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildSort('easiest')">🌱 Easiest First</button>
+        <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildSort('success')">✅ Highest Success Rate</button>
+        <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildSort('tier')">⭐ S-Tier Builds</button>
         <div class="topnav-dd-divider"></div>
         <div class="topnav-dd-section">By Role</div>
-        <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildFilter('all')">All 33 Builds</button>
+        <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildFilter('all')">All Builds</button>
         <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildFilter('Solo PvP')">⚔️ Solo PvP</button>
         <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildFilter('Solo PvE')">🏚️ Solo PvE</button>
         <button class="topnav-dd-item" onclick="showSection('meta-builds');setBuildFilter('Group PvP')">👥 Group / Small Scale</button>
@@ -233,7 +240,8 @@
 <div class="mobile-nav-panel" id="mobileNavPanel">
   <div class="mnp-section">
     <div class="mnp-section-title">Builds</div>
-    <button class="mnp-item featured" onclick="closeNav();setBuildFilter('all');showSection('meta-builds')">🎯 Find My Build — Quiz</button>
+    <button class="mnp-item featured" onclick="closeNav();setBuildFilter('all');showSection('meta-builds')">⚔️ Browse All Builds</button>
+    <button class="mnp-item" onclick="closeNav();showQuiz()">🎯 Find My Build — Quiz</button>
     <button class="mnp-item" onclick="closeNav();setBuildFilter('all');showSection('meta-builds')">🏆 All 33 Builds</button>
     <button class="mnp-item" onclick="closeNav();setBuildFilter('Solo PvP');showSection('meta-builds')">⚔️ Solo PvP Builds</button>
     <button class="mnp-item" onclick="closeNav();setBuildFilter('Solo PvE');showSection('meta-builds')">🏚️ Solo PvE Builds</button>
@@ -270,7 +278,7 @@
   <div class="mbn-items">
     <button class="mbn-item active" onclick="showSection('home')"><span class="mbn-icon">🏠</span><span class="mbn-label">Home</span></button>
     <button class="mbn-item" onclick="showSection('meta-builds')"><span class="mbn-icon">🏆</span><span class="mbn-label">Builds</span></button>
-    <button class="mbn-item" onclick="showQuiz()"><span class="mbn-icon">🎯</span><span class="mbn-label">Find Build</span></button>
+    <button class="mbn-item" onclick="showSection('character-builder')"><span class="mbn-icon">🎮</span><span class="mbn-label">Builder</span></button>
     <button class="mbn-item" onclick="showSection('weapons-encyclopedia')"><span class="mbn-icon">⚔️</span><span class="mbn-label">Weapons</span></button>
     <button class="mbn-item" onclick="showSection('silver-guide')"><span class="mbn-icon">🪙</span><span class="mbn-label">Silver</span></button>
   </div>
@@ -448,9 +456,9 @@
         <div class="hero-stat"><span class="hero-stat-num">Free</span><span class="hero-stat-label">Always</span></div>
       </div>
       <div class="hero-btn-group">
-        <button class="btn btn-primary" onclick="showQuiz()">🎯 Find My Build</button>
+        <button class="btn btn-primary" onclick="showSection('meta-builds')">⚔️ Browse Top Builds</button>
+        <button class="btn btn-outline" onclick="showQuiz()">🎯 Find My Build</button>
         <button class="btn btn-outline" data-goto="progression-roadmap">🗺️ New Player Path</button>
-        <button class="btn btn-outline" data-goto="silver-guide">🪙 Make Silver</button>
         <a class="btn btn-play" href="https://albiononline.com/?ref=YOURCODE" target="_blank" rel="noopener">▶ Play Free</a>
       </div>
       <div class="hero-showcase-strip">
@@ -477,9 +485,14 @@
 
         <div class="quick-start-panel">
           <div class="quick-start-title">Quick Start</div>
-          <button class="quick-start-link primary" onclick="showQuiz()">
+          <button class="quick-start-link primary" onclick="showSection('meta-builds')">
+            <span class="qs-icon">⚔️</span>
+            <span class="qs-text"><span>Browse Top Builds</span><span class="qs-sub">33 builds sorted by popularity</span></span>
+            <span class="qs-arrow">→</span>
+          </button>
+          <button class="quick-start-link" onclick="showQuiz()">
             <span class="qs-icon">🎯</span>
-            <span class="qs-text"><span>Find My Build</span><span class="qs-sub">Answer 4 questions, get your build</span></span>
+            <span class="qs-text"><span>Find My Build — Quiz</span><span class="qs-sub">Answer 4 questions, get matched</span></span>
             <span class="qs-arrow">→</span>
           </button>
           <button class="quick-start-link" onclick="showSection('progression-roadmap')">
@@ -1817,6 +1830,17 @@
         <button class="filter-btn" data-atfilter="Cloth">🧣 Cloth</button>
         <button class="filter-btn" data-atfilter="Leather">🥋 Leather</button>
         <button class="filter-btn" data-atfilter="Plate">🛡️ Plate</button>
+      </div>
+    </div>
+    <!-- SORT BAR -->
+    <div class="builds-filter-group" style="margin-bottom:20px;padding-top:4px;border-top:1px solid var(--border)">
+      <div class="builds-filter-label">Sort By</div>
+      <div class="filter-bar" id="buildSortBar" style="margin-bottom:0">
+        <button class="sort-btn filter-btn active" data-bsort="popular"  onclick="setBuildSort('popular')">🔥 Most Popular</button>
+        <button class="sort-btn filter-btn"         data-bsort="success"  onclick="setBuildSort('success')">✅ Success Rate</button>
+        <button class="sort-btn filter-btn"         data-bsort="cheapest" onclick="setBuildSort('cheapest')">🪙 Cheapest First</button>
+        <button class="sort-btn filter-btn"         data-bsort="easiest"  onclick="setBuildSort('easiest')">🌱 Easiest First</button>
+        <button class="sort-btn filter-btn"         data-bsort="tier"     onclick="setBuildSort('tier')">⭐ S-Tier First</button>
       </div>
     </div>
     </div><!-- /builds-sticky-filters -->
