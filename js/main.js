@@ -942,65 +942,92 @@ document.getElementById('quizOverlay')?.addEventListener('click', e => {
 // ============================================================
 // HOME PAGE — featured build & weapon strip
 // ============================================================
+let _homeReady = false;
+
 function initHomePage() {
-  // Featured build (top S-tier by successRate)
-  const featured = [...metaBuilds].filter(b=>b.metaTier==='S').sort((a,b)=>(b.successRate||0)-(a.successRate||0))[0];
-  if (featured) {
-    const tc = { S:'#e8c96a', A:'#4a9c6e', B:'#4a7fc1' };
-    const card = document.getElementById('featuredBuildCard');
-    const body = document.getElementById('featuredBuildBody');
-    if (card && body) {
-      card.querySelector('.featured-build-accent').style.background = `linear-gradient(90deg,${featured.color},transparent)`;
-      body.innerHTML = `
-        <div class="featured-build-label" style="color:${tc[featured.metaTier]||'var(--gold)'}">⭐ Build of the Week · ${featured.metaTier}-Tier</div>
-        <div class="featured-build-name">${featured.name}</div>
-        <div class="featured-build-role">${featured.role}</div>
-        <p class="featured-build-summary">${featured.summary}</p>
-        <div class="featured-build-meta">
-          <div class="featured-meta-item"><div class="featured-meta-label">Weapon</div><div class="featured-meta-value">${featured.weaponLine}</div></div>
-          <div class="featured-meta-item"><div class="featured-meta-label">Armor</div><div class="featured-meta-value">${featured.armorType}</div></div>
-          <div class="featured-meta-item"><div class="featured-meta-label">Cost</div><div class="featured-meta-value">${featured.cost}</div></div>
-          <div class="featured-meta-item"><div class="featured-meta-label">Success</div><div class="featured-meta-value" style="color:var(--accent-green)">${featured.successRate}%</div></div>
+  // ── Featured Build of the Week ──────────────────────────
+  const tc = { S:'#e8c96a', A:'#4a9c6e', B:'#4a7fc1' };
+  const featured = [...metaBuilds]
+    .filter(b => b.metaTier === 'S')
+    .sort((a, b) => (b.successRate||0) - (a.successRate||0))[0];
+
+  const card = document.getElementById('featuredBuildCard');
+  const body = document.getElementById('featuredBuildBody');
+
+  if (featured && card && body) {
+    const accent = card.querySelector('.featured-build-accent');
+    if (accent) accent.style.background = `linear-gradient(90deg,${featured.color},transparent)`;
+
+    // Build weapon image strip (cache already populated)
+    const weaponImgs = Object.values(featured.loadout)
+      .slice(0, 4)
+      .map(item => {
+        const rid = _buildImgCache[_normName(item.name)];
+        return rid
+          ? `<img src="${itemImg(rid, 56)}" title="${item.name}" style="width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5))" onerror="this.remove()" />`
+          : '';
+      }).join('');
+
+    body.innerHTML = `
+      <div class="featured-build-label" style="color:${tc[featured.metaTier]||'var(--gold)'}">
+        ⭐ Build of the Week &nbsp;·&nbsp; ${featured.metaTier}-Tier
+      </div>
+      <div class="featured-build-name">${featured.name}</div>
+      <div class="featured-build-role">${featured.role}</div>
+      <p class="featured-build-summary">${featured.summary}</p>
+      <div class="featured-build-meta">
+        <div class="featured-meta-item">
+          <div class="featured-meta-label">Weapon</div>
+          <div class="featured-meta-value">${featured.weaponLine}</div>
         </div>
-        <div class="featured-build-weapons" id="featuredWeapons"></div>`;
-      // Load weapon images
-      setTimeout(() => {
-        const fw = document.getElementById('featuredWeapons');
-        if (fw && featured.loadout) {
-          Object.entries(featured.loadout).slice(0,4).forEach(([slot,item]) => {
-            const img = document.createElement('img');
-            const rid = _buildImgCache[_normName(item.name)];
-            if (rid) { img.src = itemImg(rid, 64); img.title = item.name; img.onerror = ()=>img.remove(); fw.appendChild(img); }
-          });
-        }
-      }, 100);
-    }
+        <div class="featured-meta-item">
+          <div class="featured-meta-label">Armor</div>
+          <div class="featured-meta-value">${featured.armorType}</div>
+        </div>
+        <div class="featured-meta-item">
+          <div class="featured-meta-label">Cost</div>
+          <div class="featured-meta-value">${featured.cost}</div>
+        </div>
+        <div class="featured-meta-item">
+          <div class="featured-meta-label">Success</div>
+          <div class="featured-meta-value" style="color:var(--accent-green)">${featured.successRate}%</div>
+        </div>
+      </div>
+      ${weaponImgs ? `<div class="featured-build-weapons">${weaponImgs}</div>` : ''}`;
   }
 
-  // Weapon type strip
+  // ── Weapon type strip (only build once) ──────────────────
   const strip = document.getElementById('weaponStrip');
-  if (!strip) return;
+  if (!strip || _homeReady) return;
+  _homeReady = true;
+
   const lines = [
-    {icon:'🗡️', label:'Swords', wl:'Swords'},
-    {icon:'🪓', label:'Axes',   wl:'Axes'},
-    {icon:'🔨', label:'Hammers',wl:'Hammers'},
-    {icon:'🔱', label:'Spears', wl:'Spears'},
-    {icon:'🔪', label:'Daggers',wl:'Daggers'},
-    {icon:'🥢', label:'Staves', wl:'Quarterstaffs'},
-    {icon:'🔫', label:'Xbows',  wl:'Crossbows'},
-    {icon:'🏹', label:'Bows',   wl:'Bows'},
-    {icon:'🔥', label:'Fire',   wl:'Fire Staffs'},
-    {icon:'❄️', label:'Frost',  wl:'Frost Staffs'},
-    {icon:'💀', label:'Cursed', wl:'Cursed Staffs'},
-    {icon:'🌿', label:'Nature', wl:'Nature Staffs'},
-    {icon:'✨', label:'Holy',   wl:'Holy Staffs'},
-    {icon:'🔮', label:'Arcane', wl:'Arcane Staffs'},
+    {icon:'🗡️', label:'Swords',   wl:'Swords'},
+    {icon:'🪓', label:'Axes',     wl:'Axes'},
+    {icon:'🔨', label:'Hammers',  wl:'Hammers'},
+    {icon:'🔱', label:'Spears',   wl:'Spears'},
+    {icon:'🔪', label:'Daggers',  wl:'Daggers'},
+    {icon:'🥢', label:'Staves',   wl:'Quarterstaffs'},
+    {icon:'🔫', label:'Xbows',    wl:'Crossbows'},
+    {icon:'🏹', label:'Bows',     wl:'Bows'},
+    {icon:'🔥', label:'Fire',     wl:'Fire Staffs'},
+    {icon:'❄️', label:'Frost',    wl:'Frost Staffs'},
+    {icon:'💀', label:'Cursed',   wl:'Cursed Staffs'},
+    {icon:'🌿', label:'Nature',   wl:'Nature Staffs'},
+    {icon:'✨', label:'Holy',     wl:'Holy Staffs'},
+    {icon:'🔮', label:'Arcane',   wl:'Arcane Staffs'},
   ];
+
   lines.forEach(l => {
     const div = document.createElement('div');
     div.className = 'weapon-strip-item';
     div.innerHTML = `<span class="ws-icon">${l.icon}</span><span class="ws-label">${l.label}</span>`;
-    div.onclick = () => { _buildFilters.weapon = l.wl; _buildFilters.role='all'; _buildFilters.armor='all'; showSection('meta-builds'); };
+    div.onclick = () => {
+      _buildFilters.weapon = l.wl;
+      _buildFilters.role   = 'all';
+      _buildFilters.armor  = 'all';
+      showSection('meta-builds');
+    };
     strip.appendChild(div);
   });
 }
@@ -1312,6 +1339,6 @@ document.querySelectorAll('.progress-bar').forEach(bar => observer.observe(bar))
 // ============================================================
 // INIT
 // ============================================================
+_buildImgMap();   // build cache synchronously before anything renders
 showSection('home');
-// Home page needs _buildImgMap built first — defer slightly
-setTimeout(() => { _buildImgMap(); initHomePage(); }, 50);
+initHomePage();
