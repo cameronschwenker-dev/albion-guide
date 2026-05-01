@@ -8,22 +8,41 @@
   padding: 32px 32px 80px;
 }
 
-/* ── Tier Selector ─────────────────────────────────────────── */
+/* ── Top control bar ───────────────────────────────────────── */
+.builder-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  background: linear-gradient(145deg, #111620 0%, #0d1018 100%);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.builder-topbar-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.builder-topbar-right { display: flex; align-items: center; gap: 6px; }
+
+.builder-tier-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.builder-tier-btns { display: flex; gap: 4px; }
+
+/* ── Tier / Enchant Buttons ─────────────────────────────────── */
 .builder-tier-row {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 28px;
   flex-wrap: wrap;
-}
-
-.builder-tier-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  flex-shrink: 0;
 }
 
 .tier-btn {
@@ -48,12 +67,247 @@
   box-shadow: 0 0 12px rgba(201,168,76,0.15);
 }
 
+/* ── Enchant btn variant ─────────────────────────────────────── */
+.enchant-btn {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
 /* ── Main Layout ───────────────────────────────────────────── */
 .builder-main {
   display: grid;
   grid-template-columns: 1fr 380px;
   gap: 24px;
   align-items: start;
+}
+
+/* Paperdoll variant overrides grid to: paperdoll | stats */
+.builder-paperdoll-layout {
+  grid-template-columns: 1fr 360px;
+}
+
+/* ── Paperdoll Section ───────────────────────────────────────── */
+.paperdoll-section {
+  background: linear-gradient(145deg, #111620 0%, #0d1018 100%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* IP bar at top of paperdoll section */
+.ip-display-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(201,168,76,0.04);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 8px;
+}
+
+.ip-badge-wrap { display: flex; align-items: baseline; gap: 8px; }
+.ip-number { font-family: 'Cinzel', serif; font-size: 28px; font-weight: 700; line-height: 1; }
+.ip-label  { font-size: 12px; color: var(--text-dim); }
+.ip-quality { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-left: 4px; }
+.ip-slot-count { font-size: 11px; color: var(--text-dim); }
+
+/* ── Paperdoll grid ──────────────────────────────────────────── */
+.paperdoll {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.pd-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.pd-spacer { flex: 1; min-width: 80px; max-width: 110px; }
+
+/* ── Paperdoll Silhouette ──────────────────────────────────── */
+.pd-silhouette {
+  width: 100px;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+}
+
+.pd-silhouette svg {
+  width: 80px;
+  height: 160px;
+  display: block;
+}
+
+.pd-ip-overlay {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+}
+
+/* ── Paperdoll slot ──────────────────────────────────────────── */
+.pd-slot {
+  flex: 1;
+  min-width: 80px;
+  max-width: 110px;
+  background: var(--bg-card);
+  border: 1px dashed rgba(42,48,80,0.8);
+  border-radius: 10px;
+  padding: 8px 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  text-align: center;
+  min-height: 90px;
+  justify-content: center;
+}
+
+.pd-slot.empty:hover {
+  border-color: var(--gold-dim);
+  background: rgba(201,168,76,0.04);
+}
+
+.pd-slot.filled {
+  border-style: solid;
+  border-color: rgba(201,168,76,0.35);
+  background: linear-gradient(145deg, rgba(201,168,76,0.05), var(--bg-card));
+}
+
+.pd-slot.filled:hover {
+  border-color: var(--gold);
+  box-shadow: 0 0 14px rgba(201,168,76,0.12);
+}
+
+.pd-slot-emoji {
+  font-size: 22px;
+  line-height: 1;
+  opacity: 0.5;
+}
+
+.pd-slot-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.pd-slot-img-wrap {
+  width: 52px;
+  height: 52px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pd-slot-emoji-bg {
+  position: absolute;
+  font-size: 24px;
+  opacity: 0.25;
+}
+
+.pd-slot-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+}
+
+.pd-slot-name {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
+.pd-slot-ip {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--gold-dim);
+  font-family: 'Cinzel', serif;
+}
+
+.pd-slot-clear {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 16px;
+  height: 16px;
+  background: rgba(193,80,80,0.15);
+  border: 1px solid rgba(193,80,80,0.3);
+  border-radius: 50%;
+  color: var(--accent-red);
+  font-size: 9px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.pd-slot.filled:hover .pd-slot-clear { display: flex; }
+.pd-slot-clear:hover { background: rgba(193,80,80,0.35); }
+
+/* ── Abilities bar ───────────────────────────────────────────── */
+.pd-abilities {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pd-abilities-empty {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 6px 0;
+  font-style: italic;
+}
+
+.pd-ability-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.pd-ab-icon { width: 18px; text-align: center; flex-shrink: 0; }
+.pd-ab-ability { color: var(--text); flex: 1; line-height: 1.3; }
+
+/* IP stat panel highlight */
+.ip-stat-panel {
+  border-color: rgba(201,168,76,0.2) !important;
+  background: linear-gradient(145deg, rgba(201,168,76,0.03), #0d1018) !important;
 }
 
 /* ── Equipment Slots ───────────────────────────────────────── */
@@ -523,13 +777,27 @@
 .picker-item-sub  { font-size: 10px; color: var(--text-dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ── Responsive ────────────────────────────────────────────── */
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
   .builder-main { grid-template-columns: 1fr; }
+  .builder-paperdoll-layout { grid-template-columns: 1fr; }
   .builder-stats { position: static; }
-  .picker-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 }
 
-@media (max-width: 600px) {
-  .slot-grid { grid-template-columns: 1fr; }
-  .builder-wrap { padding: 20px 16px 80px; }
+@media (max-width: 720px) {
+  .pd-row { gap: 6px; }
+  .pd-slot { min-width: 68px; max-width: 90px; min-height: 78px; padding: 6px 4px; }
+  .pd-slot-img-wrap { width: 42px; height: 42px; }
+  .pd-slot-name { font-size: 9px; max-width: 80px; }
+  .pd-silhouette svg { width: 64px; height: 130px; }
+  .pd-silhouette { width: 80px; }
+  .picker-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  .builder-wrap { padding: 16px 12px 80px; }
+  .builder-topbar { gap: 8px; padding: 10px 12px; }
+  .tier-btn { padding: 6px 12px; font-size: 12px; }
+  .enchant-btn { padding: 5px 8px; font-size: 11px; }
+}
+
+@media (max-width: 480px) {
+  .pd-spacer { min-width: 60px; }
+  .ip-number { font-size: 22px; }
 }

@@ -51,9 +51,45 @@ const BASE_HP = {
 };
 const TIER_HP_BONUS = { 4:0, 5:180, 6:420, 7:850, 8:1600 }; // extra HP per tier above T4
 
+// ── Item Power (IP) constants ─────────────────────────────────
+const IP_BASE = { 4:400, 5:500, 6:600, 7:700, 8:800 };
+// Enchantments add 100 per level (0→4)
+const ENCHANT_BONUS = { 0:0, 1:100, 2:200, 3:300, 4:400 };
+
+// Crafting materials by slot + armor type / weapon type
+const CRAFT_RESOURCE = {
+  // Weapons by weapon line
+  weapon: {
+    Swords:'Metal Bar', Axes:'Metal Bar', Hammers:'Metal Bar', Spears:'Metal Bar',
+    Daggers:'Metal Bar', Crossbows:'Metal Bar',
+    Bows:'Plank', Quarterstaffs:'Plank',
+    'Fire Staffs':'Plank', 'Frost Staffs':'Plank', 'Cursed Staffs':'Plank',
+    'Arcane Staffs':'Plank', 'Holy Staffs':'Plank', 'Nature Staffs':'Plank',
+  },
+  helmet:  { Cloth:'Cloth', Leather:'Leather', Plate:'Metal Bar' },
+  chest:   { Cloth:'Cloth', Leather:'Leather', Plate:'Metal Bar' },
+  boots:   { Cloth:'Cloth', Leather:'Leather', Plate:'Metal Bar' },
+};
+
+const RESOURCE_TIER_NAME = {
+  'Metal Bar': { 4:'Copper Bar',    5:'Bronze Bar',  6:'Steel Bar',    7:'Titanium Bar',  8:'Runite Bar'     },
+  'Plank':     { 4:'Birch Plank',   5:'Chestnut Pl.',6:'Pine Plank',   7:'Cedar Plank',   8:'Bloodoak Pl.'   },
+  'Cloth':     { 4:'Simple Cloth',  5:'Fine Cloth',  6:'Elegant Cloth',7:'Master Cloth',  8:'Pristine Cloth' },
+  'Leather':   { 4:'Thin Leather',  5:'Solid Leather',6:'Thick Leather',7:'Heavy Leather', 8:'Pristine Leather'},
+};
+
+const CRAFT_QTY = {
+  weapon:  { 4:16, 5:20, 6:20, 7:20, 8:20 },
+  offhand: { 4:8,  5:12, 6:12, 7:12, 8:12 },
+  helmet:  { 4:8,  5:12, 6:12, 7:12, 8:12 },
+  chest:   { 4:16, 5:20, 6:20, 7:20, 8:20 },
+  boots:   { 4:8,  5:12, 6:12, 7:12, 8:12 },
+};
+
 // ── Builder state ─────────────────────────────────────────────
 const builderState = {
   tier: 6,
+  enchant: 0,
   slots: { weapon:null, offhand:null, helmet:null, chest:null, boots:null, food:null, potion:null },
 };
 
@@ -62,6 +98,89 @@ let _pickerFilter = 'all';
 let _pickerSearch = '';
 
 // ── Helpers ───────────────────────────────────────────────────
+// ── IP calculation ────────────────────────────────────────────
+function calcSlotIP(tier, enchant) {
+  return (IP_BASE[tier] || 600) + (ENCHANT_BONUS[enchant] || 0);
+}
+
+function calcAverageIP() {
+  const gearSlots = ['weapon','offhand','helmet','chest','boots'];
+  const filled = gearSlots.filter(s => builderState.slots[s]);
+  if (!filled.length) return 0;
+  const ip = calcSlotIP(builderState.tier, builderState.enchant);
+  return Math.round(ip); // each filled slot at same tier/enchant
+}
+
+function ipQualityLabel(ip) {
+  if (ip >= 1100) return { label:'Legendary', color:'#e8c96a' };
+  if (ip >= 900)  return { label:'Rare',      color:'#b070e8' };
+  if (ip >= 700)  return { label:'Uncommon',  color:'#4a7fc1' };
+  if (ip >= 500)  return { label:'Standard',  color:'#4a9c6e' };
+  return                 { label:'Basic',     color:'#7a8098' };
+}
+
+// ── Materials breakdown ───────────────────────────────────────
+function calcMaterials() {
+  const totals = {}; // resourceName → quantity
+  const { tier, slots } = builderState;
+  ['weapon','helmet','chest','boots'].forEach(slot => {
+    const item = slots[slot];
+    if (!item) return;
+    let resType;
+    if (slot === 'weapon') {
+      resType = CRAFT_RESOURCE.weapon[item.line || item.weaponLine] || 'Metal Bar';
+    } else {
+      resType = CRAFT_RESOURCE[slot]?.[item.armorType] || 'Metal Bar';
+    }
+    const tieredName = RESOURCE_TIER_NAME[resType]?.[tier] || resType;
+    totals[tieredName] = (totals[tieredName] || 0) + (CRAFT_QTY[slot]?.[tier] || 12);
+  });
+  if (slots.offhand) {
+    const tieredName = RESOURCE_TIER_NAME['Metal Bar']?.[tier] || 'Metal Bar';
+    totals[tieredName] = (totals[tieredName] || 0) + (CRAFT_QTY.offhand?.[tier] || 8);
+  }
+  return totals;
+}
+
+// ── Build URL share ───────────────────────────────────────────
+function encodeBuildURL() {
+  const s = builderState.slots;
+  const parts = [
+    s.weapon?.id  || '',
+    s.offhand?.id || '',
+    s.helmet?.id  || '',
+    s.chest?.id   || '',
+    s.boots?.id   || '',
+    s.food?.id    || '',
+    s.potion?.id  || '',
+    builderState.tier,
+    builderState.enchant,
+  ];
+  return '#build=' + parts.join('|');
+}
+
+function decodeBuildFromURL() {
+  const hash = window.location.hash;
+  if (!hash.startsWith('#build=')) return false;
+  const parts = hash.slice(7).split('|');
+  if (parts.length < 9) return false;
+  const [wId, oId, hId, cId, bId, fId, pId, tier, enchant] = parts;
+  builderState.tier    = parseInt(tier)    || 6;
+  builderState.enchant = parseInt(enchant) || 0;
+
+  const allArmor = [...(armorData.helmets||[]),...(armorData.chests||[]),...(armorData.boots||[])];
+  builderState.slots = {
+    weapon:  wId ? (() => { const w = weaponsData.find(x=>x.id===wId); return w ? {...w, renderId:weaponRenderIds[w.id]||null} : null; })() : null,
+    offhand: oId ? (offhandItems.find(x=>x.id===oId) || null) : null,
+    helmet:  hId ? (() => { const a = allArmor.find(x=>x.id===hId); return a ? {...a, renderId:armorRenderIds[a.id]||null} : null; })() : null,
+    chest:   cId ? (() => { const a = allArmor.find(x=>x.id===cId); return a ? {...a, renderId:armorRenderIds[a.id]||null} : null; })() : null,
+    boots:   bId ? (() => { const a = allArmor.find(x=>x.id===bId); return a ? {...a, renderId:armorRenderIds[a.id]||null} : null; })() : null,
+    food:    fId ? (foodItems.find(x=>x.id===fId)    || null) : null,
+    potion:  pId ? (potionItems.find(x=>x.id===pId)  || null) : null,
+  };
+  return true;
+}
+
 function fmtSilver(n) {
   if (!n) return '—';
   if (n >= 1000000) return (n/1000000).toFixed(n>=10000000?0:1) + 'M';
@@ -133,45 +252,99 @@ function renderCharacterBuilder() {
   const container = document.getElementById('builderContainer');
   if (!container) return;
 
+  const ip      = calcAverageIP();
+  const ipInfo  = ipQualityLabel(ip);
+  const filledGear = ['weapon','offhand','helmet','chest','boots'].filter(s => builderState.slots[s]).length;
+
   container.innerHTML = `
     <div class="builder-wrap">
 
-      <!-- Tier selector -->
-      <div class="builder-tier-row">
-        <span class="builder-tier-label">Gear Tier</span>
-        ${[4,5,6,7,8].map(t => `
-          <button class="tier-btn ${builderState.tier===t?'active':''}" onclick="setBuilderTier(${t})">T${t}</button>
-        `).join('')}
-        <span style="font-size:11px;color:var(--text-dim);margin-left:8px">
-          — Est. full set: <strong style="color:var(--gold)">${fmtSilver(calcFullSetCost())}</strong> silver
-        </span>
+      <!-- Top control bar -->
+      <div class="builder-topbar">
+        <div class="builder-topbar-left">
+          <span class="builder-tier-label">Tier</span>
+          <div class="builder-tier-btns">
+            ${[4,5,6,7,8].map(t => `<button class="tier-btn ${builderState.tier===t?'active':''}" onclick="setBuilderTier(${t})">T${t}</button>`).join('')}
+          </div>
+          <span class="builder-tier-label" style="margin-left:12px">Enchant</span>
+          <div class="builder-tier-btns">
+            ${[0,1,2,3,4].map(e => `<button class="tier-btn enchant-btn ${builderState.enchant===e?'active':''}" onclick="setEnchant(${e})" title="+${e*100} IP">.${e}</button>`).join('')}
+          </div>
+        </div>
+        <div class="builder-topbar-right">
+          <button class="btn btn-outline" style="font-size:11px;padding:5px 10px" onclick="randomBuild()">🎲 Random</button>
+          <button class="btn btn-outline" style="font-size:11px;padding:5px 10px" onclick="clearAllSlots()">🗑️ Clear</button>
+          <button class="btn btn-outline" style="font-size:11px;padding:5px 10px" onclick="shareBuild()">🔗 Share</button>
+        </div>
       </div>
 
-      <div class="builder-main">
+      <!-- Main 3-col layout -->
+      <div class="builder-main builder-paperdoll-layout">
 
-        <!-- Equipment Slots -->
-        <div class="builder-slots">
-          <div class="builder-slots-title">Equipment</div>
-          <div class="slot-grid">
-            ${renderSlot('weapon',  '⚔️', 'Main Hand')}
-            ${renderSlot('offhand', '🛡️', 'Off Hand')}
-            ${renderSlot('helmet',  '⛑️', 'Helmet')}
-            ${renderSlot('chest',   '👕', 'Chest')}
-            ${renderSlot('boots',   '👟', 'Boots')}
-            <div style="grid-column:span 2">
-              <div class="slot-divider-label">⚗️ Consumables</div>
+        <!-- LEFT: paperdoll + equipment -->
+        <div class="paperdoll-section">
+
+          <!-- IP badge -->
+          <div class="ip-display-bar">
+            <div class="ip-badge-wrap">
+              <div class="ip-number" style="color:${ipInfo.color}">${ip || '—'}</div>
+              <div class="ip-label">Item Power</div>
+              ${ip ? `<div class="ip-quality" style="color:${ipInfo.color}">${ipInfo.label}</div>` : ''}
             </div>
-            ${renderSlot('food',    '🍗', 'Food')}
-            ${renderSlot('potion',  '🧪', 'Potion')}
+            <div class="ip-slot-count">${filledGear}/5 gear slots</div>
           </div>
 
-          <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn btn-outline" style="font-size:12px;padding:7px 14px" onclick="randomBuild()">🎲 Random Build</button>
-            <button class="btn btn-outline" style="font-size:12px;padding:7px 14px" onclick="clearAllSlots()">🗑️ Clear All</button>
+          <!-- Paperdoll -->
+          <div class="paperdoll">
+            <!-- Row 1: helmet -->
+            <div class="pd-row pd-row-head">
+              <div class="pd-spacer"></div>
+              ${renderPdSlot('helmet','⛑️','Helmet')}
+              <div class="pd-spacer"></div>
+            </div>
+            <!-- Row 2: weapon · silhouette · offhand -->
+            <div class="pd-row pd-row-body">
+              ${renderPdSlot('weapon','⚔️','Main Hand')}
+              <div class="pd-silhouette">
+                <svg viewBox="0 0 80 180" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="40" cy="18" r="14" fill="currentColor" opacity=".18"/>
+                  <rect x="22" y="35" width="36" height="52" rx="6" fill="currentColor" opacity=".14"/>
+                  <rect x="8"  y="37" width="12" height="38" rx="5" fill="currentColor" opacity=".12"/>
+                  <rect x="60" y="37" width="12" height="38" rx="5" fill="currentColor" opacity=".12"/>
+                  <rect x="24" y="88" width="13" height="52" rx="5" fill="currentColor" opacity=".12"/>
+                  <rect x="43" y="88" width="13" height="52" rx="5" fill="currentColor" opacity=".12"/>
+                </svg>
+                ${ip ? `<div class="pd-ip-overlay" style="color:${ipInfo.color}">${ip} IP</div>` : '<div class="pd-ip-overlay" style="color:var(--text-dim);font-size:11px">Equip items</div>'}
+              </div>
+              ${renderPdSlot('offhand','🛡️','Off Hand')}
+            </div>
+            <!-- Row 3: empty · chest · empty -->
+            <div class="pd-row pd-row-chest">
+              <div class="pd-spacer"></div>
+              ${renderPdSlot('chest','👕','Chest')}
+              <div class="pd-spacer"></div>
+            </div>
+            <!-- Row 4: empty · boots · empty -->
+            <div class="pd-row pd-row-boots">
+              <div class="pd-spacer"></div>
+              ${renderPdSlot('boots','👟','Boots')}
+              <div class="pd-spacer"></div>
+            </div>
+            <!-- Row 5: food · gap · potion -->
+            <div class="pd-row pd-row-consumables">
+              ${renderPdSlot('food','🍗','Food')}
+              <div class="pd-spacer"></div>
+              ${renderPdSlot('potion','🧪','Potion')}
+            </div>
+          </div>
+
+          <!-- Abilities bar -->
+          <div class="pd-abilities">
+            ${renderAbilitiesBar()}
           </div>
         </div>
 
-        <!-- Stats Panel -->
+        <!-- RIGHT: stats panel -->
         <div class="builder-stats" id="builderStats">
           ${renderBuilderStats()}
         </div>
@@ -192,6 +365,49 @@ function renderCharacterBuilder() {
         <div class="picker-grid" id="pickerGrid"></div>
       </div>
     </div>`;
+}
+
+// ── Paperdoll slot (compact) ──────────────────────────────────
+function renderPdSlot(slotKey, emoji, label) {
+  const item = builderState.slots[slotKey];
+  const ip   = item ? calcSlotIP(builderState.tier, builderState.enchant) : 0;
+  if (!item) {
+    return `
+      <div class="pd-slot empty" onclick="openPicker('${slotKey}')" title="Click to equip ${label}">
+        <div class="pd-slot-emoji">${emoji}</div>
+        <div class="pd-slot-label">${label}</div>
+      </div>`;
+  }
+  const rid  = item.renderId ? itemImg(item.renderId, 64) : null;
+  const name = (item.name||'').replace(/\s*\(T\d[^)]*\)/gi,'').trim();
+  return `
+    <div class="pd-slot filled" onclick="openPicker('${slotKey}')" title="${name}">
+      <button class="pd-slot-clear" onclick="event.stopPropagation();clearSlot('${slotKey}')" title="Remove">✕</button>
+      <div class="pd-slot-img-wrap">
+        <div class="pd-slot-emoji-bg">${emoji}</div>
+        ${rid ? `<img src="${rid}" alt="${name}" class="pd-slot-img" onerror="this.remove()" />` : ''}
+      </div>
+      <div class="pd-slot-name">${name}</div>
+      <div class="pd-slot-ip">${ip} IP</div>
+    </div>`;
+}
+
+function renderAbilitiesBar() {
+  const s = builderState.slots;
+  const rows = [
+    { icon:'⚔️', label:'Weapon',  text: s.weapon?.keyAbility   },
+    { icon:'🛡️', label:'Offhand', text: s.offhand?.ability      },
+    { icon:'⛑️', label:'Helmet',  text: s.helmet?.ability       },
+    { icon:'👕', label:'Chest',   text: s.chest?.ability        },
+    { icon:'👟', label:'Boots',   text: s.boots?.ability        },
+  ].filter(r => r.text);
+
+  if (!rows.length) return '<div class="pd-abilities-empty">Equip items to see abilities</div>';
+  return rows.map(r => `
+    <div class="pd-ability-row">
+      <span class="pd-ab-icon">${r.icon}</span>
+      <span class="pd-ab-ability">${r.text.split('—')[0].trim()}</span>
+    </div>`).join('');
 }
 
 function calcFullSetCost() {
@@ -240,6 +456,8 @@ function renderSlot(slotKey, emoji, label) {
 function renderBuilderStats() {
   const state  = builderState;
   const totalHP   = calcTotalHP(state);
+  const ip        = calcAverageIP();
+  const ipInfo    = ipQualityLabel(ip);
   const role      = detectRole(state);
   const dmgType   = detectDmgType(state);
   const filledCount = Object.values(state.slots).filter(Boolean).length;
@@ -248,21 +466,7 @@ function renderBuilderStats() {
     helmet: { armorType:'Plate' }, chest: { armorType:'Plate' }, boots: { armorType:'Plate' },
     food: foodItems[0], potion: {},
   }, tier: 8 });
-
   const hpPct = Math.min(100, Math.round((totalHP / maxHP) * 100));
-
-  // Abilities from each slot
-  const abilityRows = [
-    ['⚔️ Weapon',  state.slots.weapon?.keyAbility],
-    ['🛡️ Off-hand', state.slots.offhand?.ability],
-    ['⛑️ Helmet',   state.slots.helmet?.ability],
-    ['👕 Chest',    state.slots.chest?.ability],
-    ['👟 Boots',    state.slots.boots?.ability],
-  ].map(([slot, ab]) => `
-    <div class="ability-row ${ab?'has-item':''}">
-      <span class="ab-slot">${slot}</span>
-      <span class="ab-text ${ab?'':'empty'}">${ab ? ab.split('—')[0].trim() : 'Empty'}</span>
-    </div>`).join('');
 
   const costRows = [
     ['Weapon',  'weapon'],
@@ -276,15 +480,14 @@ function renderBuilderStats() {
     const hasItem = !!state.slots[key];
     const live = hasItem ? getLivePrice(key) : null;
     const cost = hasItem ? fmtSilver(live ? live.price : calcItemCost(key)) : '—';
-    const badge = live ? `<span title="Live price from ${live.city}" style="font-size:9px;background:rgba(74,156,110,0.2);color:#4a9c6e;border:1px solid rgba(74,156,110,0.3);border-radius:3px;padding:0 4px;margin-left:4px">LIVE</span>` : '';
+    const badge = live ? `<span title="Live from ${live.city}" style="font-size:9px;background:rgba(74,156,110,0.2);color:#4a9c6e;border:1px solid rgba(74,156,110,0.3);border-radius:3px;padding:0 4px;margin-left:4px">LIVE</span>` : '';
     return `
       <div class="cost-row">
-        <span class="cost-row-slot">${label} ${hasItem ? `<span style="color:var(--text-dim)">(T${state.tier})</span>${badge}` : ''}</span>
+        <span class="cost-row-slot">${label}${hasItem ? ` <span style="color:var(--text-dim)">(T${state.tier}${state.enchant?'.'+state.enchant:''})</span>${badge}` : ''}</span>
         <span class="cost-row-val ${hasItem?'':'empty'}">${cost}</span>
       </div>`;
   }).join('');
 
-  // Live-aware total
   const liveTotalCost = (() => {
     let t = 0;
     ['weapon','offhand','helmet','chest','boots','food','potion'].forEach(slot => {
@@ -295,27 +498,53 @@ function renderBuilderStats() {
     return t;
   })();
   const anyLive = Object.keys(_livePrices).some(k => state.slots[k]);
-  const liveLabel = anyLive
-    ? '<span style="font-size:10px;background:rgba(74,156,110,0.15);color:#4a9c6e;border:1px solid rgba(74,156,110,0.3);border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle">LIVE</span>'
-    : '';
+  const liveLabel = anyLive ? '<span style="font-size:10px;background:rgba(74,156,110,0.15);color:#4a9c6e;border:1px solid rgba(74,156,110,0.3);border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle">LIVE</span>' : '';
 
   const roleColor = {
     Healer:'#90d090', Tank:'#80b0e0', Assassin:'#e08080', 'Caster DPS':'#b090e8',
     'Ranged DPS':'#70c090', 'Melee DPS':'#e09070', Frontline:'#80a8d0', Hybrid:'#c9a84c'
   }[role] || 'var(--text)';
 
+  // Materials
+  const mats = calcMaterials();
+  const matRows = Object.entries(mats).map(([name, qty]) => `
+    <div class="cost-row">
+      <span class="cost-row-slot">${name}</span>
+      <span class="cost-row-val">× ${qty}</span>
+    </div>`).join('');
+
   return `
+    <!-- IP Panel -->
+    <div class="stat-panel ip-stat-panel">
+      <div class="stat-panel-title">⚡ Item Power</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <div style="font-family:'Cinzel',serif;font-size:36px;font-weight:700;color:${ipInfo.color};line-height:1">${ip||'—'}</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:${ipInfo.color}">${ip ? ipInfo.label : 'No gear'}</div>
+          <div style="font-size:11px;color:var(--text-dim)">T${state.tier}${state.enchant?'.'+state.enchant:''} gear</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        ${['weapon','offhand','helmet','chest','boots'].map(slot => {
+          const has = !!state.slots[slot];
+          const slotIp = has ? calcSlotIP(state.tier, state.enchant) : 0;
+          const icons = { weapon:'⚔️', offhand:'🛡️', helmet:'⛑️', chest:'👕', boots:'👟' };
+          return `<div style="font-size:11px;color:${has?'var(--text)':'var(--border)'};display:flex;justify-content:space-between;padding:3px 6px;background:var(--bg-card);border-radius:5px;border:1px solid ${has?'rgba(201,168,76,0.2)':'var(--border)'}">${icons[slot]} ${slot}<span style="color:${has?ipInfo.color:'var(--border)'}">${has?slotIp:'-'}</span></div>`;
+        }).join('')}
+      </div>
+    </div>
+
     <!-- Cost -->
     <div class="stat-panel">
       <div class="stat-panel-title">💰 Silver Cost</div>
       <div class="cost-total">
         <span class="cost-total-num">${fmtSilver(liveTotalCost)}${liveLabel}</span>
-        <span class="cost-total-label">silver${liveTotalCost===0?' (nothing selected)':''}</span>
+        <span class="cost-total-label">silver${liveTotalCost===0?' (nothing equip.)':''}</span>
       </div>
       <div class="cost-rows">${costRows}</div>
     </div>
 
-    <!-- HP & Role -->
+    <!-- Character Stats -->
     <div class="stat-panel">
       <div class="stat-panel-title">📊 Character Stats</div>
       <div class="hp-display">
@@ -323,35 +552,33 @@ function renderBuilderStats() {
           <span class="hp-number">${totalHP.toLocaleString()}</span>
           <span class="hp-label">est. HP</span>
         </div>
-        <div class="hp-bar-wrap">
-          <div class="hp-bar-fill" style="width:${hpPct}%"></div>
-        </div>
+        <div class="hp-bar-wrap"><div class="hp-bar-fill" style="width:${hpPct}%"></div></div>
       </div>
       <div class="combat-stats">
         <div class="combat-stat"><div class="cs-label">Role</div><div class="cs-value" style="color:${roleColor}">${role}</div></div>
         <div class="combat-stat"><div class="cs-label">Damage</div><div class="cs-value">${dmgType}</div></div>
-        <div class="combat-stat"><div class="cs-label">Slots Filled</div><div class="cs-value">${filledCount}/7</div></div>
-        <div class="combat-stat"><div class="cs-label">Gear Tier</div><div class="cs-value" style="color:var(--gold)">T${state.tier}</div></div>
+        <div class="combat-stat"><div class="cs-label">Slots</div><div class="cs-value">${filledCount}/7</div></div>
+        <div class="combat-stat"><div class="cs-label">Enchant</div><div class="cs-value" style="color:var(--gold)">${state.enchant>0?'+'+state.enchant:'.0'}</div></div>
       </div>
+      ${filledCount >= 2 ? `<div style="margin-top:8px;font-size:11px;color:var(--text-dim);padding:6px 8px;background:var(--bg-card);border-radius:6px;border-left:2px solid var(--gold-dim)">💡 ${getBuildTip(state)}</div>` : ''}
     </div>
 
-    <!-- Abilities -->
+    ${matRows ? `
+    <!-- Materials -->
     <div class="stat-panel">
-      <div class="stat-panel-title">⚡ Active Abilities</div>
-      <div class="abilities-list">${abilityRows}</div>
-    </div>
+      <div class="stat-panel-title">🪨 Crafting Materials</div>
+      <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">Approx. refined resources to craft this gear (T${state.tier})</div>
+      <div class="cost-rows">${matRows}</div>
+    </div>` : ''}
 
     <!-- Actions -->
     <div class="stat-panel">
       <div class="stat-panel-title">🔗 Actions</div>
       <div class="builder-actions-row">
-        <button class="btn btn-primary" onclick="copyBuilderBuild()" style="font-size:12px;padding:8px 16px">📋 Copy Build</button>
-        <a class="btn btn-outline" href="https://twitter.com/intent/tweet?text=${encodeURIComponent('I just built a '+role+' in Albion Online! '+fmtSilver(totalCost)+' silver. Full guide: https://albionnewbs.netlify.app')}" target="_blank" rel="noopener" style="font-size:12px;padding:8px 16px">𝕏 Share</a>
+        <button class="btn btn-primary" onclick="copyBuilderBuild()" style="font-size:12px;padding:8px 16px">📋 Copy</button>
+        <button class="btn btn-outline" onclick="shareBuild()" style="font-size:12px;padding:8px 16px">🔗 Share URL</button>
+        <a class="btn btn-outline" href="https://twitter.com/intent/tweet?text=${encodeURIComponent('T'+state.tier+'.'+state.enchant+' '+role+' build — '+ip+' IP. Full guide: https://albionnewbs.netlify.app')}" target="_blank" rel="noopener" style="font-size:12px;padding:8px 16px">𝕏 Tweet</a>
       </div>
-      ${filledCount >= 3 ? `
-      <div style="margin-top:10px;font-size:11px;color:var(--text-dim)">
-        💡 Tip: ${getBuildTip(state)}
-      </div>` : '<div style="margin-top:8px;font-size:11px;color:var(--text-dim)">Select at least a weapon, chest, and boots to see build advice.</div>'}
     </div>`;
 }
 
@@ -556,9 +783,25 @@ function clearAllSlots() {
 
 function setBuilderTier(tier) {
   builderState.tier = tier;
-  _livePrices = {}; // stale at new tier
+  _livePrices = {};
   refreshBuilder();
   setTimeout(fetchAndApplyLivePrices, 100);
+}
+
+function setEnchant(level) {
+  builderState.enchant = level;
+  refreshBuilder();
+}
+
+function shareBuild() {
+  const url = window.location.href.split('#')[0] + encodeBuildURL();
+  navigator.clipboard.writeText(url)
+    .then(() => showToast('Build URL copied! Share it with anyone.'))
+    .catch(() => {
+      // Fallback: update hash and show it
+      window.history.replaceState(null, '', url);
+      showToast('URL updated — copy from address bar!');
+    });
 }
 
 // Close picker on overlay click or ESC
@@ -717,4 +960,17 @@ function copyBuilderBuild() {
   ].filter(l => l !== null).join('\n');
 
   navigator.clipboard.writeText(lines).then(() => showToast('Build copied!')).catch(() => showToast('Copy failed', 'error'));
+}
+
+// ── Auto-load build from URL hash on page load ────────────────
+if (window.location.hash.startsWith('#build=')) {
+  // Defer until all data scripts are loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    if (decodeBuildFromURL()) {
+      // Navigate to builder section if not already there
+      if (typeof showSection === 'function') {
+        showSection('character-builder');
+      }
+    }
+  });
 }
