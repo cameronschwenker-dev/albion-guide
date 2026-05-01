@@ -52,11 +52,44 @@ function openGroupForSection(sectionId) {
   if (group) group.classList.add('open');
 }
 
+const _pageTitles = {
+  'home':                 'Albion Online Complete Guide 2024',
+  'getting-started':      'Getting Started — Albion Online Guide',
+  'destiny-board':        'Destiny Board Guide — Albion Online',
+  'gathering':            'Gathering Guide — Albion Online',
+  'crafting':             'Crafting Guide — Albion Online',
+  'combat':               'Combat & Weapons — Albion Online Guide',
+  'pve':                  'PvE & Dungeons — Albion Online Guide',
+  'pvp':                  'PvP Guide — Albion Online',
+  'economy':              'Economy & Trading — Albion Online Guide',
+  'mounts':               'Mounts Guide — Albion Online',
+  'housing':              'Island & Housing — Albion Online Guide',
+  'guilds':               'Guilds & Alliances — Albion Online Guide',
+  'roads':                'Roads of Avalon Guide — Albion Online',
+  'endgame':              'Endgame Guide — Albion Online',
+  'tips':                 'Tips & Tricks — Albion Online Guide',
+  'weapons-encyclopedia': 'All Weapons (84) — Albion Online Guide',
+  'armor-encyclopedia':   'All Armor Pieces — Albion Online Guide',
+  'meta-builds':          'Best Builds 2024 (33) — Albion Online Guide',
+  'content-rewards':      'Content Rewards & Silver/Hour — Albion Online',
+  'progression-roadmap':  'Progression Roadmap — Albion Online Guide',
+  'fame-farming':         'Fame Farming Guide — Albion Online',
+  'silver-guide':         'How to Make Silver — Albion Online Guide',
+  'island-guide':         'Island & Mount Farming — Albion Online Guide',
+  'crafting-guide':       'Crafting for Profit — Albion Online Guide',
+  'food-potions':         'Food & Potions Guide — Albion Online',
+  'beginner-builds':      'Beginner Builds (T4-T5) — Albion Online',
+  'safe-travel':          'Safe Travel Guide — Albion Online',
+  'passive-income':       'Passive Income Guide — Albion Online',
+};
+
 function showSection(id) {
   sections.forEach(s => s.classList.remove('active'));
   navItems.forEach(n => n.classList.remove('active'));
   const target = document.getElementById(id);
   if (target) target.classList.add('active');
+  // Dynamic page title for SEO
+  document.title = _pageTitles[id] || 'Albion Online Complete Guide 2024';
   // Mark active in nav (may appear in multiple places — mark all)
   document.querySelectorAll(`.nav-item[data-section="${id}"]`).forEach(el => el.classList.add('active'));
   // Auto-open the group that contains this section
