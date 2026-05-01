@@ -563,8 +563,9 @@ function renderBuilds(tagFilter) {
     return;
   }
 
-  const tierColor = { S:'#e8c96a', A:'#4a9c6e', B:'#4a7fc1', C:'#7a8098' };
-  const tierLabel = { S:'S-Tier', A:'A-Tier', B:'B-Tier', C:'C-Tier' };
+  const tierColor = { S:'#e8c96a', A:'#4a9c6e', B:'#4a7fc1', C:'#7a8098', D:'#8a5050' };
+  const tierLabel = { S:'S-Tier', A:'A-Tier', B:'B-Tier', C:'C-Tier', D:'D-Tier' };
+  const tierDesc  = { S:'Meta-defining', A:'Widely strong', B:'Situationally solid', C:'Niche/outclassed', D:'Fun, off-meta' };
   const sortLabels = { popular:'Most Popular', success:'Success Rate', cheapest:'Cheapest First', easiest:'Easiest First', tier:'S-Tier First' };
 
   // Result count bar
@@ -595,84 +596,125 @@ function renderBuilds(tagFilter) {
     const psSteps = (b.playstyle||[]).map((step, i) => `
       <li><div class="ps-num">${i+1}</div><span>${step}</span></li>`).join('');
 
+    const tc = tierColor[b.metaTier] || 'var(--text-dim)';
     const costColor = b.cost === 'Low' ? '#70c090' : b.cost === 'Medium' ? 'var(--gold)' : (b.cost||'').includes('Very') ? '#f05050' : '#e07070';
 
-    const weaponItem = b.loadout && b.loadout.weapon;
-    const weaponRid  = weaponItem ? getRid(weaponItem.name) : null;
+    // Gear preview strip (5 key slots shown collapsed)
+    const gearSlotDefs = [
+      ['weapon','⚔️'], ['helmet','⛑️'], ['chest','👕'], ['boots','👟'], ['offhand','🛡️']
+    ];
+    const gearStrip = gearSlotDefs.map(([slot, emoji]) => {
+      const item = b.loadout?.[slot];
+      if (!item) return `<div class="gs-slot empty" title="${slot}"><span class="gs-emoji">${emoji}</span></div>`;
+      const rid = getRid(item.name);
+      const cleanName = item.name.replace(/\s*\(T\d[^)]*\)/gi,'').trim();
+      return `<div class="gs-slot" title="${cleanName}">
+        <span class="gs-emoji">${emoji}</span>
+        ${rid ? `<img src="${itemImg(rid,40)}" class="gs-img" onerror="this.remove()" />` : ''}
+        <span class="gs-name">${cleanName.split(' ').slice(0,2).join(' ')}</span>
+      </div>`;
+    }).join('');
+
+    // Full loadout grid (shown when expanded)
+    const loSlots = ['weapon','offhand','helmet','chest','boots','food','potion'];
+    const loEmoji = { weapon:'⚔️', offhand:'🛡️', helmet:'⛑️', chest:'👕', boots:'👟', food:'🍗', potion:'🧪' };
+    const loadoutGrid = loSlots.map(slot => {
+      const item = b.loadout?.[slot];
+      if (!item) return '';
+      const rid = getRid(item.name);
+      const cleanName = item.name.replace(/\s*\(T\d[^)]*\)/gi,'').trim();
+      return `<div class="lo-item">
+        <div class="lo-img-wrap">
+          <span class="lo-emoji-bg">${loEmoji[slot]}</span>
+          ${rid ? `<img src="${itemImg(rid,52)}" class="lo-img" onerror="this.remove()" />` : ''}
+        </div>
+        <div class="lo-text">
+          <div class="lo-slot-label">${slot}</div>
+          <div class="lo-item-name">${cleanName}</div>
+          <div class="lo-note">${item.note||''}</div>
+        </div>
+      </div>`;
+    }).filter(Boolean).join('');
+
+    const successBarColor = (b.successRate||0)>=75 ? 'var(--accent-green)' : (b.successRate||0)>=55 ? 'var(--gold)' : 'var(--accent-red)';
 
     return `
-    <div class="build-card" id="build-${b.id}" style="--build-accent:${b.color}">
-      <div class="build-header" onclick="toggleBuildByHeader(this)" style="cursor:pointer" title="Click to expand">
-        <div class="build-accent" style="background:linear-gradient(90deg,${b.color},transparent)"></div>
-        <div class="build-icon-name">
-          <div class="build-icon-wrap" style="background:rgba(0,0,0,0.3);border-color:${b.color}40;position:relative;overflow:hidden;font-size:24px">
+    <div class="build-card" id="build-${b.id}" onclick="toggleBuildCard(this)">
+      <div class="build-accent" style="background:linear-gradient(90deg,${b.color},transparent)"></div>
+
+      <!-- ── Collapsed header (always visible) ── -->
+      <div class="build-header">
+        <div class="build-header-top">
+          <div class="build-icon-wrap" style="background:rgba(0,0,0,0.3);border-color:${b.color}40;position:relative;overflow:hidden;font-size:22px;flex-shrink:0">
             <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">${b.icon}</span>
-            ${weaponRid ? `<img src="${itemImg(weaponRid,48)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:4px" onerror="this.remove()" />` : ''}
+            ${b.loadout?.weapon ? (() => { const r = getRid(b.loadout.weapon.name); return r ? `<img src="${itemImg(r,48)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:3px" onerror="this.remove()" />` : ''; })() : ''}
           </div>
-          <div style="flex:1">
-            <div style="display:flex;align-items:center;gap:8px">
-              <div class="build-name">${b.name}</div>
-              ${b.metaTier ? `<span class="tier-badge" style="background:${tierColor[b.metaTier]}20;color:${tierColor[b.metaTier]};border:1px solid ${tierColor[b.metaTier]}50">${tierLabel[b.metaTier]}</span>` : ''}
+          <div class="build-header-title">
+            <div class="build-name-row">
+              <span class="build-name">${b.name}</span>
+              ${b.metaTier ? `<span class="tier-badge" style="background:${tc}20;color:${tc};border:1px solid ${tc}50" title="${tierDesc[b.metaTier]||''}">${tierLabel[b.metaTier]||b.metaTier}</span>` : ''}
             </div>
-            <div class="build-role">${b.role}</div>
-            ${b.patchVerified ? `<div class="patch-verified-badge">✓ ${b.patchVerified}</div>` : ''}
+            <div class="build-role-row">
+              <span class="build-role">${b.role}</span>
+              <span class="build-cost-pill" style="color:${costColor}">${b.cost} Cost</span>
+              ${b.patchVerified ? `<span class="patch-verified-badge" style="margin-left:4px">✓ ${b.patchVerified}</span>` : ''}
+            </div>
+          </div>
+          <div class="build-header-right">
+            <div class="build-success-mini">
+              <div class="success-rate-bar" style="width:60px"><div class="success-rate-fill" style="width:${b.successRate||0}%;background:${successBarColor}"></div></div>
+              <span style="font-size:10px;color:var(--text-dim)">${b.successRate||'?'}%</span>
+            </div>
+            <span class="build-chevron">▾</span>
           </div>
         </div>
-        <div class="build-tags">${b.tags.map(t => `<span class="btag">${t}</span>`).join('')}</div>
         <p class="build-summary">${b.summary}</p>
+        <!-- Gear preview strip -->
+        <div class="build-gear-strip">${gearStrip}</div>
+        <div class="build-tags">${b.tags.map(t=>`<span class="btag">${t}</span>`).join('')}</div>
       </div>
+
+      <!-- ── Expanded body (hidden by default) ── -->
       <div class="build-body">
-        <!-- Stats row: difficulty, cost, success rate, popularity -->
-        <div class="build-meta-row" style="grid-template-columns:repeat(4,1fr)">
-          <div class="build-meta-cell">
-            <div class="bmc-label">Difficulty</div>
-            <div class="bmc-value">${ratingDots(b.difficulty)}</div>
-          </div>
-          <div class="build-meta-cell">
-            <div class="bmc-label">Cost</div>
-            <div class="bmc-value" style="color:${costColor}">${b.cost}</div>
-          </div>
-          <div class="build-meta-cell">
-            <div class="bmc-label">Success Rate</div>
-            <div class="bmc-value">
-              <div class="success-rate-bar">
-                <div class="success-rate-fill" style="width:${b.successRate||0}%;background:${(b.successRate||0)>=75?'var(--accent-green)':(b.successRate||0)>=60?'var(--gold)':'var(--accent-red)'}"></div>
-              </div>
-              <span style="font-size:11px;color:var(--text-dim)">${b.successRate||'?'}%</span>
-            </div>
-          </div>
-          <div class="build-meta-cell">
-            <div class="bmc-label">Popularity</div>
-            <div class="bmc-value popularity-dots">${Array.from({length:5},(_,i)=>`<span class="${i<(b.popularity||0)?'pop-dot filled':'pop-dot'}">●</span>`).join('')}</div>
+
+        <!-- LOADOUT — shown first and prominently -->
+        <div class="build-loadout-section">
+          <div class="build-section-title">⚙️ Loadout</div>
+          <div class="loadout-grid">${loadoutGrid}</div>
+          <div class="build-loadout-actions">
+            <button class="btn btn-primary" style="font-size:12px;padding:7px 14px" onclick="event.stopPropagation();buildFromMeta('${b.id}')">🎮 Build This in Character Builder</button>
+            <button class="btn btn-outline" style="font-size:12px;padding:7px 14px" onclick="event.stopPropagation();copyBuild('${b.id}',this)">📋 Copy</button>
+            <a class="btn btn-outline" style="font-size:12px;padding:7px 14px" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(b.name+' '+tierLabel[b.metaTier]+' Albion build — '+b.successRate+'% success rate. https://albionnewbs.netlify.app')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">𝕏 Share</a>
           </div>
         </div>
 
-        <!-- Radar chart + visual loadout side by side -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <!-- Stats + radar -->
+        <div class="build-stats-radar">
+          <div class="build-meta-row" style="grid-template-columns:repeat(4,1fr)">
+            <div class="build-meta-cell"><div class="bmc-label">Difficulty</div><div class="bmc-value">${ratingDots(b.difficulty)}</div></div>
+            <div class="build-meta-cell"><div class="bmc-label">Cost</div><div class="bmc-value" style="color:${costColor}">${b.cost}</div></div>
+            <div class="build-meta-cell"><div class="bmc-label">Success</div><div class="bmc-value">
+              <div class="success-rate-bar"><div class="success-rate-fill" style="width:${b.successRate||0}%;background:${successBarColor}"></div></div>
+              <span style="font-size:11px;color:var(--text-dim)">${b.successRate||'?'}%</span>
+            </div></div>
+            <div class="build-meta-cell"><div class="bmc-label">Popularity</div><div class="bmc-value popularity-dots">${Array.from({length:5},(_,i)=>`<span class="${i<(b.popularity||0)?'pop-dot filled':'pop-dot'}">●</span>`).join('')}</div></div>
+          </div>
           ${renderRadarChart(b.scenarios)}
-          ${renderVisualLoadout(b.loadout)}
         </div>
 
         <div class="build-rewards"><strong>💰 Rewards:</strong> ${b.rewards}</div>
-      </div>
-      <div class="build-actions">
-        <button class="build-toggle" onclick="toggleBuild(this)" style="flex:1">
-          Full Details — Rotation &amp; Counters <span>▶</span>
-        </button>
-        <button class="build-action-btn" onclick="copyBuild('${b.id}',this)" title="Copy build to clipboard">📋 Copy</button>
-        <a class="build-action-btn" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(b.name+' — '+b.metaTier+'-Tier Albion Online build. Full guide: https://albionnewbs.netlify.app')}" target="_blank" rel="noopener" title="Share on X/Twitter">𝕏 Share</a>
-      </div>
-      <div class="build-expandable">
-        <div style="font-size:12px;color:var(--gold-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Playstyle / Rotation</div>
+
+        <!-- Rotation / counters -->
+        <div class="build-section-title" style="margin-top:14px">🔄 Rotation & Counters</div>
         <ul class="playstyle-steps">${psSteps}</ul>
-        <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
           <div>
             <div style="font-size:11px;color:var(--accent-green);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">✅ Strengths</div>
-            ${b.counters.map(c => `<div style="font-size:12px;color:var(--text-dim);padding:2px 0">▸ ${c}</div>`).join('')}
+            ${(b.counters||[]).map(c=>`<div style="font-size:12px;color:var(--text-dim);padding:2px 0">▸ ${c}</div>`).join('')}
           </div>
           <div>
             <div style="font-size:11px;color:var(--accent-red);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">❌ Weaknesses</div>
-            ${b.countered_by.map(c => `<div style="font-size:12px;color:var(--text-dim);padding:2px 0">▸ ${c}</div>`).join('')}
+            ${(b.countered_by||[]).map(c=>`<div style="font-size:12px;color:var(--text-dim);padding:2px 0">▸ ${c}</div>`).join('')}
           </div>
         </div>
       </div>
@@ -687,24 +729,13 @@ function renderBuilds(tagFilter) {
   }).join('') + '</div>';
 }
 
-function toggleBuild(btn) {
-  const card = btn.closest('.build-card');
-  const expandable = card.querySelector('.build-expandable');
-  if (!expandable) return;
-  expandable.classList.toggle('open');
-  const arrow = btn.querySelector('span');
-  if (arrow) arrow.textContent = expandable.classList.contains('open') ? '▼' : '▶';
+function toggleBuildCard(card) {
+  card.classList.toggle('expanded');
 }
 
-// Allow clicking the header to toggle the build detail
-function toggleBuildByHeader(header) {
-  const card = header.closest('.build-card');
-  const expandable = card && card.querySelector('.build-expandable');
-  if (!expandable) return;
-  expandable.classList.toggle('open');
-  const arrow = card.querySelector('.build-toggle span');
-  if (arrow) arrow.textContent = expandable.classList.contains('open') ? '▼' : '▶';
-}
+// Legacy aliases kept so any remaining onclick references don't crash
+function toggleBuild(btn) { toggleBuildCard(btn.closest('.build-card')); }
+function toggleBuildByHeader(h) { toggleBuildCard(h.closest('.build-card')); }
 
 document.addEventListener('click', e => {
   const btn = e.target.closest('#buildFilterBar .filter-btn');

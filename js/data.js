@@ -1676,7 +1676,7 @@ const metaBuilds = [
   {
     id:'bedrock-mace-frontline', successRate:77, popularity:2,
     scenarios:{soloOpen:1,soloDung:2,groupDung:3,hellgate:4,smallPvP:4,zvz:4,gvg:5,hce:2},
-    weaponLine:'Quarterstaffs', armorType:'Plate', metaTier:'A', patchVerified:metaPatchInfo.patch,
+    weaponLine:'Quarterstaffs', armorType:'Plate', metaTier:'D', patchVerified:metaPatchInfo.patch,
     name:'Bedrock Mace Frontline', role:'GvG / Brawl Tank', difficulty:4, cost:'High',
     tags:['GvG','Group PvP','ZvZ','CC'], icon:'🪨', color:'#4a7fc1',
     summary:'Stone Form invulnerability with knockback exit is one of the most disruptive abilities in the game. Pop it when focused, survive, then explode everyone around you as it ends.',
@@ -1767,7 +1767,7 @@ const metaBuilds = [
   {
     id:'infernal-staff-dungeon', successRate:73, popularity:3,
     scenarios:{soloOpen:4,soloDung:5,groupDung:3,hellgate:3,smallPvP:2,zvz:2,gvg:2,hce:3},
-    weaponLine:'Fire Staffs', armorType:'Cloth', metaTier:'B', patchVerified:metaPatchInfo.patch,
+    weaponLine:'Fire Staffs', armorType:'Cloth', metaTier:'A', patchVerified:metaPatchInfo.patch,
     name:'Infernal Staff Solo Dungeon', role:'Solo Dungeons / DoT Farmer', difficulty:2, cost:'Low',
     tags:['Solo PvE','Dungeons','Beginner Friendly'], icon:'🔥', color:'#c06040',
     summary:'Inferno channels multiple fire projectiles applying stacking DoTs to everything hit. Perfect for solo dungeon room clearing — run in, channel, leave the burning pile of mobs.',
@@ -1790,7 +1790,7 @@ const metaBuilds = [
   {
     id:'icicle-staff-pvp', successRate:68, popularity:3,
     scenarios:{soloOpen:2,soloDung:3,groupDung:2,hellgate:4,smallPvP:5,zvz:2,gvg:3,hce:2},
-    weaponLine:'Frost Staffs', armorType:'Cloth', metaTier:'A', patchVerified:metaPatchInfo.patch,
+    weaponLine:'Frost Staffs', armorType:'Cloth', metaTier:'B', patchVerified:metaPatchInfo.patch,
     name:'Icicle Staff Solo PvP', role:'Solo PvP / Burst Frost', difficulty:4, cost:'Medium',
     tags:['Solo PvP','Hellgate','Small Group'], icon:'❄️', color:'#4a7fc1',
     summary:'Icicle Barrage fires rapid icy projectiles each applying slow — the Shard Storm passive drops AoE explosions at the target\'s feet. Constant slow application makes you impossible to escape.',
@@ -1859,7 +1859,7 @@ const metaBuilds = [
   {
     id:'witchwork-debuffer', successRate:76, popularity:2,
     scenarios:{soloOpen:2,soloDung:2,groupDung:4,hellgate:4,smallPvP:4,zvz:3,gvg:5,hce:5},
-    weaponLine:'Arcane Staffs', armorType:'Cloth', metaTier:'A', patchVerified:metaPatchInfo.patch,
+    weaponLine:'Arcane Staffs', armorType:'Cloth', metaTier:'C', patchVerified:metaPatchInfo.patch,
     name:'Witchwork Staff Debuffer', role:'Group Debuffer / HCE / GvG', difficulty:4, cost:'High',
     tags:['GvG','HCE','Group PvP','Support'], icon:'🧙', color:'#7a5cbf',
     summary:'Hex reduces all enemy resistances by a massive %. A Hexed target takes substantially more damage from every single source. In a coordinated group this is a guaranteed kill on any target you choose.',
@@ -2065,3 +2065,4 @@ const contentRewards = [
     notes: 'Takes 10–15 min daily upkeep. Compounds over time. Best ROI per minute spent.',
   },
 ];
+
