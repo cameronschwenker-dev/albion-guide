@@ -600,6 +600,61 @@
   line-height: 1.55;
 }
 
+/* ===== SUCCESS RATE BAR ===== */
+.success-rate-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-bottom: 3px;
+  overflow: hidden;
+}
+.success-rate-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+/* ===== POPULARITY DOTS ===== */
+.popularity-dots { display: flex; gap: 3px; align-items: center; }
+.pop-dot { font-size: 10px; color: var(--border); }
+.pop-dot.filled { color: var(--gold); }
+
+/* ===== SCENARIO CHART ===== */
+.scenario-chart {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.scenario-chart-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 10px;
+}
+.scenario-bars { display: flex; flex-direction: column; gap: 6px; }
+.scenario-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 28px;
+  align-items: center;
+  gap: 8px;
+}
+.scenario-label { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+.scenario-track { display: flex; gap: 3px; }
+.scenario-pip {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  transition: background 0.2s;
+}
+.scenario-pip.on { background: var(--gold); }
+.scenario-row:hover .scenario-pip.on { background: var(--gold-light); }
+.scenario-val { font-size: 10px; color: var(--text-dim); text-align: right; }
+
 /* ===== BUILDS NAV SECTION ===== */
 .nav-builds-section {
   padding: 10px 8px 6px;

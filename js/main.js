@@ -535,7 +535,8 @@ function renderBuilds(tagFilter) {
         <p class="build-summary">${b.summary}</p>
       </div>
       <div class="build-body">
-        <div class="build-meta-row">
+        <!-- Stats row: difficulty, cost, success rate, popularity -->
+        <div class="build-meta-row" style="grid-template-columns:repeat(4,1fr)">
           <div class="build-meta-cell">
             <div class="bmc-label">Difficulty</div>
             <div class="bmc-value">${ratingDots(b.difficulty)}</div>
@@ -545,10 +546,44 @@ function renderBuilds(tagFilter) {
             <div class="bmc-value" style="color:${costColor}">${b.cost}</div>
           </div>
           <div class="build-meta-cell">
-            <div class="bmc-label">Rewards</div>
-            <div class="bmc-value" style="color:var(--gold)">See below</div>
+            <div class="bmc-label">Success Rate</div>
+            <div class="bmc-value">
+              <div class="success-rate-bar">
+                <div class="success-rate-fill" style="width:${b.successRate||0}%;background:${(b.successRate||0)>=75?'var(--accent-green)':(b.successRate||0)>=60?'var(--gold)':'var(--accent-red)'}"></div>
+              </div>
+              <span style="font-size:11px;color:var(--text-dim)">${b.successRate||'?'}%</span>
+            </div>
+          </div>
+          <div class="build-meta-cell">
+            <div class="bmc-label">Popularity</div>
+            <div class="bmc-value popularity-dots">${Array.from({length:5},(_,i)=>`<span class="${i<(b.popularity||0)?'pop-dot filled':'pop-dot'}">●</span>`).join('')}</div>
           </div>
         </div>
+
+        <!-- Scenario suitability chart -->
+        ${b.scenarios ? `
+        <div class="scenario-chart">
+          <div class="scenario-chart-label">Scenario Suitability</div>
+          <div class="scenario-bars">
+            ${[
+              ['Solo Open World', b.scenarios.soloOpen],
+              ['Solo Dungeons',   b.scenarios.soloDung],
+              ['Group Dungeons',  b.scenarios.groupDung],
+              ['Hellgates',       b.scenarios.hellgate],
+              ['Small Group PvP', b.scenarios.smallPvP],
+              ['ZvZ',             b.scenarios.zvz],
+              ['GvG',             b.scenarios.gvg],
+              ['HCE',             b.scenarios.hce],
+            ].map(([label, val]) => `
+              <div class="scenario-row">
+                <span class="scenario-label">${label}</span>
+                <div class="scenario-track">
+                  ${Array.from({length:5},(_,i)=>`<div class="scenario-pip ${i<(val||0)?'on':''}"></div>`).join('')}
+                </div>
+                <span class="scenario-val">${val||0}/5</span>
+              </div>`).join('')}
+          </div>
+        </div>` : ''}
 
         <div style="font-size:12px;color:var(--gold-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Loadout</div>
         <table class="loadout-table">${loadoutRows}</table>

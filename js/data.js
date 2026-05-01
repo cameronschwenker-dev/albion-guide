@@ -1032,7 +1032,7 @@ const metaPatchInfo = {
 // ============================================================
 const metaBuilds = [
   {
-    id: 'bloodletter-assassin', weaponLine:'Daggers',   armorType:'Leather', metaTier: 'S', patchVerified: metaPatchInfo.patch,
+    id: 'bloodletter-assassin', successRate:68, popularity:5, scenarios:{soloOpen:3,soloDung:2,groupDung:1,hellgate:4,smallPvP:5,zvz:1,gvg:2,hce:1}, weaponLine:'Daggers',   armorType:'Leather', metaTier: 'S', patchVerified: metaPatchInfo.patch,
     name: 'Bloodletter Assassin',
     role: 'Solo PvP / Ganker',
     difficulty: 4,
@@ -1063,7 +1063,7 @@ const metaBuilds = [
     rewards: 'Best solo PvP potential in the game. Can kill T8-geared players solo. Extremely high silver per hour when ganking gatherers.',
   },
   {
-    id: 'claws-solo-pve', weaponLine:'Daggers',   armorType:'Cloth', metaTier: 'S', patchVerified: metaPatchInfo.patch,
+    id: 'claws-solo-pve', successRate:82, popularity:5, scenarios:{soloOpen:4,soloDung:5,groupDung:3,hellgate:3,smallPvP:3,zvz:1,gvg:1,hce:2}, weaponLine:'Daggers',   armorType:'Cloth', metaTier: 'S', patchVerified: metaPatchInfo.patch,
     name: 'Claws Solo PvE Farmer',
     role: 'Solo Dungeons / PvE Farming',
     difficulty: 2,
@@ -1094,7 +1094,7 @@ const metaBuilds = [
     rewards: '400k–1.5M silver/hour solo dungeons at T6+. Consistent fame for Destiny Board. Safe income source.',
   },
   {
-    id: 'great-arcane-solo', weaponLine:'Arcane Staffs', armorType:'Cloth', metaTier: 'A', patchVerified: metaPatchInfo.patch,
+    id: 'great-arcane-solo', successRate:78, popularity:4, scenarios:{soloOpen:4,soloDung:5,groupDung:3,hellgate:3,smallPvP:4,zvz:2,gvg:2,hce:3}, weaponLine:'Arcane Staffs', armorType:'Cloth', metaTier: 'A', patchVerified: metaPatchInfo.patch,
     name: 'Great Arcane Staff Solo All-Rounder',
     role: 'Solo PvE + PvP',
     difficulty: 3,
@@ -1125,7 +1125,7 @@ const metaBuilds = [
     rewards: '600k–2M silver/hour at high level. Flexible enough to PvP opportunistically while farming.',
   },
   {
-    id: 'hallowfall-group-healer', weaponLine:'Holy Staffs',  armorType:'Cloth', metaTier: 'S', patchVerified: metaPatchInfo.patch,
+    id: 'hallowfall-group-healer', successRate:85, popularity:4, scenarios:{soloOpen:1,soloDung:1,groupDung:4,hellgate:2,smallPvP:2,zvz:3,gvg:4,hce:5}, weaponLine:'Holy Staffs',  armorType:'Cloth', metaTier: 'S', patchVerified: metaPatchInfo.patch,
     name: 'Hallowfall Group Healer',
     role: 'Group Healer — HCE / GvG',
     difficulty: 4,
@@ -1156,7 +1156,7 @@ const metaBuilds = [
     rewards: 'Essential for HCE Floor 8+ — impossible without a skilled healer. GvG participation in top guilds.',
   },
   {
-    id: 'great-hammer-zvz', weaponLine:'Hammers',   armorType:'Plate', metaTier: 'S', patchVerified: metaPatchInfo.patch,
+    id: 'great-hammer-zvz', successRate:72, popularity:5, scenarios:{soloOpen:1,soloDung:1,groupDung:2,hellgate:2,smallPvP:3,zvz:5,gvg:4,hce:2}, weaponLine:'Hammers',   armorType:'Plate', metaTier: 'S', patchVerified: metaPatchInfo.patch,
     name: 'Great Hammer ZvZ Initiator',
     role: 'ZvZ Frontline / Initiator',
     difficulty: 3,
@@ -1187,7 +1187,7 @@ const metaBuilds = [
     rewards: 'Season Points from territory fights. Guild recognition as initiator. Key to GvG victory.',
   },
   {
-    id: 'brimstone-small-group', weaponLine:'Fire Staffs',  armorType:'Cloth', metaTier: 'A', patchVerified: metaPatchInfo.patch,
+    id: 'brimstone-small-group', successRate:71, popularity:4, scenarios:{soloOpen:2,soloDung:3,groupDung:3,hellgate:4,smallPvP:4,zvz:3,gvg:3,hce:3}, weaponLine:'Fire Staffs',  armorType:'Cloth', metaTier: 'A', patchVerified: metaPatchInfo.patch,
     name: 'Brimstone Staff Small Group DPS',
     role: 'Small Group PvP / Ganking',
     difficulty: 3,
@@ -1218,7 +1218,7 @@ const metaBuilds = [
     rewards: '2–6M silver/hour in Hellgates. Strong in HCE and group dungeons.',
   },
   {
-    id: 'shadowcaller-sustained', weaponLine:'Cursed Staffs',armorType:'Cloth', metaTier: 'A', patchVerified: metaPatchInfo.patch,
+    id: 'shadowcaller-sustained', successRate:75, popularity:3, scenarios:{soloOpen:3,soloDung:3,groupDung:3,hellgate:4,smallPvP:4,zvz:4,gvg:3,hce:3}, weaponLine:'Cursed Staffs',armorType:'Cloth', metaTier: 'A', patchVerified: metaPatchInfo.patch,
     name: 'Shadowcaller Sustained DoT',
     role: 'Group PvP / ZvZ DoT',
     difficulty: 4,
@@ -1249,7 +1249,7 @@ const metaBuilds = [
     rewards: 'Excellent in ZvZ for sustained team damage. Roads of Avalon group content.',
   },
   {
-    id: 'bow-of-badon-support', weaponLine:'Bows',      armorType:'Leather', metaTier: 'A', patchVerified: metaPatchInfo.patch,
+    id: 'bow-of-badon-support', successRate:80, popularity:3, scenarios:{soloOpen:1,soloDung:1,groupDung:2,hellgate:2,smallPvP:3,zvz:5,gvg:4,hce:2}, weaponLine:'Bows',      armorType:'Leather', metaTier: 'A', patchVerified: metaPatchInfo.patch,
     name: 'Bow of Badon Support',
     role: 'ZvZ Support / Objective Defense',
     difficulty: 3,
@@ -1280,7 +1280,7 @@ const metaBuilds = [
     rewards: 'Critical for Crystal League teams. ZvZ season point contributions.',
   },
   {
-    id: 'infernal-scythe-solo', weaponLine:'Axes',      armorType:'Leather', metaTier: 'B', patchVerified: metaPatchInfo.patch,
+    id: 'infernal-scythe-solo', successRate:76, popularity:3, scenarios:{soloOpen:5,soloDung:4,groupDung:2,hellgate:2,smallPvP:2,zvz:1,gvg:1,hce:2}, weaponLine:'Axes',      armorType:'Leather', metaTier: 'B', patchVerified: metaPatchInfo.patch,
     name: 'Infernal Scythe Solo Farmer',
     role: 'Open World Farming',
     difficulty: 2,
@@ -1311,7 +1311,7 @@ const metaBuilds = [
     rewards: '1–3M silver/hour open world mob farming at T6+. Fast fame for Destiny Board.',
   },
   {
-    id: 'lifecurse-solo-dungeons', weaponLine:'Cursed Staffs',armorType:'Cloth', metaTier: 'B', patchVerified: metaPatchInfo.patch,
+    id: 'lifecurse-solo-dungeons', successRate:80, popularity:4, scenarios:{soloOpen:3,soloDung:5,groupDung:3,hellgate:3,smallPvP:2,zvz:2,gvg:2,hce:3}, weaponLine:'Cursed Staffs',armorType:'Cloth', metaTier: 'B', patchVerified: metaPatchInfo.patch,
     name: 'Lifecurse Dungeon Sustain',
     role: 'Solo Dungeons / Sustained PvE',
     difficulty: 3,
@@ -1342,7 +1342,7 @@ const metaBuilds = [
     rewards: '500k–1.8M silver/hour solo dungeons. Forgiving playstyle good for newer players.',
   },
   {
-    id: 'redemption-gvg-healer', weaponLine:'Holy Staffs',  armorType:'Cloth', metaTier: 'S', patchVerified: metaPatchInfo.patch,
+    id: 'redemption-gvg-healer', successRate:88, popularity:3, scenarios:{soloOpen:1,soloDung:1,groupDung:4,hellgate:2,smallPvP:2,zvz:3,gvg:5,hce:5}, weaponLine:'Holy Staffs',  armorType:'Cloth', metaTier: 'S', patchVerified: metaPatchInfo.patch,
     name: 'Redemption GvG Healer',
     role: 'Crystal League / GvG Healer',
     difficulty: 5,
@@ -1376,7 +1376,7 @@ const metaBuilds = [
 
   // ── 5 ADDITIONAL BUILDS ─────────────────────────────────────
   {
-    id: 'great-frost-zvz', weaponLine:'Frost Staffs', armorType:'Cloth', metaTier: 'S', patchVerified: metaPatchInfo.patch,
+    id: 'great-frost-zvz', successRate:77, popularity:5, scenarios:{soloOpen:1,soloDung:1,groupDung:2,hellgate:3,smallPvP:3,zvz:5,gvg:4,hce:2}, weaponLine:'Frost Staffs', armorType:'Cloth', metaTier: 'S', patchVerified: metaPatchInfo.patch,
     name: 'Great Frost Staff ZvZ',
     role: 'ZvZ / Large-Scale CC',
     difficulty: 3,
@@ -1408,7 +1408,7 @@ const metaBuilds = [
   },
 
   {
-    id: 'claymore-zvz', weaponLine:'Swords', armorType:'Plate', metaTier: 'A', patchVerified: metaPatchInfo.patch,
+    id: 'claymore-zvz', successRate:70, popularity:4, scenarios:{soloOpen:2,soloDung:2,groupDung:3,hellgate:3,smallPvP:3,zvz:4,gvg:3,hce:2}, weaponLine:'Swords', armorType:'Plate', metaTier: 'A', patchVerified: metaPatchInfo.patch,
     name: 'Claymore ZvZ Frontline',
     role: 'ZvZ Melee DPS / Frontline',
     difficulty: 2,
@@ -1440,7 +1440,7 @@ const metaBuilds = [
   },
 
   {
-    id: 'weeping-repeater-pve', weaponLine:'Crossbows', armorType:'Leather', metaTier: 'A', patchVerified: metaPatchInfo.patch,
+    id: 'weeping-repeater-pve', successRate:79, popularity:3, scenarios:{soloOpen:3,soloDung:4,groupDung:3,hellgate:2,smallPvP:2,zvz:2,gvg:2,hce:3}, weaponLine:'Crossbows', armorType:'Leather', metaTier: 'A', patchVerified: metaPatchInfo.patch,
     name: 'Weeping Repeater Dungeon Farmer',
     role: 'Solo Dungeons / PvE Farming',
     difficulty: 2,
@@ -1472,7 +1472,7 @@ const metaBuilds = [
   },
 
   {
-    id: 'nature-group-healer', weaponLine:'Nature Staffs', armorType:'Cloth', metaTier: 'A', patchVerified: metaPatchInfo.patch,
+    id: 'nature-group-healer', successRate:83, popularity:3, scenarios:{soloOpen:1,soloDung:2,groupDung:5,hellgate:2,smallPvP:2,zvz:3,gvg:4,hce:4}, weaponLine:'Nature Staffs', armorType:'Cloth', metaTier: 'A', patchVerified: metaPatchInfo.patch,
     name: 'Nature Staff Group Healer',
     role: 'Group Dungeons / Sustained HoT Healer',
     difficulty: 3,
@@ -1504,7 +1504,7 @@ const metaBuilds = [
   },
 
   {
-    id: 'heron-spear-debuffer', weaponLine:'Spears', armorType:'Leather', metaTier: 'A', patchVerified: metaPatchInfo.patch,
+    id: 'heron-spear-debuffer', successRate:85, popularity:2, scenarios:{soloOpen:2,soloDung:3,groupDung:4,hellgate:4,smallPvP:3,zvz:3,gvg:5,hce:5}, weaponLine:'Spears', armorType:'Leather', metaTier: 'A', patchVerified: metaPatchInfo.patch,
     name: 'Heron Spear Debuffer',
     role: 'Group Debuffer / Off-DPS',
     difficulty: 3,
@@ -1533,6 +1533,395 @@ const metaBuilds = [
     counters: ['Rend amplifies ALL physical damage from teammates','Flexible positioning unlike pure tanks'],
     countered_by: ['Magic-heavy compositions (Rend is physical defense only)','Focus fire — you become a priority target once enemies recognise the debuff'],
     rewards: 'Invite-only in experienced HCE groups. Significant silver/hour multiplier for the whole party.',
+  },
+
+  // ── 17 MORE BUILDS ──────────────────────────────────────────
+
+  // SWORDS
+  {
+    id:'carving-sword-pvp', successRate:71, popularity:3,
+    scenarios:{soloOpen:3,soloDung:2,groupDung:1,hellgate:4,smallPvP:5,zvz:2,gvg:2,hce:1},
+    weaponLine:'Swords', armorType:'Leather', metaTier:'A', patchVerified:metaPatchInfo.patch,
+    name:'Carving Sword Anti-Tank', role:'Solo PvP / Anti-Heavy', difficulty:3, cost:'Medium',
+    tags:['Solo PvP','Ganking'], icon:'🗡️', color:'#c9a84c',
+    summary:'Carving Slash bleeds scale with enemy max HP — the harder they are to kill, the more this shreds them. Tanks and high-HP builds melt under stacking bleeds.',
+    loadout:{
+      weapon: {name:'Carving Sword (T6+)',  note:'Carving Slash bleeds — % max HP damage'},
+      offhand:{name:'Torch (T4)',           note:'Energy passive'},
+      helmet: {name:'Assassin Hood',        note:'Spiked Barrier punishes attackers'},
+      chest:  {name:'Assassin\'s Jacket',   note:'Shadow Strike resets on kill'},
+      boots:  {name:'Assassin Shoes',       note:'Shadow Dash + Q reset extension'},
+      food:   {name:'Pork Omelette',        note:'+HP buffer'},
+      potion: {name:'Resistance Potion',    note:'Survive burst counter-attack'},
+    },
+    playstyle:['Open with Heroic Charge to close distance','Apply Carving Slash immediately and keep stacks up','Target the highest-HP player — the bleeds deal % of their max HP','Let bleeds tick while you stay mobile and dodge CC','Assassin Jacket Shadow Strike resets if they die — chain to next target','Save Resistance Potion for when they burst back'],
+    counters:['% max HP damage bypasses armor entirely','Excellent vs tanks and high-HP builds'],
+    countered_by:['Low-HP glass cannon builds (less bleed value)','Heavy CC before you can stack bleeds'],
+    rewards:'Strong in solo roaming and small-scale fights. Excellent counter-pick vs tanky opponents.',
+  },
+
+  {
+    id:'kingmaker-crystal', successRate:82, popularity:2,
+    scenarios:{soloOpen:1,soloDung:1,groupDung:2,hellgate:2,smallPvP:4,zvz:3,gvg:5,hce:3},
+    weaponLine:'Swords', armorType:'Plate', metaTier:'S', patchVerified:metaPatchInfo.patch,
+    name:'Kingmaker Crystal League', role:'GvG / Crystal League', difficulty:5, cost:'Very High',
+    tags:['GvG','Crystal League','Support DPS'], icon:'👑', color:'#e8c96a',
+    summary:'The most impactful GvG weapon in the right hands. Battle Rush empowers your entire group — coordinated burst windows with Kingmaker are almost impossible to survive.',
+    loadout:{
+      weapon: {name:'Kingmaker (T8)',       note:'Battle Rush group damage + speed buff'},
+      offhand:{name:'Shield',              note:'Block + defense for frontline survival'},
+      helmet: {name:'Guardian Helmet',     note:'Javelin root setup before Battle Rush'},
+      chest:  {name:'Royal Armor',         note:'Royal Edict CC immunity for team'},
+      boots:  {name:'Guardian Boots',      note:'Group speed aura for positioning'},
+      food:   {name:'Beef Stew',           note:'+HP + resistance for sustained fights'},
+      potion: {name:'Resistance Potion',   note:'Survive focus fire as primary target'},
+    },
+    playstyle:['Communicate on voice — Battle Rush timing is everything','Wait for all DPS cooldowns to be ready','Guardian Javelin the enemy healer to root them','Immediately pop Battle Rush — call the nuke target','Your team erupts their full damage in this window','Royal Armor Edict if enemy CC chains land on your group'],
+    counters:['Battle Rush group buff makes every teammate 15% more dangerous','Aura passive constantly reduces ally damage taken'],
+    countered_by:['Silence prevents Battle Rush cast','Requires disciplined team to capitalise on the window'],
+    rewards:'End-of-season Crystal League rewards. Top guild rankings and exclusive seasonal cosmetics.',
+  },
+
+  // AXES
+  {
+    id:'bear-paws-duelist', successRate:73, popularity:4,
+    scenarios:{soloOpen:4,soloDung:3,groupDung:1,hellgate:5,smallPvP:5,zvz:1,gvg:2,hce:1},
+    weaponLine:'Axes', armorType:'Leather', metaTier:'S', patchVerified:metaPatchInfo.patch,
+    name:'Bear Paws Duelist', role:'Solo PvP / 1v1 Brawler', difficulty:4, cost:'Medium',
+    tags:['Solo PvP','Hellgate','High Skill'], icon:'🐻', color:'#c06040',
+    summary:'King of 1v1 fights. Wild Smash knockback resets fights and Ferocity passive rewards aggressive non-stop attacking. One of the highest skill-ceiling solo PvP weapons.',
+    loadout:{
+      weapon: {name:'Bear Paws (T6+)',      note:'Wild Smash knockback + Ferocity passive'},
+      offhand:{name:'Torch',               note:'Energy passive'},
+      helmet: {name:'Stalker Hood',        note:'Invisibility opener for ambush advantage'},
+      chest:  {name:'Assassin\'s Jacket',  note:'Shadow Strike kill-chain'},
+      boots:  {name:'Assassin Shoes',      note:'Shadow Dash gap closer + Q reset'},
+      food:   {name:'Pork Omelette',       note:'+HP buffer for sustained brawls'},
+      potion: {name:'Resistance Potion',   note:'Pop during enemy burst window'},
+    },
+    playstyle:['Open invisible for the Ambush passive bonus','Stack Ferocity by attacking relentlessly — never stop swinging','Wild Smash when they try to disengage — it\'s both escape AND damage','Use knockback to position them against walls or away from backup','Shadow Dash to re-engage fleeing targets','Resistance Potion absorbs their panic burst when you\'re winning'],
+    counters:['Ferocity passive rewards constant aggression','Wild Smash is simultaneously escape + CC'],
+    countered_by:['Group play — cannot 1v3','Heavy CC chains before Ferocity stacks up'],
+    rewards:'Dominant in 2v2 Hellgates and solo roaming. One of the best dueling weapons in the game.',
+  },
+
+  {
+    id:'greataxe-execute', successRate:69, popularity:3,
+    scenarios:{soloOpen:3,soloDung:2,groupDung:2,hellgate:4,smallPvP:4,zvz:2,gvg:2,hce:1},
+    weaponLine:'Axes', armorType:'Leather', metaTier:'A', patchVerified:metaPatchInfo.patch,
+    name:'Greataxe Execute', role:'Solo PvP / Finisher', difficulty:3, cost:'Medium',
+    tags:['Solo PvP','Ganking','Hellgate'], icon:'🪓', color:'#c06040',
+    summary:'Execute mechanic deals up to 50% bonus damage below 40% HP — one of the cleanest kill-shot abilities in the game. Chip, chip, Execute. Target dies.',
+    loadout:{
+      weapon: {name:'Greataxe (T6+)',       note:'Execute — massive damage below 40% enemy HP'},
+      offhand:{name:'Torch',               note:'Energy passive'},
+      helmet: {name:'Stalker Hood',        note:'Invisibility for the opener'},
+      chest:  {name:'Mercenary Jacket',    note:'Resilience + Combat Expert passive'},
+      boots:  {name:'Assassin Shoes',      note:'Shadow Dash to close gap'},
+      food:   {name:'Pork Omelette',       note:'+HP'},
+      potion: {name:'Resistance Potion',   note:'Survive counter-burst'},
+    },
+    playstyle:['Open invisible — chip HP with Q and W','Never waste Execute early — wait for sub-40% HP','Once Execute threshold is hit, pop Adrenaline Boost then Execute','Shadow Dash to prevent fleeing after they hit low HP','The burst spike is enormous — most targets cannot survive a full Execute rotation','If they cleanse, reset and chip again'],
+    counters:['Execute deals % bonus damage — huge burst spike','Kills targets who think they\'re safe at 35% HP'],
+    countered_by:['Healing-heavy builds recovering past Execute threshold','Blink/teleport escapes after Execute lands'],
+    rewards:'Consistent solo ganking income. Surprising number of kills on targets who underestimate the burst.',
+  },
+
+  // HAMMERS
+  {
+    id:'great-hammer-small-group', successRate:75, popularity:4,
+    scenarios:{soloOpen:1,soloDung:1,groupDung:3,hellgate:4,smallPvP:4,zvz:4,gvg:5,hce:3},
+    weaponLine:'Hammers', armorType:'Plate', metaTier:'A', patchVerified:metaPatchInfo.patch,
+    name:'Great Hammer Small Group CC', role:'Small Group PvP / CC Initiator', difficulty:3, cost:'Medium',
+    tags:['Group PvP','GvG','CC'], icon:'🔨', color:'#4a7fc1',
+    summary:'Seismic Slam scaled down to 5-man content. The AoE stun is just as devastating in small-scale fights — one well-placed slam wins fights before they start.',
+    loadout:{
+      weapon: {name:'Great Hammer (T6+)',   note:'Seismic Slam AoE stun — the entire build\'s value'},
+      offhand:{name:'Shield',              note:'Block chance + sustained survival'},
+      helmet: {name:'Knight Helmet',       note:'Knight\'s Challenge to hold attention'},
+      chest:  {name:'Knight Armor',        note:'Forceful Charge for gap closing'},
+      boots:  {name:'Knight Boots',        note:'Stand Firm immense damage reduction'},
+      food:   {name:'Beef Stew',           note:'+HP and resistance for frontline'},
+      potion: {name:'Resistance Potion',   note:'Survive focus fire after initiating'},
+    },
+    playstyle:['Wait for enemy to cluster — 3+ players for maximum value','Forceful Charge through their frontline to reach backline','Drop Seismic Slam centered on their healer and DPS','Your team erupts on the stunned targets immediately','Knight Boots Stand Firm when focus-fired after slamming','Repeat every time Seismic Slam comes off cooldown'],
+    counters:['Seismic Slam stun wins small-scale fights instantly','Plate survival lets you initiate and survive'],
+    countered_by:['Spread positioning negates the AoE value','Purge effects freeing the stun early'],
+    rewards:'Consistently wins 5v5 fights in Hellgates and crystal skirmishes.',
+  },
+
+  // QUARTERSTAFFS
+  {
+    id:'wild-staff-solo', successRate:74, popularity:2,
+    scenarios:{soloOpen:5,soloDung:4,groupDung:2,hellgate:2,smallPvP:2,zvz:1,gvg:1,hce:2},
+    weaponLine:'Quarterstaffs', armorType:'Leather', metaTier:'B', patchVerified:metaPatchInfo.patch,
+    name:'Wild Staff Open World Farmer', role:'Open World PvE / Sustained Farming', difficulty:2, cost:'Low',
+    tags:['Solo PvE','Open World','Beginner Friendly'], icon:'🌿', color:'#4a9c6e',
+    summary:'Nature\'s Wrath heals you on every hit — combine with Hunter Jacket Bloodlust and you become near-unkillable in extended open world fights. Excellent for T5-T6 mob farming.',
+    loadout:{
+      weapon: {name:'Wild Staff (T5+)',     note:'Nature\'s Wrath — heals you on every hit'},
+      offhand:{name:'Torch',               note:'Energy passive'},
+      helmet: {name:'Scholar Cowl',        note:'Energy shield survival backup'},
+      chest:  {name:'Hunter Jacket',       note:'Bloodlust — heals for % of damage dealt'},
+      boots:  {name:'Hunter Shoes',        note:'Fleet Foot speed for chaining mob groups'},
+      food:   {name:'Pork Omelette',       note:'+HP to maximise lifesteal returns'},
+      potion: {name:'Healing Potion',      note:'Emergency backup — rarely needed'},
+    },
+    playstyle:['Chain pull large groups of T5-T7 mobs together','Attack continuously — Wild Resilience heals every hit','Bloodlust on cooldown adds another layer of sustain on top','Hunter Shoes speed to kite if any single pull gets dangerous','Energy is a non-issue — nature heals energy passively','Can comfortably over-pull — the self-heal handles it'],
+    counters:['Double self-sustain from weapon + jacket','Very forgiving — rarely dies to PvE content'],
+    countered_by:['PvP — low offensive pressure makes it easy to kite against','Limited burst damage for dungeon bosses'],
+    rewards:'500k–1.5M silver/hour open world mob farming at T6. Excellent safe fame income.',
+  },
+
+  {
+    id:'bedrock-mace-frontline', successRate:77, popularity:2,
+    scenarios:{soloOpen:1,soloDung:2,groupDung:3,hellgate:4,smallPvP:4,zvz:4,gvg:5,hce:2},
+    weaponLine:'Quarterstaffs', armorType:'Plate', metaTier:'A', patchVerified:metaPatchInfo.patch,
+    name:'Bedrock Mace Frontline', role:'GvG / Brawl Tank', difficulty:4, cost:'High',
+    tags:['GvG','Group PvP','ZvZ','CC'], icon:'🪨', color:'#4a7fc1',
+    summary:'Stone Form invulnerability with knockback exit is one of the most disruptive abilities in the game. Pop it when focused, survive, then explode everyone around you as it ends.',
+    loadout:{
+      weapon: {name:'Bedrock Mace (T7+)',   note:'Stone Form invuln + AoE knockback on expiry'},
+      offhand:{name:'Shield',              note:'Block + defense for frontline'},
+      helmet: {name:'Guardian Helmet',     note:'Javelin root for setup CC'},
+      chest:  {name:'Guardian Armor',      note:'Guardian\'s Oath group damage absorb barrier'},
+      boots:  {name:'Guardian Boots',      note:'Forceful Sprint group mobility'},
+      food:   {name:'Beef Stew',           note:'+HP and resistance'},
+      potion: {name:'Resistance Potion',   note:'Stack with Stone Form for layered survival'},
+    },
+    playstyle:['Engage frontline normally as a tank','When burst-focused or near death — activate Stone Form','During invuln, reposition to be surrounded by enemies','Stone Form expiry knockback sends everyone flying — your team follows up','Guardian Armor Oath to shield your backline after the knockback','Javelin Helmet to root the priority target before engaging'],
+    counters:['Stone Form is a free second life every fight','Knockback on expiry creates chaos that benefits your team'],
+    countered_by:['Waiting out Stone Form and resuming focus fire','Positional awareness negates knockback value'],
+    rewards:'Highly valued in 5-man GvG and Crystal League as an unpredictable frontline disruptor.',
+  },
+
+  // CROSSBOWS
+  {
+    id:'heavy-crossbow-sniper', successRate:70, popularity:3,
+    scenarios:{soloOpen:2,soloDung:3,groupDung:2,hellgate:3,smallPvP:3,zvz:3,gvg:2,hce:2},
+    weaponLine:'Crossbows', armorType:'Leather', metaTier:'A', patchVerified:metaPatchInfo.patch,
+    name:'Heavy Crossbow Sniper', role:'Backline DPS / High-Value Targets', difficulty:4, cost:'Medium',
+    tags:['Group PvP','ZvZ','Solo PvP'], icon:'🔫', color:'#7a5cbf',
+    summary:'A fully charged Charged Bolt from behind cover can instantly down cloth wearers. The highest single-target ranged damage in the game — but requires patience and positioning.',
+    loadout:{
+      weapon: {name:'Heavy Crossbow (T6+)', note:'Charged Bolt — charge time = devastating damage'},
+      offhand:{name:'Shield',              note:'Block chance while stationary charging'},
+      helmet: {name:'Stalker Hood',        note:'Invisibility — pre-charge unseen'},
+      chest:  {name:'Mercenary Jacket',    note:'Balanced survival if discovered'},
+      boots:  {name:'Hunter Shoes',        note:'Fleet Foot to reposition between shots'},
+      food:   {name:'Pork Omelette',       note:'+HP buffer'},
+      potion: {name:'Invisibility Potion', note:'Escape if flanked while charging'},
+    },
+    playstyle:['Position behind terrain or at max range before the fight','Pre-charge Charged Bolt before enemies are in range','Step out and release at full charge on their clothie or healer','Immediately re-enter cover — you are stationary and vulnerable while charging','Stalker Hood invisibility for approach and retreat','Never charge in open ground — always use line of sight'],
+    counters:['Charged Bolt one-shots cloth wearers at full charge','Extreme range keeps you out of danger'],
+    countered_by:['Melee that closes gap during charging animation','Mobile compositions that never group for AoE'],
+    rewards:'Excellent for picking off high-value targets in GvG and world PvP. Satisfying one-shot potential.',
+  },
+
+  {
+    id:'siegebow-zvz', successRate:74, popularity:3,
+    scenarios:{soloOpen:1,soloDung:1,groupDung:2,hellgate:1,smallPvP:2,zvz:5,gvg:3,hce:1},
+    weaponLine:'Crossbows', armorType:'Leather', metaTier:'A', patchVerified:metaPatchInfo.patch,
+    name:'Siegebow ZvZ Zone Control', role:'ZvZ / Objective Control', difficulty:3, cost:'Medium',
+    tags:['ZvZ','Group PvP','CC'], icon:'🔫', color:'#4a7fc1',
+    summary:'Siege Ballista creates a persistent slow field on impact — fire it into choke points and objectives to force enemies to detour or be slowed while your team picks them apart.',
+    loadout:{
+      weapon: {name:'Siegebow (T6+)',       note:'Siege Ballista — persistent AoE slow field'},
+      offhand:{name:'Shield',              note:'Defense for when melee gets close'},
+      helmet: {name:'Hunter Hood',         note:'Multishot extra AoE chip damage'},
+      chest:  {name:'Mercenary Jacket',    note:'Combat Expert passive for sustained fights'},
+      boots:  {name:'Guardian Boots',      note:'Group speed aura for alliance repositioning'},
+      food:   {name:'Beef Stew',           note:'+HP and resistance for sustained ZvZ'},
+      potion: {name:'Resistance Potion',   note:'Pop when focused by enemy ranged'},
+    },
+    playstyle:['Fire Siege Ballista into objective zones before the fight reaches them','Target doorways, choke points and capture flags with the slow field','Enemies walk through it or take an inferior route — both benefit you','Q and W provide consistent chip damage from range while slow field ticks','Guardian Boots group speed aura helps your alliance keep positional advantage','Never over-commit forward — your value is from range'],
+    counters:['Siege Ballista slow field is persistent — keeps working after cast','Excellent objective control and zone denial'],
+    countered_by:['Ranged DPS mirroring your positioning','Enemies routing around the slow field entirely'],
+    rewards:'Dominant in territory fights and castle sieges. High ZvZ season point value.',
+  },
+
+  // BOWS
+  {
+    id:'longbow-backline', successRate:65, popularity:2,
+    scenarios:{soloOpen:2,soloDung:2,groupDung:2,hellgate:2,smallPvP:3,zvz:3,gvg:3,hce:2},
+    weaponLine:'Bows', armorType:'Leather', metaTier:'B', patchVerified:metaPatchInfo.patch,
+    name:'Longbow Backline Sniper', role:'Backline Ranged DPS', difficulty:3, cost:'Low-Medium',
+    tags:['Group PvP','ZvZ','Solo PvP'], icon:'🏹', color:'#4a9c6e',
+    summary:'Maximum range bow that deals bonus damage at full distance. The Long Range Mastery passive rewards staying at the absolute edge of your range — safe, consistent backline damage.',
+    loadout:{
+      weapon: {name:'Longbow (T5+)',        note:'Deadly Shot extreme range + Long Range Mastery passive'},
+      offhand:{name:'Quiver',              note:'Attack speed and range bonus'},
+      helmet: {name:'Hunter Hood',         note:'Predator Instinct bonus damage on low HP targets'},
+      chest:  {name:'Hunter Jacket',       note:'Bloodlust self-sustain'},
+      boots:  {name:'Hunter Shoes',        note:'Fleet Foot to maintain distance'},
+      food:   {name:'Pork Omelette',       note:'+HP buffer for when damage reaches you'},
+      potion: {name:'Healing Potion',      note:'Emergency sustain'},
+    },
+    playstyle:['Stay at maximum range at all times — closer means less damage from passive','Move backward constantly to maintain distance from advancing melee','Deadly Shot at max range on the priority target','Multishot (Q) for consistent chip on grouped enemies','Hunter Shoes Fleet Foot makes you permanently faster than pursuing melee','Never stand still — the Swiftbow passive requires movement'],
+    counters:['Long Range Mastery means safe DPS from unreachable positions','Swiftbow + Fleet Foot gives consistent movement speed advantage'],
+    countered_by:['Gap-closers or teleports bypassing range advantage','Silence preventing Deadly Shot at key moments'],
+    rewards:'Consistent low-risk group DPS. Good budget option before upgrading to Bow of Badon.',
+  },
+
+  // FIRE STAFFS
+  {
+    id:'infernal-staff-dungeon', successRate:73, popularity:3,
+    scenarios:{soloOpen:4,soloDung:5,groupDung:3,hellgate:3,smallPvP:2,zvz:2,gvg:2,hce:3},
+    weaponLine:'Fire Staffs', armorType:'Cloth', metaTier:'B', patchVerified:metaPatchInfo.patch,
+    name:'Infernal Staff Solo Dungeon', role:'Solo Dungeons / DoT Farmer', difficulty:2, cost:'Low',
+    tags:['Solo PvE','Dungeons','Beginner Friendly'], icon:'🔥', color:'#c06040',
+    summary:'Inferno channels multiple fire projectiles applying stacking DoTs to everything hit. Perfect for solo dungeon room clearing — run in, channel, leave the burning pile of mobs.',
+    loadout:{
+      weapon: {name:'Infernal Staff (T5+)', note:'Inferno channel — rapid multi-hit DoT application'},
+      offhand:{name:'Tome of Spells',      note:'Bonus spell damage + energy'},
+      helmet: {name:'Scholar Cowl',        note:'Energy shield for survival'},
+      chest:  {name:'Scholar Robe',        note:'Energy sustain for repeated channels'},
+      boots:  {name:'Scholar Sandals',     note:'Blink for escape or repositioning'},
+      food:   {name:'Pork Omelette',       note:'+HP buffer'},
+      potion: {name:'Healing Potion',      note:'Emergency burst heal'},
+    },
+    playstyle:['Group as many mobs together as possible before casting','Channel Inferno into the cluster — each projectile hits multiple targets','Apply stacking fire DoTs to everyone simultaneously','Scholar Robe ensures energy for repeated channels','Blink away if a pull gets too dangerous','The DoTs keep ticking after you move — kite while they burn'],
+    counters:['Inferno applies DoTs to entire rooms simultaneously','Extremely energy efficient with Scholar set'],
+    countered_by:['Bosses with high fire resistance','PvP players who close distance while you channel'],
+    rewards:'350k–900k silver/hour solo dungeons. Very low cost with high efficiency at T5-T6.',
+  },
+
+  // FROST STAFFS
+  {
+    id:'icicle-staff-pvp', successRate:68, popularity:3,
+    scenarios:{soloOpen:2,soloDung:3,groupDung:2,hellgate:4,smallPvP:5,zvz:2,gvg:3,hce:2},
+    weaponLine:'Frost Staffs', armorType:'Cloth', metaTier:'A', patchVerified:metaPatchInfo.patch,
+    name:'Icicle Staff Solo PvP', role:'Solo PvP / Burst Frost', difficulty:4, cost:'Medium',
+    tags:['Solo PvP','Hellgate','Small Group'], icon:'❄️', color:'#4a7fc1',
+    summary:'Icicle Barrage fires rapid icy projectiles each applying slow — the Shard Storm passive drops AoE explosions at the target\'s feet. Constant slow application makes you impossible to escape.',
+    loadout:{
+      weapon: {name:'Icicle Staff (T6+)',   note:'Barrage + Shard Storm passive AoE explosions'},
+      offhand:{name:'Tome of Spells',      note:'Bonus spell damage'},
+      helmet: {name:'Scholar Cowl',        note:'Energy shield defensive cooldown'},
+      chest:  {name:'Mage Robe',           note:'Spell Surge burst window + damage passive'},
+      boots:  {name:'Scholar Sandals',     note:'Blink escape from melee'},
+      food:   {name:'Pork Omelette',       note:'+HP'},
+      potion: {name:'Resistance Potion',   note:'Absorb enemy burst counter'},
+    },
+    playstyle:['Open with Icicle Barrage immediately — slows apply on every hit','Shard Storm passive triggers frequently at rapid fire pace','Target the ground at their feet to maximise passive AoE explosion overlap','Mage Robe Spell Surge for a massive burst window','Blink backward the moment they gap close','They cannot run — the persistent slow prevents any escape'],
+    counters:['Constant slow application — target cannot escape','Shard Storm passive adds unexpected AoE damage without extra casts'],
+    countered_by:['Cleanse potion removes the slows','Stacked magic resistance reduces Shard Storm passive'],
+    rewards:'Strong in 2v2 Hellgates and 1v1 open world encounters. Underrated frost option.',
+  },
+
+  // CURSED STAFFS
+  {
+    id:'demon-staff-group', successRate:70, popularity:3,
+    scenarios:{soloOpen:2,soloDung:3,groupDung:4,hellgate:4,smallPvP:4,zvz:3,gvg:3,hce:3},
+    weaponLine:'Cursed Staffs', armorType:'Cloth', metaTier:'B', patchVerified:metaPatchInfo.patch,
+    name:'Demon Staff Group DPS', role:'Group PvP / AoE CC+DPS', difficulty:3, cost:'Medium',
+    tags:['Group PvP','Dungeons','Hellgate'], icon:'👹', color:'#7a5cbf',
+    summary:'Demon Claws grabs and roots enemies simultaneously dealing damage — rare dual CC+damage in one ability. Excellent in group content where a brief root on the healer changes everything.',
+    loadout:{
+      weapon: {name:'Demon Staff (T6+)',    note:'Demon Claws root + damage combo ability'},
+      offhand:{name:'Mage\'s Rune',        note:'Bonus magic damage'},
+      helmet: {name:'Scholar Cowl',        note:'Energy shield survival'},
+      chest:  {name:'Scholar Robe',        note:'Energy sustain for sustained casting'},
+      boots:  {name:'Scholar Sandals',     note:'Blink escape from melee'},
+      food:   {name:'Pork Pie',            note:'+Spell damage amplification'},
+      potion: {name:'Energy Potion',       note:'Sustain through long group fights'},
+    },
+    playstyle:['Apply Curse DoTs from Q for consistent damage ticking','Use Demon Claws on the enemy healer — the root prevents them healing at critical moments','Dark Ritual passive restores energy as DoTs expire — sustain is excellent','Blink defensively when melee dives your position','In group content call your Claws target on comms — rooted healer = guaranteed kill window','Stack multiple curse effects for Dark Ritual energy chain'],
+    counters:['Demon Claws root + damage is rare dual-purpose ability','Dark Ritual passive ensures near-unlimited energy'],
+    countered_by:['Cleanse removes Curse DoTs and Demon Claws root','Healing-light comps where rooting the healer matters less'],
+    rewards:'Solid group PvP performer. Excellent Hellgate weapon for controlling enemy supports.',
+  },
+
+  // NATURE STAFFS
+  {
+    id:'blight-staff-solo', successRate:72, popularity:2,
+    scenarios:{soloOpen:5,soloDung:4,groupDung:2,hellgate:2,smallPvP:2,zvz:2,gvg:1,hce:2},
+    weaponLine:'Nature Staffs', armorType:'Cloth', metaTier:'B', patchVerified:metaPatchInfo.patch,
+    name:'Blight Staff Open World Farmer', role:'Open World PvE / Poison Spread', difficulty:2, cost:'Low',
+    tags:['Solo PvE','Open World','Beginner Friendly'], icon:'☠️', color:'#4a9c6e',
+    summary:'Poison Burst releases a cloud that spreads between nearby enemies on expiry. Run into a mob pack, drop one cast, watch the entire group poison each other to death while you move on.',
+    loadout:{
+      weapon: {name:'Blight Staff (T5+)',   note:'Poison Burst — spreads between nearby enemies'},
+      offhand:{name:'Tome of Spells',      note:'Bonus nature damage'},
+      helmet: {name:'Scholar Cowl',        note:'Energy shield for survival'},
+      chest:  {name:'Scholar Robe',        note:'Energy sustain — cast more, more often'},
+      boots:  {name:'Scholar Sandals',     note:'Blink for fast zone traversal'},
+      food:   {name:'Pork Omelette',       note:'+HP buffer'},
+      potion: {name:'Healing Potion',      note:'Emergency heal'},
+    },
+    playstyle:['Find a cluster of 5+ mobs grouped together','Drop Poison Burst on the central mob','The Virulent passive spreads poison to adjacent enemies on expiry','One cast can wipe an entire pack if they\'re dense enough','Move to next cluster while the first one dies from spreading poison','Scholar Robe ensures you never run out of energy for constant cycling'],
+    counters:['Virulent passive spreads poison — exponential clear with no extra energy cost','Extremely mobile — never needs to stand and fight'],
+    countered_by:['Spread-out mob formations reduce chain spreading','Bosses are immune to spread mechanic'],
+    rewards:'Fast open world mob farming income. One of the cheapest effective setups available.',
+  },
+
+  // ARCANE STAFFS
+  {
+    id:'witchwork-debuffer', successRate:76, popularity:2,
+    scenarios:{soloOpen:2,soloDung:2,groupDung:4,hellgate:4,smallPvP:4,zvz:3,gvg:5,hce:5},
+    weaponLine:'Arcane Staffs', armorType:'Cloth', metaTier:'A', patchVerified:metaPatchInfo.patch,
+    name:'Witchwork Staff Debuffer', role:'Group Debuffer / HCE / GvG', difficulty:4, cost:'High',
+    tags:['GvG','HCE','Group PvP','Support'], icon:'🧙', color:'#7a5cbf',
+    summary:'Hex reduces all enemy resistances by a massive %. A Hexed target takes substantially more damage from every single source. In a coordinated group this is a guaranteed kill on any target you choose.',
+    loadout:{
+      weapon: {name:'Witchwork Staff (T7+)',note:'Hex — blanket resistance reduction on target'},
+      offhand:{name:'Mage\'s Rune',        note:'Bonus arcane damage'},
+      helmet: {name:'Scholar Cowl',        note:'Energy shield'},
+      chest:  {name:'Scholar Robe',        note:'Energy sustain for repeated Hex casts'},
+      boots:  {name:'Scholar Sandals',     note:'Blink for safe repositioning'},
+      food:   {name:'Pork Omelette',       note:'+HP buffer'},
+      potion: {name:'Energy Potion',       note:'Sustain through long HCE floors'},
+    },
+    playstyle:['Call your Hex target on comms before every fight','Apply Hex to the highest-value enemy (their carry DPS or main tank)','Your entire team focuses that target during Hex window','Arcane Mastery passive Arcane Orb for poke damage between Hex cooldowns','Blink to stay at safe range — you are a support, not frontline','In HCE apply Hex to every elite/boss encounter for the resistance reduction amplification'],
+    counters:['Hex amplifies 100% of incoming damage from the entire team','Witchwork Staff has the strongest damage amplification of any arcane weapon'],
+    countered_by:['Requires disciplined focus-fire from teammates','Silence prevents Hex cast at critical moments'],
+    rewards:'Required in top HCE groups. S-tier GvG support role. Significant damage multiplier for the whole team.',
+  },
+
+  // HOLY STAFFS
+  {
+    id:'fallen-staff-offensive', successRate:71, popularity:2,
+    scenarios:{soloOpen:3,soloDung:4,groupDung:4,hellgate:3,smallPvP:2,zvz:3,gvg:3,hce:4},
+    weaponLine:'Holy Staffs', armorType:'Cloth', metaTier:'B', patchVerified:metaPatchInfo.patch,
+    name:'Fallen Staff Offensive Healer', role:'Solo PvE / Hybrid Healer-DPS', difficulty:3, cost:'Medium',
+    tags:['Solo PvE','Dungeons','Group PvE'], icon:'😈', color:'#c15050',
+    summary:'Fallen Shrine simultaneously heals allies AND damages nearby enemies — the Corrupted Blessing passive converts a portion of your healing into magic damage. You DPS while you heal.',
+    loadout:{
+      weapon: {name:'Fallen Staff (T6+)',   note:'Fallen Shrine dual heal+damage + Corrupted Blessing passive'},
+      offhand:{name:'Holy Seal',           note:'Bonus healing power'},
+      helmet: {name:'Cleric Cowl',         note:'Meditation energy restore'},
+      chest:  {name:'Cleric Robe',         note:'Blessing AoE heal + overheal shields'},
+      boots:  {name:'Scholar Sandals',     note:'Blink for solo mobility'},
+      food:   {name:'Pork Omelette',       note:'+HP for solo content'},
+      potion: {name:'Healing Potion',      note:'Emergency backup heal'},
+    },
+    playstyle:['Place Fallen Shrine in melee range of dungeon bosses — heals you AND damages the boss','Corrupted Blessing converts healing output into magic damage ticks on nearby enemies','Self-sustain is excellent — the shrine keeps you healthy while dealing damage','In group content position shrine to cover tank and boss simultaneously','Cleric Robe Blessing for AoE healing moments when group takes burst damage','More versatile than pure healer — can solo content pure healers struggle with'],
+    counters:['Simultaneously heals and damages — true hybrid utility','Self-sustain enables solo content most healers cannot attempt'],
+    countered_by:['Lower healing throughput than dedicated healer builds','Boss movement breaks shrine positioning'],
+    rewards:'Unique solo PvE option for Holy Staff mains. Strong in group dungeons as a contributing healer.',
+  },
+
+  // SPEARS
+  {
+    id:'spear-solo-pvp', successRate:62, popularity:3,
+    scenarios:{soloOpen:3,soloDung:2,groupDung:2,hellgate:3,smallPvP:4,zvz:1,gvg:2,hce:1},
+    weaponLine:'Spears', armorType:'Leather', metaTier:'B', patchVerified:metaPatchInfo.patch,
+    name:'Spear Solo PvP', role:'Solo PvP / Mobile Melee', difficulty:3, cost:'Low',
+    tags:['Solo PvP','Hellgate','Small Group'], icon:'🔱', color:'#4a9c6e',
+    summary:'Impale root into a full melee combo. The Chase Expertise passive makes you faster than fleeing targets — once you land Impale, the fight is yours to control.',
+    loadout:{
+      weapon: {name:'Spear (T5+)',          note:'Impale root — CC opener for the full combo'},
+      offhand:{name:'Shield',              note:'Block + defense for sustained fights'},
+      helmet: {name:'Stalker Hood',        note:'Invisibility opener for guaranteed Impale land'},
+      chest:  {name:'Mercenary Jacket',    note:'Balanced survival for sustained fights'},
+      boots:  {name:'Stalker Shoes',       note:'Deadly Swiftness sprint + Predatory Haste pursuit'},
+      food:   {name:'Pork Omelette',       note:'+HP buffer'},
+      potion: {name:'Resistance Potion',   note:'Survive when they burst back'},
+    },
+    playstyle:['Open invisible — land Impale before they can react','Root is short — combo immediately: Q W E in sequence','Chase Expertise passive keeps you on fleeing targets after Impale expires','Stalker Shoes Predatory Haste gives speed bonus vs damaged targets — you stick like glue','Shield block when they retaliate','Repeat — Impale has a short cooldown for consistent CC cycling'],
+    counters:['Chase Expertise makes fleeing nearly impossible','Impale CC is reliable and fast-casting'],
+    countered_by:['Teleport/blink escapes that bypass the root','Heavy burst before you land the combo'],
+    rewards:'Accessible entry-point solo PvP. Low cost with competitive performance in small-scale fights.',
   },
 ];
 
