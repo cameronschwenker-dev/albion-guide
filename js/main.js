@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // NAVIGATION
 // ============================================================
 const navItems = document.querySelectorAll('.nav-item[data-section]');
@@ -476,6 +476,12 @@ function loadoutImg(itemName) {
   return `<img class="loadout-img" src="${itemImg(rid, 48)}" alt="${itemName}" onerror="this.style.display='none'" />`;
 }
 
+// Direct render ID lookup — use this instead of parsing HTML strings
+function getRid(itemName) {
+  _buildImgMap();
+  return _buildImgCache[_normName(itemName)] || null;
+}
+
 // Active build filter state
 const _buildFilters = { role: 'all', weapon: 'all', armor: 'all' };
 
@@ -483,29 +489,42 @@ function setBuildFilter(role = 'all', weapon = 'all', armor = 'all') {
   _buildFilters.role   = role;
   _buildFilters.weapon = weapon;
   _buildFilters.armor  = armor;
+  syncBuildFilterUI();
   renderBuilds();
+}
+
+// Sync the visible filter button active states to match _buildFilters
+function syncBuildFilterUI() {
+  document.querySelectorAll('#buildFilterBar .filter-btn').forEach(b =>
+    b.classList.toggle('active', (b.dataset.bfilter || 'all') === _buildFilters.role));
+  document.querySelectorAll('#weaponLineFilterBar .wl-filter-btn').forEach(b =>
+    b.classList.toggle('active', (b.dataset.wlfilter || 'all') === _buildFilters.weapon));
+  document.querySelectorAll('#armorTypeFilterBar .filter-btn').forEach(b =>
+    b.classList.toggle('active', (b.dataset.atfilter || 'all') === _buildFilters.armor));
 }
 
 // ============================================================
 // RENDER BUILDS
 // ============================================================
 function renderBuilds(tagFilter) {
-  // tagFilter param kept for backward compat — prefer _buildFilters
   if (tagFilter && tagFilter !== 'all') _buildFilters.role = tagFilter;
   const container = document.getElementById('buildContent');
   if (!container) return;
 
+  syncBuildFilterUI();
+
   const filtered = metaBuilds.filter(b => {
-    if (_buildFilters.role   !== 'all' && !b.tags.includes(_buildFilters.role))     return false;
-    if (_buildFilters.weapon !== 'all' && b.weaponLine !== _buildFilters.weapon)    return false;
-    if (_buildFilters.armor  !== 'all' && b.armorType  !== _buildFilters.armor)     return false;
+    if (_buildFilters.role   !== 'all' && !b.tags.includes(_buildFilters.role))  return false;
+    if (_buildFilters.weapon !== 'all' && b.weaponLine !== _buildFilters.weapon) return false;
+    if (_buildFilters.armor  !== 'all' && b.armorType  !== _buildFilters.armor)  return false;
     return true;
   });
 
   if (!filtered.length) {
-    container.innerHTML = `<div class="info-block warn">
+    container.innerHTML = `<div class="info-block warn" style="margin-top:20px">
       <div class="info-title">No builds match these filters</div>
-      <p>Try widening your search — select "All" in one of the filter rows above. Not every weapon line has a dedicated build yet; check back after future updates.</p>
+      <p>Try widening your search — click "All Builds" to reset all filters.</p>
+      <button class="btn btn-outline" style="margin-top:10px" onclick="setBuildFilter('all');renderBuilds()">Reset Filters</button>
     </div>`;
     return;
   }
@@ -528,23 +547,24 @@ function renderBuilds(tagFilter) {
     </div>`;
 
   container.innerHTML = patchBanner + '<div class="build-grid">' + filtered.map(b => {
-    const psSteps = b.playstyle.map((step, i) => `
+    try {
+
+    const psSteps = (b.playstyle||[]).map((step, i) => `
       <li><div class="ps-num">${i+1}</div><span>${step}</span></li>`).join('');
 
-    const costColor = b.cost === 'Low' ? '#70c090' : b.cost === 'Medium' ? 'var(--gold)' : b.cost.includes('Very') ? '#f05050' : '#e07070';
+    const costColor = b.cost === 'Low' ? '#70c090' : b.cost === 'Medium' ? 'var(--gold)' : (b.cost||'').includes('Very') ? '#f05050' : '#e07070';
 
-    // Get the weapon render for the build header
-    const weaponItem = b.loadout.weapon;
-    const weaponImg  = weaponItem ? loadoutImg(weaponItem.name) : '';
+    const weaponItem = b.loadout && b.loadout.weapon;
+    const weaponRid  = weaponItem ? getRid(weaponItem.name) : null;
 
     return `
     <div class="build-card" id="build-${b.id}" style="--build-accent:${b.color}">
-      <div class="build-header">
+      <div class="build-header" onclick="toggleBuildByHeader(this)" style="cursor:pointer" title="Click to expand">
         <div class="build-accent" style="background:linear-gradient(90deg,${b.color},transparent)"></div>
         <div class="build-icon-name">
           <div class="build-icon-wrap" style="background:rgba(0,0,0,0.3);border-color:${b.color}40;position:relative;overflow:hidden;font-size:24px">
             <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">${b.icon}</span>
-            ${weaponImg ? weaponImg.replace('class="loadout-img"', 'class="loadout-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:4px"') : ''}
+            ${weaponRid ? `<img src="${itemImg(weaponRid,48)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:4px" onerror="this.remove()" />` : ''}
           </div>
           <div style="flex:1">
             <div style="display:flex;align-items:center;gap:8px">
@@ -610,14 +630,33 @@ function renderBuilds(tagFilter) {
         </div>
       </div>
     </div>`;
+
+    } catch(err) {
+      // Isolate bad builds — don't crash the whole list
+      return `<div class="build-card" style="border-color:var(--accent-red);padding:16px">
+        <div style="color:var(--accent-red);font-size:13px">⚠️ ${b.name || 'Build'} — render error: ${err.message}</div>
+      </div>`;
+    }
   }).join('') + '</div>';
 }
 
 function toggleBuild(btn) {
-  const expandable = btn.nextElementSibling;
+  const card = btn.closest('.build-card');
+  const expandable = card.querySelector('.build-expandable');
+  if (!expandable) return;
   expandable.classList.toggle('open');
   const arrow = btn.querySelector('span');
-  arrow.textContent = expandable.classList.contains('open') ? '▼' : '▶';
+  if (arrow) arrow.textContent = expandable.classList.contains('open') ? '▼' : '▶';
+}
+
+// Allow clicking the header to toggle the build detail
+function toggleBuildByHeader(header) {
+  const card = header.closest('.build-card');
+  const expandable = card && card.querySelector('.build-expandable');
+  if (!expandable) return;
+  expandable.classList.toggle('open');
+  const arrow = card.querySelector('.build-toggle span');
+  if (arrow) arrow.textContent = expandable.classList.contains('open') ? '▼' : '▶';
 }
 
 document.addEventListener('click', e => {
@@ -726,20 +765,21 @@ const _slotEmoji = {
 };
 
 function renderVisualLoadout(loadout) {
+  if (!loadout) return '';
   const slot = (key) => {
     const item = loadout[key];
     if (!item) return '';
-    const img  = loadoutImg(item.name);
-    const rid  = img ? img.match(/src="([^"]+)"/)?.[1] : null;
+    const rid = getRid(item.name);
+    const cleanName = (item.name||'').replace(/\s*\(T\d[^)]*\)/gi,'').trim();
     return `
       <div class="blv-slot${key==='food'||key==='potion'?' consumable':''}">
         <div class="blv-slot-label">${key}</div>
         <div class="blv-slot-img-wrap">
           <div class="blv-slot-emoji">${_slotEmoji[key]||'📦'}</div>
-          ${rid ? `<img class="blv-slot-img" src="${rid}" alt="${item.name}" onerror="this.style.display='none'" />` : ''}
+          ${rid ? `<img class="blv-slot-img" src="${itemImg(rid,56)}" alt="${cleanName}" onerror="this.style.display='none'" />` : ''}
         </div>
-        <div class="blv-slot-name">${item.name.replace(/\s*\(T\d[^)]*\)/i,'')}</div>
-        <div class="blv-slot-note">${item.note}</div>
+        <div class="blv-slot-name">${cleanName}</div>
+        <div class="blv-slot-note">${item.note||''}</div>
       </div>`;
   };
   return `
@@ -937,6 +977,10 @@ function showQuizResult() {
 // Close quiz on overlay click
 document.getElementById('quizOverlay')?.addEventListener('click', e => {
   if (e.target === document.getElementById('quizOverlay')) closeQuiz();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeQuiz();
 });
 
 // ============================================================
