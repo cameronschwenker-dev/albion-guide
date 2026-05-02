@@ -53,7 +53,7 @@ function openGroupForSection(sectionId) {
 }
 
 const _pageTitles = {
-  'home':                 'Albion Online Complete Guide 2024',
+  'home':                 'Albion Online Complete Guide 2025',
   'getting-started':      'Getting Started — Albion Online Guide',
   'destiny-board':        'Destiny Board Guide — Albion Online',
   'gathering':            'Gathering Guide — Albion Online',
@@ -70,7 +70,7 @@ const _pageTitles = {
   'tips':                 'Tips & Tricks — Albion Online Guide',
   'weapons-encyclopedia': 'All Weapons (84) — Albion Online Guide',
   'armor-encyclopedia':   'All Armor Pieces — Albion Online Guide',
-  'meta-builds':          'Best Builds 2024 (33) — Albion Online Guide',
+  'meta-builds':          'Best Builds — Season 25 · 89 Builds',
   'content-rewards':      'Content Rewards & Silver/Hour — Albion Online',
   'progression-roadmap':  'Progression Roadmap — Albion Online Guide',
   'fame-farming':         'Fame Farming Guide — Albion Online',
@@ -90,7 +90,7 @@ function showSection(id) {
   const target = document.getElementById(id);
   if (target) target.classList.add('active');
   // Dynamic page title for SEO
-  document.title = _pageTitles[id] || 'Albion Online Complete Guide 2024';
+  document.title = _pageTitles[id] || 'Albion Online Complete Guide 2025';
   // Mark active in nav (may appear in multiple places — mark all)
   document.querySelectorAll(`.nav-item[data-section="${id}"]`).forEach(el => el.classList.add('active'));
   // Auto-open the group that contains this section
@@ -489,9 +489,17 @@ function getRid(itemName) {
   return _buildImgCache[_normName(itemName)] || null;
 }
 
-// Active build filter + sort state
+// Active build filter + sort + view state
 const _buildFilters = { role: 'all', weapon: 'all', armor: 'all' };
 let _buildSort = 'popular'; // popular | success | cheapest | easiest | tier
+let _buildView = 'cards';   // cards | tier
+
+function setBuildView(view) {
+  _buildView = view;
+  document.getElementById('viewCards')?.classList.toggle('active', view === 'cards');
+  document.getElementById('viewTier')?.classList.toggle('active',  view === 'tier');
+  renderBuilds();
+}
 
 const _costOrder = { 'Low':0, 'Low-Medium':1, 'Medium':2, 'High':3, 'Very High':4 };
 
@@ -540,6 +548,50 @@ function syncBuildFilterUI() {
 // ============================================================
 // RENDER BUILDS
 // ============================================================
+function renderTierListView(builds) {
+  const tiers = ['S','A','B','C','D'];
+  const tc = { S:'#e8c96a', A:'#4a9c6e', B:'#4a7fc1', C:'#7a8098', D:'#8a5050' };
+  const td = { S:'Meta-defining', A:'Widely strong', B:'Solid situationally', C:'Niche / outclassed', D:'Fun, off-meta' };
+
+  const rows = tiers.map(tier => {
+    const group = builds.filter(b => b.metaTier === tier);
+    if (!group.length) return '';
+    const cards = group.map(b => {
+      const wRid = b.loadout?.weapon ? getRid(b.loadout.weapon.name) : null;
+      const costColor = b.cost==='Low'?'#70c090':b.cost==='Medium'?'var(--gold)':(b.cost||'').includes('Very')?'#f05050':'#e07070';
+      return `
+        <div class="tl-card" onclick="setBuildView('cards');setBuildFilter('all');setTimeout(()=>{ document.getElementById('build-${b.id}')?.scrollIntoView({behavior:'smooth'}); document.getElementById('build-${b.id}')?.classList.add('expanded'); },200)" title="${b.name} — click for full details">
+          <div class="tl-img">
+            <span class="tl-icon">${b.icon}</span>
+            ${wRid ? `<img src="${itemImg(wRid,40)}" onerror="this.remove()" />` : ''}
+          </div>
+          <div class="tl-name">${b.name}</div>
+          <div class="tl-meta">
+            <span style="color:${costColor}">${b.cost}</span>
+            <span class="tl-dot">·</span>
+            <span>${b.weaponLine}</span>
+          </div>
+          <div class="tl-tags">${(b.tags||[]).slice(0,2).map(t=>`<span class="tl-tag">${t}</span>`).join('')}</div>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="tl-row">
+        <div class="tl-tier-badge" style="background:${tc[tier]}18;border-color:${tc[tier]}40;color:${tc[tier]}">
+          <div class="tl-tier-letter">${tier}</div>
+          <div class="tl-tier-desc">${td[tier]}</div>
+        </div>
+        <div class="tl-cards">${cards}</div>
+      </div>`;
+  }).join('');
+
+  return `
+    <div style="margin-bottom:12px;font-size:12px;color:var(--text-dim)">
+      ${builds.length} builds shown — click any to see full details
+    </div>
+    <div class="tier-list">${rows}</div>`;
+}
+
 function renderBuilds(tagFilter) {
   if (tagFilter && tagFilter !== 'all') _buildFilters.role = tagFilter;
   const container = document.getElementById('buildContent');
@@ -589,6 +641,11 @@ function renderBuilds(tagFilter) {
       </div>
       <a class="patch-notes-link" href="${metaPatchInfo.notes}" target="_blank" rel="noopener">Patch Notes ↗</a>
     </div>`;
+
+  if (_buildView === 'tier') {
+    container.innerHTML = patchBanner + renderTierListView(filtered);
+    return;
+  }
 
   container.innerHTML = patchBanner + resultBar + '<div class="build-grid">' + filtered.map(b => {
     try {
@@ -1578,3 +1635,4 @@ document.addEventListener('click', e => {
 _buildImgMap();
 showSection('home');
 initHomePage();
+
