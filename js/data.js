@@ -1021,10 +1021,8 @@ const armorData = {
 // ============================================================
 const metaPatchInfo = {
   patch:   'Paths of Destiny',
-  version: 'Season 25 — May 2025',
-  date:    '2025-05-01',
   notes:   'https://albiononline.com/en/news',
-  summary: 'Season 25: Claws+Cloth still S-tier for solo farming. Great Frost+Great Hammer anchor ZvZ. Hallowfall irreplaceable in HCE/GvG. Dagger pair buffed — strong hellgate pick.',
+  summary: 'Current meta: Claws+Cloth S-tier for solo farming. Great Frost+Great Hammer anchor ZvZ. Hallowfall irreplaceable in HCE/GvG. Dagger pair strong hellgate pick.',
 };
 
 // ============================================================

@@ -635,7 +635,7 @@ function renderBuilds(tagFilter) {
       <div class="patch-banner-left">
         <span class="patch-icon">🔖</span>
         <div>
-          <div class="patch-name">${metaPatchInfo.patch} <span class="patch-version">${metaPatchInfo.version}</span></div>
+          <div class="patch-name">${metaPatchInfo.patch}</div>
           <div class="patch-summary">${metaPatchInfo.summary}</div>
         </div>
       </div>
