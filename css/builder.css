@@ -81,9 +81,10 @@
   align-items: start;
 }
 
-/* Paperdoll variant overrides grid to: paperdoll | stats */
+/* 3-column: item browser | paperdoll | stats */
 .builder-paperdoll-layout {
-  grid-template-columns: 1fr 360px;
+  grid-template-columns: 240px 1fr 340px;
+  align-items: start;
 }
 
 /* ── Paperdoll Section ───────────────────────────────────────── */
@@ -776,11 +777,218 @@
 .picker-item-name { font-size: 12px; font-weight: 600; color: var(--text-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .picker-item-sub  { font-size: 10px; color: var(--text-dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+/* ── Item Browser ────────────────────────────────────────────── */
+.item-browser {
+  background: linear-gradient(145deg, #111620 0%, #0d1018 100%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: calc(100vh - 160px);
+  position: sticky;
+  top: 72px;
+}
+
+.ib-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.ib-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 9px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+  border-bottom: 2px solid transparent;
+}
+
+.ib-tab.active { color: var(--gold-light); border-bottom-color: var(--gold); background: rgba(201,168,76,0.04); }
+.ib-tab:hover:not(.active) { color: var(--text); }
+
+.ib-filters {
+  display: flex;
+  gap: 4px;
+  padding: 8px 10px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.ib-filter {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 3px 8px;
+  font-size: 10px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+
+.ib-filter.active, .ib-filter:hover { border-color: var(--gold-dim); color: var(--gold-light); background: rgba(201,168,76,0.08); }
+
+.ib-search-wrap {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.ib-search {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 8px;
+  color: var(--text);
+  font-size: 12px;
+  outline: none;
+}
+
+.ib-search:focus { border-color: var(--gold-dim); }
+
+.ib-list {
+  overflow-y: auto;
+  flex: 1;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.ib-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  cursor: grab;
+  transition: all 0.12s;
+  position: relative;
+  user-select: none;
+}
+
+.ib-item:hover { border-color: var(--gold-dim); background: rgba(201,168,76,0.05); transform: translateX(2px); }
+.ib-item:active { cursor: grabbing; }
+.ib-item.ib-equipped { border-color: rgba(74,156,110,0.4); background: rgba(74,156,110,0.06); }
+
+.ib-item-img {
+  width: 36px; height: 36px;
+  flex-shrink: 0;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-panel);
+  border-radius: 6px;
+}
+
+.ib-emoji { font-size: 16px; opacity: 0.4; }
+.ib-item-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5)); }
+
+.ib-item-text { flex: 1; min-width: 0; }
+.ib-item-name { font-size: 11px; font-weight: 600; color: var(--text-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ib-item-sub  { font-size: 9px; color: var(--text-dim); }
+
+.ib-badge { font-size: 9px; color: #4a9c6e; font-weight: 700; flex-shrink: 0; }
+.ib-empty { padding: 16px; color: var(--text-dim); font-size: 12px; text-align: center; }
+
+/* ── Drag-and-drop slot states ───────────────────────────────── */
+.pd-slot.drag-valid {
+  border-color: var(--gold-dim) !important;
+  border-style: dashed !important;
+  animation: pd-pulse 0.8s ease-in-out infinite alternate;
+}
+
+.pd-slot.drag-over {
+  border-color: var(--gold) !important;
+  background: rgba(201,168,76,0.15) !important;
+  transform: scale(1.05);
+}
+
+.pd-slot-drop-hint {
+  font-size: 8px;
+  color: var(--text-dim);
+  opacity: 0;
+  transition: opacity 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.pd-slot.drag-valid .pd-slot-drop-hint { opacity: 0.7; }
+.pd-slot.drag-over  .pd-slot-drop-hint { opacity: 1; color: var(--gold-dim); }
+
+@keyframes pd-pulse {
+  from { box-shadow: 0 0 0 0 rgba(201,168,76,0.1); }
+  to   { box-shadow: 0 0 12px 4px rgba(201,168,76,0.25); }
+}
+
+/* ── Build Rating Panel ──────────────────────────────────────── */
+.build-rating-panel {
+  border-color: rgba(74,156,110,0.2) !important;
+}
+
+.rating-hint {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+.rating-rows { display: flex; flex-direction: column; gap: 6px; }
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating-label { font-size: 11px; color: var(--text-dim); width: 72px; flex-shrink: 0; }
+
+.rating-bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.rating-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.rating-grade {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Cinzel', serif;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
 /* ── Responsive ────────────────────────────────────────────── */
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
+  .builder-paperdoll-layout { grid-template-columns: 200px 1fr 300px; }
+}
+
+@media (max-width: 960px) {
   .builder-main { grid-template-columns: 1fr; }
   .builder-paperdoll-layout { grid-template-columns: 1fr; }
   .builder-stats { position: static; }
+  .item-browser { position: static; max-height: 280px; }
 }
 
 @media (max-width: 720px) {

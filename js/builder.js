@@ -93,6 +93,26 @@ const builderState = {
   slots: { weapon:null, offhand:null, helmet:null, chest:null, boots:null, food:null, potion:null },
 };
 
+// Item browser state
+let _ibTab    = 'weapon';
+let _ibWl     = 'all';
+let _ibASlot  = 'all';
+let _ibSearch = '';
+
+// Map armor slot names to slot keys
+const ARMOR_SLOT_MAP = { Head:'helmet', Chest:'chest', Boots:'boots' };
+
+// Which item types are valid for which slots
+const SLOT_ACCEPT = {
+  weapon:  ['weapon'],
+  offhand: ['offhand'],
+  helmet:  ['helmet'],
+  chest:   ['chest'],
+  boots:   ['boots'],
+  food:    ['food'],
+  potion:  ['potion'],
+};
+
 let _pickerSlot = null;
 let _pickerFilter = 'all';
 let _pickerSearch = '';
@@ -247,6 +267,179 @@ function calcItemCost(slotType) {
   return SILVER_COST[slotType]?.[builderState.tier] || 0;
 }
 
+// ── Drag and Drop ─────────────────────────────────────────────
+function itemDragStart(event, itemId, targetSlot) {
+  event.dataTransfer.setData('text/plain', JSON.stringify({ itemId, targetSlot }));
+  event.dataTransfer.effectAllowed = 'copy';
+  document.querySelectorAll('.pd-slot').forEach(el => {
+    el.classList.toggle('drag-valid', el.dataset.slot === targetSlot);
+  });
+}
+
+function itemDragEnd() {
+  document.querySelectorAll('.pd-slot').forEach(el => el.classList.remove('drag-valid','drag-over'));
+}
+
+function slotDragOver(event, slotKey) {
+  const raw = event.dataTransfer.getData('text/plain');
+  let ok = true;
+  if (raw) { try { const d = JSON.parse(raw); ok = d.targetSlot === slotKey; } catch(e) {} }
+  if (ok) { event.preventDefault(); event.currentTarget.classList.add('drag-over'); }
+}
+
+function slotDragLeave(event) {
+  event.currentTarget.classList.remove('drag-over');
+}
+
+function slotDrop(event, slotKey) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('drag-over','drag-valid');
+  document.querySelectorAll('.pd-slot').forEach(el => el.classList.remove('drag-valid'));
+  let data;
+  try { data = JSON.parse(event.dataTransfer.getData('text/plain')); } catch(e) { return; }
+  if (!data || data.targetSlot !== slotKey) return;
+  _equipItemToSlot(slotKey, data.itemId);
+}
+
+function _equipItemToSlot(slotKey, itemId) {
+  const allArmor = [...(armorData.helmets||[]),...(armorData.chests||[]),...(armorData.boots||[])];
+  let item = null;
+  switch(slotKey) {
+    case 'weapon':  { const w=weaponsData.find(x=>x.id===itemId);  if(w) item={...w, renderId:weaponRenderIds[w.id]||null}; break; }
+    case 'offhand': item = offhandItems.find(x=>x.id===itemId); break;
+    case 'helmet':
+    case 'chest':
+    case 'boots':   { const a=allArmor.find(x=>x.id===itemId); if(a) item={...a, renderId:armorRenderIds[a.id]||null}; break; }
+    case 'food':    item = foodItems.find(x=>x.id===itemId); break;
+    case 'potion':  item = potionItems.find(x=>x.id===itemId); break;
+  }
+  if (item) {
+    builderState.slots[slotKey] = item;
+    refreshBuilder();
+    showToast(`${item.name} equipped!`);
+    setTimeout(fetchAndApplyLivePrices, 100);
+  }
+}
+
+// ── Build Rating ──────────────────────────────────────────────
+function rateBuild() {
+  const w = builderState.slots.weapon;
+  if (!w) return null;
+  const at   = builderState.slots.chest?.armorType || 'Leather';
+  const line = w.line || w.weaponLine || '';
+  const solo  = w.solo  || 3;
+  const group = w.group || 3;
+  const pvp   = w.pvp   || 3;
+  const pve   = w.pve   || 3;
+
+  const raw = {
+    'Solo PvP':  pvp  * 0.65 + solo  * 0.35,
+    'Solo PvE':  pve  * 0.65 + solo  * 0.35,
+    'Group PvP': pvp  * 0.40 + group * 0.60,
+    'ZvZ':       group* 0.80 + pvp   * 0.20,
+    'Hellgate':  pvp  * 0.60 + solo  * 0.40,
+    'HCE':       pve  * 0.45 + group * 0.55,
+  };
+
+  const isMagic    = ['Fire Staffs','Frost Staffs','Cursed Staffs','Arcane Staffs','Holy Staffs','Nature Staffs'].includes(line);
+  const isAssassin = line === 'Daggers';
+  const isRanged   = ['Bows','Crossbows'].includes(line);
+  const isFront    = ['Hammers','Swords','Axes','Spears','Quarterstaffs'].includes(line);
+
+  if (at==='Cloth'   && isMagic)    { raw['Solo PvE']+=0.6; raw['HCE']+=0.6; }
+  if (at==='Leather' && isAssassin) { raw['Solo PvP']+=0.7; raw['Hellgate']+=0.8; }
+  if (at==='Leather' && isRanged)   { raw['Solo PvP']+=0.5; raw['Solo PvE']+=0.4; }
+  if (at==='Plate'   && isFront)    { raw['ZvZ']+=0.6; raw['Group PvP']+=0.6; }
+  if ((builderState.slots.food?.hp||0) > 600) { raw['Solo PvP']+=0.3; raw['Hellgate']+=0.3; }
+
+  const grade = s => s>=4.5?'S':s>=3.7?'A':s>=2.8?'B':s>=1.8?'C':'D';
+  const gc    = { S:'#e8c96a', A:'#4a9c6e', B:'#4a7fc1', C:'#7a8098', D:'#8a5050' };
+  const gb    = { S:100, A:80, B:60, C:40, D:20 };
+  return Object.entries(raw).map(([label, score]) => {
+    const g = grade(score);
+    return { label, grade:g, color:gc[g], bar:gb[g] };
+  });
+}
+
+// ── Item Browser ──────────────────────────────────────────────
+let _ibTab='weapon', _ibWl='all', _ibASlot='all', _ibSearch='';
+
+function setBrowserTab(tab)   { _ibTab=tab; _ibWl='all'; _ibASlot='all'; _ibSearch=''; _refreshBrowser(); }
+function setBrowserWl(wl)     { _ibWl=wl;    _refreshBrowser(); }
+function setBrowserASlot(s)   { _ibASlot=s;  _refreshBrowser(); }
+function filterIBSearch(q)    { _ibSearch=q.toLowerCase(); _refreshBrowser(); }
+
+function _refreshBrowser() {
+  const el = document.getElementById('itemBrowser');
+  if (el) el.innerHTML = renderItemBrowserContent();
+}
+
+function _ibItems() {
+  const allArmor = [...(armorData.helmets||[]),...(armorData.chests||[]),...(armorData.boots||[])];
+  const q = _ibSearch;
+  if (_ibTab==='weapon') {
+    return weaponsData
+      .filter(w => (_ibWl==='all' || w.line===_ibWl) && (!q || w.name.toLowerCase().includes(q) || w.line.toLowerCase().includes(q)))
+      .map(w => ({ id:w.id, name:w.name, sub:w.line, emoji:w.lineIcon||'⚔️', renderId:weaponRenderIds[w.id]||null, targetSlot:'weapon' }));
+  }
+  if (_ibTab==='armor') {
+    const sf = _ibASlot==='all' ? null : {helmet:'Head',chest:'Chest',boots:'Boots'}[_ibASlot];
+    return allArmor
+      .filter(a => (!sf || a.slot===sf) && (!q || a.name.toLowerCase().includes(q) || a.armorType.toLowerCase().includes(q)))
+      .map(a => ({ id:a.id, name:a.name, sub:a.armorType+' '+a.slot, emoji:{Cloth:'🧣',Leather:'🥋',Plate:'🛡️'}[a.armorType]||'🎽',
+        renderId:armorRenderIds[a.id]||null, targetSlot:{Head:'helmet',Chest:'chest',Boots:'boots'}[a.slot]||'helmet' }));
+  }
+  return [
+    ...offhandItems.map(o => ({ id:o.id, name:o.name, sub:'Off-hand', emoji:o.emoji||'🛡️', renderId:null, targetSlot:'offhand' })),
+    ...foodItems.map(f    => ({ id:f.id, name:f.name, sub:'Food',     emoji:f.emoji||'🍗', renderId:null, targetSlot:'food'    })),
+    ...potionItems.map(p  => ({ id:p.id, name:p.name, sub:'Potion',   emoji:p.emoji||'🧪', renderId:null, targetSlot:'potion'  })),
+  ].filter(x => !q || x.name.toLowerCase().includes(q));
+}
+
+function renderItemBrowserContent() {
+  const items = _ibItems();
+  const wls   = [...new Set(weaponsData.map(w=>w.line))];
+
+  const tabBtn = (id, lbl) => `<button class="ib-tab ${_ibTab===id?'active':''}" onclick="setBrowserTab('${id}')">${lbl}</button>`;
+
+  let filters = '';
+  if (_ibTab==='weapon') {
+    filters = `<div class="ib-filters"><button class="ib-filter ${_ibWl==='all'?'active':''}" onclick="setBrowserWl('all')">All</button>${wls.map(l=>`<button class="ib-filter ${_ibWl===l?'active':''}" onclick="setBrowserWl(${JSON.stringify(l)})">${l}</button>`).join('')}</div>`;
+  } else if (_ibTab==='armor') {
+    filters = `<div class="ib-filters">${['all','helmet','chest','boots'].map(s=>`<button class="ib-filter ${_ibASlot===s?'active':''}" onclick="setBrowserASlot('${s}')">${s==='all'?'All':s.charAt(0).toUpperCase()+s.slice(1)}</button>`).join('')}</div>`;
+  }
+
+  const cards = items.map(item => {
+    const rid = item.renderId ? itemImg(item.renderId, 44) : null;
+    const equipped = Object.values(builderState.slots).some(s => s?.id===item.id);
+    return `<div class="ib-item${equipped?' ib-equipped':''}" draggable="true"
+      ondragstart="itemDragStart(event,${JSON.stringify(item.id)},${JSON.stringify(item.targetSlot)})"
+      ondragend="itemDragEnd()"
+      onclick="_equipItemToSlot(${JSON.stringify(item.targetSlot)},${JSON.stringify(item.id)})"
+      title="${item.name} — drag to slot or click">
+      <div class="ib-item-img">
+        <span class="ib-emoji">${item.emoji}</span>
+        ${rid?`<img src="${rid}" onerror="this.remove()" />`:''}
+      </div>
+      <div class="ib-item-text">
+        <div class="ib-item-name">${item.name}</div>
+        <div class="ib-item-sub">${item.sub}</div>
+      </div>
+      ${equipped?'<span class="ib-badge">✓</span>':''}
+    </div>`;
+  }).join('') || '<div class="ib-empty">No items match.</div>';
+
+  return `
+    <div class="ib-tabs">${tabBtn('weapon','⚔️ Weapons')}${tabBtn('armor','🛡️ Armor')}${tabBtn('consumable','⚗️ Items')}</div>
+    ${filters}
+    <div class="ib-search-wrap"><input class="ib-search" placeholder="Search items…" value="${_ibSearch}" oninput="filterIBSearch(this.value)" /></div>
+    <div class="ib-list">${cards}</div>`;
+}
+
+function renderItemBrowser() {
+  return `<div class="item-browser" id="itemBrowser">${renderItemBrowserContent()}</div>`;
+}
+
 // ── Render the full builder UI ────────────────────────────────
 function renderCharacterBuilder() {
   const container = document.getElementById('builderContainer');
@@ -278,10 +471,13 @@ function renderCharacterBuilder() {
         </div>
       </div>
 
-      <!-- Main 3-col layout -->
+      <!-- Main 3-col layout: browser | paperdoll | stats -->
       <div class="builder-main builder-paperdoll-layout">
 
-        <!-- LEFT: paperdoll + equipment -->
+        <!-- LEFT: item browser -->
+        ${renderItemBrowser()}
+
+        <!-- CENTER: paperdoll -->
         <div class="paperdoll-section">
 
           <!-- IP badge -->
@@ -371,17 +567,19 @@ function renderCharacterBuilder() {
 function renderPdSlot(slotKey, emoji, label) {
   const item = builderState.slots[slotKey];
   const ip   = item ? calcSlotIP(builderState.tier, builderState.enchant) : 0;
+  const dropAttrs = `data-slot="${slotKey}" ondragover="slotDragOver(event,'${slotKey}')" ondragleave="slotDragLeave(event)" ondrop="slotDrop(event,'${slotKey}')"`;
   if (!item) {
     return `
-      <div class="pd-slot empty" onclick="openPicker('${slotKey}')" title="Click to equip ${label}">
+      <div class="pd-slot empty" ${dropAttrs} onclick="openPicker('${slotKey}')" title="Drag here or click to equip ${label}">
         <div class="pd-slot-emoji">${emoji}</div>
         <div class="pd-slot-label">${label}</div>
+        <div class="pd-slot-drop-hint">drop here</div>
       </div>`;
   }
   const rid  = item.renderId ? itemImg(item.renderId, 64) : null;
   const name = (item.name||'').replace(/\s*\(T\d[^)]*\)/gi,'').trim();
   return `
-    <div class="pd-slot filled" onclick="openPicker('${slotKey}')" title="${name}">
+    <div class="pd-slot filled" ${dropAttrs} onclick="openPicker('${slotKey}')" title="${name}">
       <button class="pd-slot-clear" onclick="event.stopPropagation();clearSlot('${slotKey}')" title="Remove">✕</button>
       <div class="pd-slot-img-wrap">
         <div class="pd-slot-emoji-bg">${emoji}</div>
@@ -513,7 +711,29 @@ function renderBuilderStats() {
       <span class="cost-row-val">× ${qty}</span>
     </div>`).join('');
 
-  return `
+  // Build rating
+  const ratings = rateBuild();
+  const ratingPanel = ratings ? `
+    <div class="stat-panel build-rating-panel">
+      <div class="stat-panel-title">🎯 Build Rating</div>
+      <div class="rating-hint">Based on your weapon + armor synergy</div>
+      <div class="rating-rows">
+        ${ratings.map(r => `
+          <div class="rating-row">
+            <span class="rating-label">${r.label}</span>
+            <div class="rating-bar-wrap">
+              <div class="rating-bar-fill" style="width:${r.bar}%;background:${r.color}"></div>
+            </div>
+            <span class="rating-grade" style="color:${r.color}">${r.grade}</span>
+          </div>`).join('')}
+      </div>
+    </div>` : `
+    <div class="stat-panel build-rating-panel">
+      <div class="stat-panel-title">🎯 Build Rating</div>
+      <div class="rating-hint">Equip a weapon to see how this build rates across content types</div>
+    </div>`;
+
+  return ratingPanel + `
     <!-- IP Panel -->
     <div class="stat-panel ip-stat-panel">
       <div class="stat-panel-title">⚡ Item Power</div>
