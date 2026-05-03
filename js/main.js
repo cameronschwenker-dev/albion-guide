@@ -70,7 +70,7 @@ const _pageTitles = {
   'tips':                 'Tips & Tricks — Albion Online Guide',
   'weapons-encyclopedia': 'All Weapons (84) — Albion Online Guide',
   'armor-encyclopedia':   'All Armor Pieces — Albion Online Guide',
-  'meta-builds':          'Best Builds — Season 25 · 89 Builds',
+  'meta-builds':          'Best Builds — Radiant Wilds · 96 Builds',
   'content-rewards':      'Content Rewards & Silver/Hour — Albion Online',
   'progression-roadmap':  'Progression Roadmap — Albion Online Guide',
   'fame-farming':         'Fame Farming Guide — Albion Online',
@@ -1182,28 +1182,31 @@ function initHomePage() {
   _homeReady = true;
 
   const lines = [
-    {icon:'🗡️', label:'Swords',   wl:'Swords'},
-    {icon:'🪓', label:'Axes',     wl:'Axes'},
-    {icon:'🔨', label:'Hammers',  wl:'Hammers'},
-    {icon:'🔱', label:'Spears',   wl:'Spears'},
-    {icon:'🔪', label:'Daggers',  wl:'Daggers'},
-    {icon:'🥢', label:'Staves',   wl:'Quarterstaffs'},
-    {icon:'🔫', label:'Xbows',    wl:'Crossbows'},
-    {icon:'🏹', label:'Bows',     wl:'Bows'},
-    {icon:'🔥', label:'Fire',     wl:'Fire Staffs'},
-    {icon:'❄️', label:'Frost',    wl:'Frost Staffs'},
-    {icon:'💀', label:'Cursed',   wl:'Cursed Staffs'},
-    {icon:'🌿', label:'Nature',   wl:'Nature Staffs'},
-    {icon:'✨', label:'Holy',     wl:'Holy Staffs'},
-    {icon:'🔮', label:'Arcane',   wl:'Arcane Staffs'},
+    {icon:'🗡️', label:'Swords',       wl:'Swords'},
+    {icon:'🪓', label:'Axes',         wl:'Axes'},
+    {icon:'🔨', label:'Hammers',      wl:'Hammers'},
+    {icon:'🔱', label:'Spears',       wl:'Spears'},
+    {icon:'🔪', label:'Daggers',      wl:'Daggers'},
+    {icon:'🥢', label:'Staves',       wl:'Quarterstaffs'},
+    {icon:'🔫', label:'Xbows',        wl:'Crossbows'},
+    {icon:'🏹', label:'Bows',         wl:'Bows'},
+    {icon:'🔥', label:'Fire',         wl:'Fire Staffs'},
+    {icon:'❄️', label:'Frost',        wl:'Frost Staffs'},
+    {icon:'💀', label:'Cursed',       wl:'Cursed Staffs'},
+    {icon:'🌿', label:'Nature',       wl:'Nature Staffs'},
+    {icon:'✨', label:'Holy',         wl:'Holy Staffs'},
+    {icon:'🔮', label:'Arcane',       wl:'Arcane Staffs'},
+    {icon:'🐺', label:'Shapeshifter', wl:'Shapeshifter', badge:'NEW'},
+    {icon:'👊', label:'War Gloves',   wl:'War Gloves',   badge:'NEW'},
   ];
 
   lines.forEach(l => {
     const count = metaBuilds.filter(b => b.weaponLine === l.wl).length;
     const div = document.createElement('div');
-    div.className = 'weapon-strip-item';
+    div.className = 'weapon-strip-item' + (l.badge ? ' ws-new' : '');
     div.title = `${count} ${l.label} build${count!==1?'s':''} — click to browse`;
     div.innerHTML = `
+      ${l.badge ? `<span class="ws-new-badge">${l.badge}</span>` : ''}
       <span class="ws-icon">${l.icon}</span>
       <span class="ws-label">${l.label}</span>
       <span class="ws-count">${count} build${count!==1?'s':''}</span>`;
@@ -1635,4 +1638,5 @@ document.addEventListener('click', e => {
 _buildImgMap();
 showSection('home');
 initHomePage();
+
 

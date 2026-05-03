@@ -436,6 +436,8 @@
 .weapon-strip-item .ws-icon { font-size: 22px; }
 .weapon-strip-item .ws-label { font-size: 11px; color: var(--text); white-space: nowrap; font-weight: 600; }
 .weapon-strip-item .ws-count { font-size: 9px; color: var(--gold-dim); white-space: nowrap; }
+.ws-new-badge { position: absolute; top: -6px; right: -6px; font-size: 7px; font-weight: 700; letter-spacing: 0.5px; background: #e8c96a; color: #0d1018; padding: 1px 4px; border-radius: 3px; }
+.ws-new { position: relative; border-color: rgba(201,168,76,0.3) !important; }
 .weapon-strip-item .ws-img {
   width: 36px; height: 36px;
   object-fit: contain;
