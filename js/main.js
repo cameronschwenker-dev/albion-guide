@@ -501,6 +501,37 @@ function setBuildView(view) {
   renderBuilds();
 }
 
+// Scroll to a build card accounting for the sticky filter bar height
+function scrollToBuildCard(buildId) {
+  const el = document.getElementById('build-' + buildId);
+  if (!el) return;
+  el.classList.add('expanded');
+  // Measure sticky bar + topnav to get the real offset
+  const stickyBar = document.querySelector('.builds-sticky-filters');
+  const topNav    = document.querySelector('.topnav');
+  const offset    = (stickyBar ? stickyBar.offsetHeight : 0) +
+                    (topNav    ? topNav.offsetHeight    : 60) + 20;
+  const top = el.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+}
+
+// Navigate from tier list → card view and open the specific build
+function _goToBuild(buildId) {
+  if (_buildView !== 'cards') {
+    _buildView = 'cards';
+    document.getElementById('viewCards')?.classList.add('active');
+    document.getElementById('viewTier')?.classList.remove('active');
+  }
+  // Reset filters so the target build is visible
+  _buildFilters.role   = 'all';
+  _buildFilters.weapon = 'all';
+  _buildFilters.armor  = 'all';
+  syncBuildFilterUI();
+  renderBuilds();
+  // Wait for render then scroll
+  setTimeout(() => scrollToBuildCard(buildId), 700);
+}
+
 const _costOrder = { 'Low':0, 'Low-Medium':1, 'Medium':2, 'High':3, 'Very High':4 };
 
 function setBuildSort(sort) {
@@ -560,7 +591,7 @@ function renderTierListView(builds) {
       const wRid = b.loadout?.weapon ? getRid(b.loadout.weapon.name) : null;
       const costColor = b.cost==='Low'?'#70c090':b.cost==='Medium'?'var(--gold)':(b.cost||'').includes('Very')?'#f05050':'#e07070';
       return `
-        <div class="tl-card" onclick="setBuildView('cards');setBuildFilter('all');setTimeout(()=>{ document.getElementById('build-${b.id}')?.scrollIntoView({behavior:'smooth'}); document.getElementById('build-${b.id}')?.classList.add('expanded'); },200)" title="${b.name} — click for full details">
+        <div class="tl-card" onclick="_goToBuild('${b.id}')" title="${b.name} — click for full details">
           <div class="tl-img">
             <span class="tl-icon">${b.icon}</span>
             ${wRid ? `<img src="${itemImg(wRid,40)}" onerror="this.remove()" />` : ''}
@@ -1100,7 +1131,7 @@ function showQuizResult() {
       <p class="quiz-result-summary">${top.summary}</p>
       <div class="quiz-result-btns">
         <button class="btn btn-primary" onclick="buildFromMeta('${top.id}')">🎮 Build This Loadout</button>
-        <button class="btn btn-outline" onclick="closeQuiz();showSection('meta-builds');setTimeout(()=>document.getElementById('build-${top.id}')?.scrollIntoView({behavior:'smooth'}),300)">View Full Build →</button>
+        <button class="btn btn-outline" onclick="closeQuiz();showSection('meta-builds');setTimeout(()=>scrollToBuildCard('${top.id}'),700)">View Full Build →</button>
         <button class="btn btn-outline" onclick="quizStep=0;Object.keys(quizAnswers).forEach(k=>delete quizAnswers[k]);renderQuizStep()">Try Again</button>
       </div>
       <div style="margin-top:16px;font-size:11px;color:var(--text-dim)">

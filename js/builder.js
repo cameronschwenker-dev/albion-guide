@@ -362,7 +362,6 @@ function rateBuild() {
 }
 
 // ── Item Browser ──────────────────────────────────────────────
-let _ibTab='weapon', _ibWl='all', _ibASlot='all', _ibSearch='';
 
 function setBrowserTab(tab)   { _ibTab=tab; _ibWl='all'; _ibASlot='all'; _ibSearch=''; _refreshBrowser(); }
 function setBrowserWl(wl)     { _ibWl=wl;    _refreshBrowser(); }
@@ -1112,14 +1111,14 @@ function buildFromMeta(buildId) {
     builderState.slots.potion = p || null;
   }
 
-  // Navigate to builder, render, then fetch live prices
+  // Navigate to builder — showSection already calls renderCharacterBuilder()
   closeQuiz?.();
   showSection('character-builder');
+  // Wait for render then fetch live prices and show confirmation
   setTimeout(() => {
-    renderCharacterBuilder();
     fetchAndApplyLivePrices();
     showToast(`🎮 ${build.name} loaded!`);
-  }, 150);
+  }, 300);
 }
 
 // Live price state
