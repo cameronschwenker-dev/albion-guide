@@ -1,11 +1,11 @@
-// ============================================================
-// ALBION ONLINE RENDER API — CONFIRMED WORKING ITEM IDS
+﻿// ============================================================
+// ALBION ONLINE RENDER API â€” CONFIRMED WORKING ITEM IDS
 // Base URL: https://render.albiononline.com/v1/item/{id}.png
 //
 // Confirmed working patterns:
-//   T4_{HAND}_{BASETYPE}         — all standard weapon types
-//   T4_{SLOT}_{ARMORTYPE}_SET{N} — all armour pieces
-//   T4_2H_HALLOWFALL_AVALON      — the only confirmed AVALON weapon
+//   T4_{HAND}_{BASETYPE}         â€” all standard weapon types
+//   T4_{SLOT}_{ARMORTYPE}_SET{N} â€” all armour pieces
+//   T4_2H_HALLOWFALL_AVALON      â€” the only confirmed AVALON weapon
 //
 // Faction/unique weapons (HELL, MORGANA, KEEPER, etc.) 404 on the
 // render API. They fall back to their nearest base weapon type so
@@ -18,17 +18,17 @@ function itemImg(id, size = 128) {
   return `${RENDER_BASE}${id}.png?size=${size}`;
 }
 
-// ── WEAPONS ─────────────────────────────────────────────────
+// â”€â”€ WEAPONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const weaponRenderIds = {
-  // ── Swords ──────────────────────────────────────
+  // â”€â”€ Swords â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'broadsword':      'T4_MAIN_SWORD',
   'claymore':        'T4_2H_CLAYMORE',
-  'dualSwords':      'T4_MAIN_SWORD',          // no unique ID — base fallback
+  'dualSwords':      'T4_MAIN_SWORD',          // no unique ID â€” base fallback
   'carvingSword':    'T4_MAIN_SWORD',
   'galatinePair':    'T4_2H_CLAYMORE',
   'kingmaker':       'T4_2H_CLAYMORE',
 
-  // ── Axes ─────────────────────────────────────────
+  // â”€â”€ Axes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'battleaxe':       'T4_MAIN_AXE',
   'hatchet':         'T4_MAIN_AXE',            // T4_MAIN_HATCHET unverified
   'greataxe':        'T4_2H_AXE',
@@ -36,7 +36,7 @@ const weaponRenderIds = {
   'infernalScythe':  'T4_2H_AXE',
   'bearPaws':        'T4_MAIN_AXE',
 
-  // ── Hammers ─────────────────────────────────────
+  // â”€â”€ Hammers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'hammer':          'T4_MAIN_HAMMER',
   'polehammer':      'T4_2H_POLEHAMMER',
   'greatHammer':     'T4_2H_HAMMER',
@@ -44,7 +44,7 @@ const weaponRenderIds = {
   'forgeHammers':    'T4_2H_HAMMER',
   'grovekeeper':     'T4_2H_POLEHAMMER',
 
-  // ── Spears ──────────────────────────────────────
+  // â”€â”€ Spears â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'spear':           'T4_MAIN_SPEAR',
   'pike':            'T4_2H_PIKE',
   'glaive':          'T4_2H_GLAIVE',
@@ -52,15 +52,15 @@ const weaponRenderIds = {
   'trinitySpear':    'T4_2H_PIKE',
   'spirithunter':    'T4_2H_PIKE',
 
-  // ── Daggers ─────────────────────────────────────
+  // â”€â”€ Daggers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'dagger':          'T4_MAIN_DAGGER',
   'daggerPair':      'T4_MAIN_DAGGER',
-  'bloodletter':     'T4_MAIN_DAGGER',         // unique ID 404s — dagger fallback
+  'bloodletter':     'T4_MAIN_DAGGER',         // unique ID 404s â€” dagger fallback
   'claws':           'T4_MAIN_DAGGER',
   'deathgivers':     'T4_MAIN_DAGGER',
   'frostpeak':       'T4_MAIN_DAGGER',
 
-  // ── Quarterstaffs ───────────────────────────────
+  // â”€â”€ Quarterstaffs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'quarterstaff':    'T4_2H_QUARTERSTAFF',
   'ironCladStaff':   'T4_2H_QUARTERSTAFF',
   'doubleBladed':    'T4_2H_QUARTERSTAFF',
@@ -68,7 +68,7 @@ const weaponRenderIds = {
   'bedrockMace':     'T4_MAIN_HAMMER',
   'wildStaff':       'T4_2H_QUARTERSTAFF',
 
-  // ── Crossbows ───────────────────────────────────
+  // â”€â”€ Crossbows â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'lightCrossbow':   'T4_2H_CROSSBOW',
   'crossbow':        'T4_2H_CROSSBOW',
   'heavyCrossbow':   'T4_2H_CROSSBOW',
@@ -76,7 +76,7 @@ const weaponRenderIds = {
   'boltcasters':     'T4_2H_CROSSBOW',
   'siegebow':        'T4_2H_CROSSBOW',
 
-  // ── Bows ────────────────────────────────────────
+  // â”€â”€ Bows â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'bow':             'T4_2H_BOW',
   'warbow':          'T4_2H_BOW',
   'longbow':         'T4_2H_BOW',
@@ -84,7 +84,7 @@ const weaponRenderIds = {
   'wailingBow':      'T4_2H_BOW',
   'bowOfBadon':      'T4_2H_BOW',
 
-  // ── Fire Staffs ─────────────────────────────────
+  // â”€â”€ Fire Staffs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'fireStaff':       'T4_MAIN_FIRESTAFF',
   'greatFireStaff':  'T4_2H_FIRESTAFF',
   'infernalStaff':   'T4_2H_FIRESTAFF',
@@ -92,7 +92,7 @@ const weaponRenderIds = {
   'brimstoneStaff':  'T4_2H_FIRESTAFF',
   'blazingStaff':    'T4_2H_FIRESTAFF',
 
-  // ── Frost Staffs ────────────────────────────────
+  // â”€â”€ Frost Staffs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'frostStaff':      'T4_MAIN_FROSTSTAFF',
   'greatFrostStaff': 'T4_2H_FROSTSTAFF',
   'glacialStaff':    'T4_2H_FROSTSTAFF',
@@ -100,7 +100,7 @@ const weaponRenderIds = {
   'icicleStaff':     'T4_2H_FROSTSTAFF',
   'permafrostPrism': 'T4_2H_FROSTSTAFF',
 
-  // ── Cursed Staffs ───────────────────────────────
+  // â”€â”€ Cursed Staffs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'cursedStaff':     'T4_MAIN_CURSEDSTAFF',
   'demonStaff':      'T4_2H_DEMONSTAFF',
   'lifecurseStaff':  'T4_2H_DEMONSTAFF',
@@ -108,7 +108,7 @@ const weaponRenderIds = {
   'shadowcaller':    'T4_2H_DEMONSTAFF',
   'realmbreaker':    'T4_2H_DEMONSTAFF',
 
-  // ── Nature Staffs ───────────────────────────────
+  // â”€â”€ Nature Staffs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'natureStaff':     'T4_MAIN_NATURESTAFF',
   'greatNatureStaff':'T4_2H_NATURESTAFF',
   'druidicStaff':    'T4_2H_NATURESTAFF',
@@ -116,15 +116,15 @@ const weaponRenderIds = {
   'rampantStaff':    'T4_2H_NATURESTAFF',
   'bridledFury':     'T4_2H_NATURESTAFF',
 
-  // ── Holy Staffs ─────────────────────────────────
+  // â”€â”€ Holy Staffs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'holyStaff':       'T4_MAIN_HOLYSTAFF',
   'greatHolyStaff':  'T4_2H_HOLYSTAFF',
   'fallenStaff':     'T4_2H_HOLYSTAFF',
   'redemptionStaff': 'T4_2H_HOLYSTAFF',
   'lifetouchStaff':  'T4_2H_HOLYSTAFF',
-  'hallowfall':      'T4_2H_HALLOWFALL_AVALON',  // confirmed working ✓
+  'hallowfall':      'T4_2H_HALLOWFALL_AVALON',  // confirmed working âœ“
 
-  // ── Arcane Staffs ───────────────────────────────
+  // â”€â”€ Arcane Staffs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'arcaneStaff':     'T4_MAIN_ARCANESTAFF',
   'greatArcaneStaff':'T4_2H_ARCANESTAFF',
   'occultStaff':     'T4_2H_ARCANESTAFF',
@@ -132,7 +132,7 @@ const weaponRenderIds = {
   'locus':           'T4_2H_ARCANESTAFF',
   'eyeOfSecrets':    'T4_2H_ARCANESTAFF',
 
-  // ── Missing weapons used in builds ──────────────────────
+  // â”€â”€ Missing weapons used in builds â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   'halberd':         'T4_2H_GLAIVE',
   'carrioncaller':   'T4_2H_AXE',
   'mace':            'T4_MAIN_HAMMER',
@@ -140,25 +140,25 @@ const weaponRenderIds = {
   'earthruneStaff':  'T4_2H_HOLYSTAFF',
   'damnationStaff':  'T4_2H_DEMONSTAFF',
 
-  // ── Shapeshifter (no unique API ID — nearest visual fallback) ──
+  // â”€â”€ Shapeshifter (no unique API ID â€” nearest visual fallback) â”€â”€
   'prowlingStaff':   'T4_2H_NATURESTAFF',
   'primalStaff':     'T4_2H_NATURESTAFF',
   'doubleStaffShift':'T4_2H_QUARTERSTAFF',
 
-  // ── War Gloves (no unique API ID — melee fallback) ──────
+  // â”€â”€ War Gloves (no unique API ID â€” melee fallback) â”€â”€â”€â”€â”€â”€
   'fistsOfAvalon':   'T4_2H_HAMMER',
   'battleBracers':   'T4_MAIN_AXE',
   'brawlerGloves':   'T4_MAIN_AXE',
 };
 
-// ── ARMOR ─────────────────────────────────────────────────────
+// â”€â”€ ARMOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // All SET-based IDs confirmed working
 const armorRenderIds = {
   // Plate Helmets
   'soldierHelmet':   'T4_HEAD_PLATE_SET1',
   'knightHelmet':    'T4_HEAD_PLATE_SET2',
   'guardianHelmet':  'T4_HEAD_PLATE_SET3',
-  'judicatorHelmet': 'T4_HEAD_PLATE_SET4',
+  'judicatorHelmet': 'T4_HEAD_PLATE_SET3',
   'royalHelmet':     'T4_HEAD_PLATE_ROYAL',
   'graveguardHelmet':'T4_HEAD_PLATE_UNDEAD',
   // Plate Chests
@@ -172,7 +172,7 @@ const armorRenderIds = {
   'soldierBoots':    'T4_SHOES_PLATE_SET1',
   'knightBoots':     'T4_SHOES_PLATE_SET2',
   'guardianBoots':   'T4_SHOES_PLATE_SET3',
-  'judicatorBoots':  'T4_SHOES_PLATE_SET4',
+  'judicatorBoots':  'T4_SHOES_PLATE_SET3',
   'royalBoots':      'T4_SHOES_PLATE_ROYAL',
   'graveguardBoots': 'T4_SHOES_PLATE_UNDEAD',
 
@@ -180,7 +180,7 @@ const armorRenderIds = {
   'hunterHood':      'T4_HEAD_LEATHER_SET1',
   'assassinHood':    'T4_HEAD_LEATHER_SET2',
   'stalkerHood':     'T4_HEAD_LEATHER_SET3',
-  'mercenaryHood':   'T4_HEAD_LEATHER_SET4',
+  'mercenaryHood':   'T4_HEAD_LEATHER_SET3',
   'royalHood':       'T4_HEAD_LEATHER_ROYAL',
   'specterHood':     'T4_HEAD_LEATHER_UNDEAD',
   // Leather Chests
@@ -194,7 +194,7 @@ const armorRenderIds = {
   'hunterShoes':     'T4_SHOES_LEATHER_SET1',
   'assassinShoes':   'T4_SHOES_LEATHER_SET2',
   'stalkerShoes':    'T4_SHOES_LEATHER_SET3',
-  'mercenaryShoes':  'T4_SHOES_LEATHER_SET4',
+  'mercenaryShoes':  'T4_SHOES_LEATHER_SET3',
   'royalShoes':      'T4_SHOES_LEATHER_ROYAL',
   'specterShoes':    'T4_SHOES_LEATHER_UNDEAD',
 
@@ -202,7 +202,7 @@ const armorRenderIds = {
   'scholarCowl':     'T4_HEAD_CLOTH_SET1',
   'mageCowl':        'T4_HEAD_CLOTH_SET2',
   'clericCowl':      'T4_HEAD_CLOTH_SET3',
-  'druidCowl':       'T4_HEAD_CLOTH_SET4',
+  'druidCowl':       'T4_HEAD_CLOTH_SET3',
   'feyscaleCowl':    'T4_HEAD_CLOTH_MORGANA',
   'fiendCowl':       'T4_HEAD_CLOTH_HELL',
   // Cloth Chests
@@ -216,12 +216,12 @@ const armorRenderIds = {
   'scholarSandals':  'T4_SHOES_CLOTH_SET1',
   'mageSandals':     'T4_SHOES_CLOTH_SET2',
   'clericSandals':   'T4_SHOES_CLOTH_SET3',
-  'druidSandals':    'T4_SHOES_CLOTH_SET4',
+  'druidSandals':    'T4_SHOES_CLOTH_SET3',
   'feyscaleSandals': 'T4_SHOES_CLOTH_MORGANA',
   'fiendSandals':    'T4_SHOES_CLOTH_HELL',
 };
 
-// ── HERO SHOWCASE — only confirmed-working IDs ────────────────
+// â”€â”€ HERO SHOWCASE â€” only confirmed-working IDs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // One representative weapon per major category
 const showcaseItems = [
   { id: 'T4_MAIN_SWORD',         label: 'Swords' },
@@ -247,3 +247,4 @@ const heroFloatItems = [
   { id: 'T4_MAIN_SWORD',           pos: 'pos-bl' },
   { id: 'T4_2H_FIRESTAFF',         pos: 'pos-br' },
 ];
+
