@@ -131,6 +131,24 @@ const weaponRenderIds = {
   'witchworkStaff':  'T4_2H_ARCANESTAFF',
   'locus':           'T4_2H_ARCANESTAFF',
   'eyeOfSecrets':    'T4_2H_ARCANESTAFF',
+
+  // ── Missing weapons used in builds ──────────────────────
+  'halberd':         'T4_2H_GLAIVE',
+  'carrioncaller':   'T4_2H_AXE',
+  'mace':            'T4_MAIN_HAMMER',
+  'thunderfall':     'T4_2H_HOLYSTAFF',
+  'earthruneStaff':  'T4_2H_HOLYSTAFF',
+  'damnationStaff':  'T4_2H_DEMONSTAFF',
+
+  // ── Shapeshifter (no unique API ID — nearest visual fallback) ──
+  'prowlingStaff':   'T4_2H_NATURESTAFF',
+  'primalStaff':     'T4_2H_NATURESTAFF',
+  'doubleStaffShift':'T4_2H_QUARTERSTAFF',
+
+  // ── War Gloves (no unique API ID — melee fallback) ──────
+  'fistsOfAvalon':   'T4_2H_HAMMER',
+  'battleBracers':   'T4_MAIN_AXE',
+  'brawlerGloves':   'T4_MAIN_AXE',
 };
 
 // ── ARMOR ─────────────────────────────────────────────────────
