@@ -53,7 +53,7 @@ function openGroupForSection(sectionId) {
 }
 
 const _pageTitles = {
-  'home':                 'Albion Online Complete Guide 2025',
+  'home':                 'Albion Online Complete Guide 2026',
   'getting-started':      'Getting Started — Albion Online Guide',
   'destiny-board':        'Destiny Board Guide — Albion Online',
   'gathering':            'Gathering Guide — Albion Online',
@@ -68,9 +68,9 @@ const _pageTitles = {
   'roads':                'Roads of Avalon Guide — Albion Online',
   'endgame':              'Endgame Guide — Albion Online',
   'tips':                 'Tips & Tricks — Albion Online Guide',
-  'weapons-encyclopedia': 'All Weapons (84) — Albion Online Guide',
+  'weapons-encyclopedia': 'All Weapons (96) — Albion Online Guide',
   'armor-encyclopedia':   'All Armor Pieces — Albion Online Guide',
-  'meta-builds':          'Best Builds — Radiant Wilds · 96 Builds',
+  'meta-builds':          'Best Builds 2026 — Radiant Wilds · 96 Builds',
   'content-rewards':      'Content Rewards & Silver/Hour — Albion Online',
   'progression-roadmap':  'Progression Roadmap — Albion Online Guide',
   'fame-farming':         'Fame Farming Guide — Albion Online',
@@ -90,7 +90,7 @@ function showSection(id) {
   const target = document.getElementById(id);
   if (target) target.classList.add('active');
   // Dynamic page title for SEO
-  document.title = _pageTitles[id] || 'Albion Online Complete Guide 2025';
+  document.title = _pageTitles[id] || 'Albion Online Complete Guide 2026';
   // Mark active in nav (may appear in multiple places — mark all)
   document.querySelectorAll(`.nav-item[data-section="${id}"]`).forEach(el => el.classList.add('active'));
   // Auto-open the group that contains this section
@@ -1669,5 +1669,7 @@ document.addEventListener('click', e => {
 _buildImgMap();
 showSection('home');
 initHomePage();
+
+
 
 
